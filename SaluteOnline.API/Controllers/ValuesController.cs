@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SaluteOnline.API.Controllers
@@ -10,6 +8,7 @@ namespace SaluteOnline.API.Controllers
     public class ValuesController : Controller
     {
         // GET api/values
+        [Authorize("read:all")]
         [HttpGet]
         public IEnumerable<string> Get()
         {

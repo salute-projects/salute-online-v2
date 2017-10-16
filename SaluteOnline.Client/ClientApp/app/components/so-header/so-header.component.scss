@@ -1,0 +1,99 @@
+﻿@import "../app/style/theme";
+@import "../app/style/mixins";
+
+.header-actions-container {
+    display: flex;
+    height: $header-height;
+
+    button {
+        align-self: center;
+    }
+
+    .so-dropdown-text {
+        margin-right: 16px;
+    }
+}
+
+.login-dialog {
+    .login-form {
+        margin-top: 16px;
+        width: 100%;
+
+        .mat-form-field {
+            width: 80%;
+            margin-left: 10%;
+        }
+    }
+
+    .footer {
+        display: flex;
+        justify-content: center;
+
+        button {
+            align-self: center;
+        }
+    }
+}
+
+.so-header {
+    background-color: $background;
+    box-shadow: 2px 0 3px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    z-index: 900;
+    height: $header-height;
+    width: 100%;
+    padding: 0 32px 0 40px;
+
+    .so-logo {
+        display: block;
+        font-size: 24px;
+        white-space: nowrap;
+        float: left;
+        outline: none !important;
+        line-height: 60px;
+
+        &:focus, &:hover, &:visited {
+            text-decoration: none;
+        }
+
+        .logo-leftside, .logo-rightside {
+            font-family: $font-family-logo;
+            outline: none !important;
+        }
+
+        .logo-leftside {
+            color: $main-red;
+            font-weight: bold;
+            @include transition(all 0.2s ease-in);
+
+            &:hover, &:focus {
+                color: $main-red-hover;
+            }
+        }
+
+        .logo-rightside {
+            color: white;
+        }
+    }
+}
+
+.so-hamburger {
+    float: left;
+    display: block;
+    margin-left: 24px;
+    margin-top: 20px;
+
+    .hamburger {
+        &:hover {
+            cursor: pointer;
+        }
+
+        .line {
+            width: 25px;
+            height: 2px;
+            background-color: $main-white;
+            display: block;
+            margin: 4px 0;
+        }
+    }
+}

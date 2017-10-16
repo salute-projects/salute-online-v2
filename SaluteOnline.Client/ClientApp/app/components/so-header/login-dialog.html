@@ -1,0 +1,31 @@
+﻿<div class="login-dialog">
+    <div class="header"></div>
+    <mat-tab-group class="login-tab-group">
+        <mat-tab label="Login">
+            <form class="login-form">
+                <mat-form-field>
+                    <input matInput placeholder="Email" [(ngModel)]="email" name="email">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Password" [(ngModel)]="password" name="password">
+                </mat-form-field>
+            </form>
+        </mat-tab>
+        <mat-tab label="Sign Up">
+            <form class="login-form">
+                <mat-form-field>
+                    <input matInput placeholder="Email" [(ngModel)]="email" name="email">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Password" [(ngModel)]="password" name="password">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Confirm password" [(ngModel)]="confirmPassword" name="confirmPassword">
+                </mat-form-field>
+            </form>
+        </mat-tab>
+    </mat-tab-group>
+    <div class="footer">
+        <button mat-raised-button color="primary">Log In</button>
+    </div>
+</div>

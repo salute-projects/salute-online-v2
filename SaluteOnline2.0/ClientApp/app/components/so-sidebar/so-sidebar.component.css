@@ -1,0 +1,7 @@
+﻿.so-sidebar {
+  left: 0;
+  z-index: 1001;
+  display: block;
+  min-height: 100%;
+  position: fixed; }
+

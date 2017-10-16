@@ -1,0 +1,31 @@
+﻿<div class="so-header clearfix" maxHeight="50">
+    <a [routerLink]="['/fetch-data']" class="so-logo clearfix">
+        <span class="logo-leftside">SALUTE</span>
+        <span class="logo-rightside">ONLINE</span>
+    </a>
+    <div class="so-hamburger" (click)="toggleMenu()">
+        <div class="hamburger">
+            <span class="line"></span>
+            <span class="line"></span>
+            <span class="line"></span>
+        </div>
+    </div>
+    
+    <div class="header-actions-container pull-right">
+        <button mat-raised-button color="primary" *ngIf="!logged" (click)="openDialog()">Увійти</button>
+
+        <button mat-fab [matMenuTriggerFor]="menu" color="primary" class="so-user-button" *ngIf="logged">
+
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item>
+                <mat-icon>settings</mat-icon>
+                <span class="so-dropdown-text">Профіль</span>
+            </button>
+            <button mat-menu-item (click)="logout()">
+                <mat-icon>exit_to_app</mat-icon>
+                <span class="so-dropdown-text">Вийти</span>
+            </button>
+        </mat-menu>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+<header>
+    <so-header></so-header>
+</header>
+<div class='container-fluid' [class.menu-collapsed] = "isMenuCollapsed">
+    <div class='row'>
+        <div class='col-sm-3'>
+            <so-sidebar></so-sidebar>
+        </div>
+        <div class='col-sm-9 body-content'>
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

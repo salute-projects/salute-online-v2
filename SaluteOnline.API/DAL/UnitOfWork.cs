@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using SaluteOnline.API.DAL.Entities;
 
 namespace SaluteOnline.API.DAL
 {
@@ -14,6 +15,11 @@ namespace SaluteOnline.API.DAL
             _context = context;
             _configuration = configuration;
         }
+
+        private GenericRepository<User> _users;
+        public GenericRepository<User> Users
+            => _users ?? (_users = new GenericRepository<User>(_context, _configuration));
+
 
         public void Save()
         {
