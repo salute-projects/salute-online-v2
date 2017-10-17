@@ -2,14 +2,13 @@
     <div class="text-center">
         <img height="128" [src]="logo" alt="logo" />
     </div>
-    <!--<div>SALUTE ONLINE</div>-->
     <div class="so-logo clearfix text-center">
         <span class="logo-leftside">SALUTE</span>
         <span class="logo-rightside-black">ONLINE</span>
     </div>
 </div>
 <div class="login-dialog">
-    <mat-tab-group class="login-tab-group">
+    <mat-tab-group class="login-tab-group" (selectedIndexChange)="tabChanged($event)">
         <mat-tab label="Login">
             <form class="login-form">
                 <mat-form-field>
@@ -18,6 +17,10 @@
                 <mat-form-field>
                     <input matInput placeholder="Password" [(ngModel)]="password" name="password">
                 </mat-form-field>
+                <br/>
+                <div class="text-center">
+                    <a href="">Forgot password? Click here</a>
+                </div>
             </form>
         </mat-tab>
         <mat-tab label="Sign Up">
@@ -36,5 +39,5 @@
     </mat-tab-group>
 </div>
 <div class="login-dialog-footer">
-    <button mat-raised-button color="primary">Log In ></button>
+    <button mat-raised-button color="primary">{{buttonText()}}</button>
 </div>

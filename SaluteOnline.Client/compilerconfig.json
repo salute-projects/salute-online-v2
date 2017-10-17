@@ -10,5 +10,9 @@
   {
     "outputFile": "ClientApp/app/components/app/style/components_override/material-menu.css",
     "inputFile": "ClientApp/app/components/app/style/components_override/material-menu.scss"
+  },
+  {
+    "outputFile": "ClientApp/app/components/app/style/components_override/material-tabs.css",
+    "inputFile": "ClientApp/app/components/app/style/components_override/material-tabs.scss"
   }
 ]

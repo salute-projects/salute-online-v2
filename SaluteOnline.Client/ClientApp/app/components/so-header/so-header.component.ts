@@ -64,9 +64,33 @@ export class LoginDialog {
     email: string;
     password: string;
     confirmPassword: string;
+    currentTab: string;
+
     private logo = require('../../assets/logo.png');
 
     constructor(public dialogRef: MatDialogRef<LoginDialog>, @Inject(MAT_DIALOG_DATA) public data: any) {
+        this.currentTab = "login";
+    }
+
+    tabChanged(tabIndex: number): void {
+        switch (tabIndex) {
+            case 0:
+                this.currentTab = "login";
+                break;
+            case 1:
+                this.currentTab = "signup";
+                break;
+            default:
+        }
+    }
+
+    buttonText(): string {
+        switch (this.currentTab) {
+        case "signup":
+            return "SIGN UP >";
+        default:
+                return "LOG IN >";    
+        }
     }
 
     onNoClick(): void {
