@@ -32,6 +32,7 @@ export class SoHeader {
     openDialog(): void {
         const config: MatDialogConfig = {
             width: '400px',
+            panelClass: 'login-dialog-panel',
             data: { email: this.email, password: this.password }
         };
         const dialogRef = this.loginDialog.open(LoginDialog, config);
@@ -63,9 +64,9 @@ export class LoginDialog {
     email: string;
     password: string;
     confirmPassword: string;
+    private logo = require('../../assets/logo.png');
 
     constructor(public dialogRef: MatDialogRef<LoginDialog>, @Inject(MAT_DIALOG_DATA) public data: any) {
-
     }
 
     onNoClick(): void {

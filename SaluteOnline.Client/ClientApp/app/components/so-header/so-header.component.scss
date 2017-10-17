@@ -14,23 +14,46 @@
     }
 }
 
-.login-dialog {
-    .login-form {
-        margin-top: 16px;
-        width: 100%;
+.login-dialog-panel {
+    .mat-dialog-container {
+        padding: 0;
 
-        .mat-form-field {
-            width: 80%;
-            margin-left: 10%;
+        .login-dialog-header {
+            display: flex;
+            padding: 16px;
+            justify-content: center;
+            flex-direction: column;
+            align-content: center;
+
+            span {
+                align-self: center;
+            }
+        } 
+        
+        .login-dialog {
+            padding: 24px;
+
+            .login-form {
+                margin-top: 16px;
+                width: 100%;
+
+                .mat-form-field {
+                    width: 80%;
+                    margin-left: 10%;
+                }
+            }
         }
-    }
 
-    .footer {
-        display: flex;
-        justify-content: center;
+        .login-dialog-footer {
+            display: flex;
+            justify-content: center;
 
-        button {
-            align-self: center;
+            button {
+                width: 100%;
+                padding: 16px;
+                text-transform: uppercase;
+                align-self: center;
+            }
         }
     }
 }
@@ -43,37 +66,41 @@
     height: $header-height;
     width: 100%;
     padding: 0 32px 0 40px;
+}
 
-    .so-logo {
-        display: block;
-        font-size: 24px;
-        white-space: nowrap;
-        float: left;
+.so-logo {
+    display: block;
+    font-size: 24px;
+    white-space: nowrap;
+    float: left;
+    outline: none !important;
+    line-height: 60px;
+
+    &:focus, &:hover, &:visited {
+        text-decoration: none;
+    }
+
+    .logo-leftside, .logo-rightside, .logo-rightside-black {
+        font-family: $font-family-logo;
         outline: none !important;
-        line-height: 60px;
+    }
 
-        &:focus, &:hover, &:visited {
-            text-decoration: none;
+    .logo-leftside {
+        color: $main-red;
+        font-weight: bold;
+        @include transition(all 0.2s ease-in);
+
+        &:hover, &:focus {
+            color: $main-red-hover;
         }
+    }
 
-        .logo-leftside, .logo-rightside {
-            font-family: $font-family-logo;
-            outline: none !important;
-        }
+    .logo-rightside {
+        color: white;
+    }
 
-        .logo-leftside {
-            color: $main-red;
-            font-weight: bold;
-            @include transition(all 0.2s ease-in);
-
-            &:hover, &:focus {
-                color: $main-red-hover;
-            }
-        }
-
-        .logo-rightside {
-            color: white;
-        }
+    .logo-rightside-black {
+        color: $background;
     }
 }
 
