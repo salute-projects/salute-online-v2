@@ -10,12 +10,12 @@
 <div class="login-dialog">
     <mat-tab-group class="login-tab-group" (selectedIndexChange)="tabChanged($event)">
         <mat-tab label="Login">
-            <form class="login-form">
+            <form class="login-form" [formGroup]="loginForm">
                 <mat-form-field>
-                    <input matInput placeholder="Email" [(ngModel)]="email" name="email">
+                    <input matInput placeholder="Email" formControlName="email">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Password" [(ngModel)]="password" name="password">
+                    <input matInput placeholder="Password" formControlName="password">
                 </mat-form-field>
                 <br/>
                 <div class="text-center">
@@ -24,20 +24,20 @@
             </form>
         </mat-tab>
         <mat-tab label="Sign Up">
-            <form class="login-form">
+            <form class="login-form" [formGroup]="signupForm">
                 <mat-form-field>
-                    <input matInput placeholder="Email" [(ngModel)]="email" name="email">
+                    <input matInput placeholder="Email" formControlName="email">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Password" [(ngModel)]="password" name="password">
+                    <input matInput placeholder="Password" formControlName="password">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Confirm password" [(ngModel)]="confirmPassword" name="confirmPassword">
+                    <input matInput placeholder="Confirm password" formControlName="confirmPassword">
                 </mat-form-field>
             </form>
         </mat-tab>
     </mat-tab-group>
 </div>
 <div class="login-dialog-footer">
-    <button mat-raised-button color="primary">{{buttonText()}}</button>
+    <button mat-raised-button color="primary" [disabled]="submitDisabled()">{{buttonText()}}</button>
 </div>

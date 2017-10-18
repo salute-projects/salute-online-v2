@@ -1,8 +1,10 @@
 ﻿import { Component, ViewEncapsulation, Inject } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { GlobalState } from "../../services/global.state";
 import { AuthService } from "../../services/auth";
 import { MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA } from "@angular/material";
+import { EqualityValidation } from "../../services/validators/equality-validator";
 
 @Component({
     selector: "so-header",
@@ -66,10 +68,30 @@ export class LoginDialog {
     confirmPassword: string;
     currentTab: string;
 
+    loginForm: FormGroup;
+    signupForm: FormGroup;
+
     private logo = require('../../assets/logo.png');
 
-    constructor(public dialogRef: MatDialogRef<LoginDialog>, @Inject(MAT_DIALOG_DATA) public data: any) {
+    constructor(public dialogRef: MatDialogRef<LoginDialog>, @Inject(MAT_DIALOG_DATA) public data: any, private readonly fb: FormBuilder) {
         this.currentTab = "login";
+        this.createLoginForm();
+        this.createSignupForm();
+    }
+
+    private createLoginForm() {
+        this.loginForm = this.fb.group({
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', Validators.required]
+        });
+    }
+
+    private createSignupForm() {
+        this.signupForm = this.fb.group({
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', Validators.required],
+            confirmPassword: ['', Validators.required]
+        }, { validator: EqualityValidation.checkEquality });
     }
 
     tabChanged(tabIndex: number): void {
@@ -91,6 +113,15 @@ export class LoginDialog {
         default:
                 return "LOG IN >";    
         }
+    }
+
+    submitDisabled(): boolean {
+        if (this.currentTab === "login") {
+            return this.loginForm.invalid;
+        } else if (this.currentTab === "signup") {
+            return this.signupForm.invalid;
+        }
+        return true;
     }
 
     onNoClick(): void {

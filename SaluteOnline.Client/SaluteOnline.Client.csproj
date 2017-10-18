@@ -30,7 +30,10 @@
     <None Remove="ClientApp\app\configuration\constants.ts" />
     <None Remove="ClientApp\app\configuration\menu-list.ts" />
     <None Remove="ClientApp\app\services\auth.ts" />
+    <None Remove="ClientApp\app\services\context.ts" />
+    <None Remove="ClientApp\app\services\context\accountApi.ts" />
     <None Remove="ClientApp\app\services\global.state.ts" />
+    <None Remove="ClientApp\app\services\validators\equality-validator.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,7 +46,10 @@
     <TypeScriptCompile Include="ClientApp\app\configuration\constants.ts" />
     <TypeScriptCompile Include="ClientApp\app\configuration\menu-list.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\auth.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\context\accountApi.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\context\context.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\global.state.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\validators\equality-validator.ts" />
   </ItemGroup>
 
   <ItemGroup>
