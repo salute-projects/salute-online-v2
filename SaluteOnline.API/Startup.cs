@@ -45,11 +45,18 @@ namespace SaluteOnline.API
                 options.AddPolicy("write:all",
                     policy => policy.Requirements.Add(new ScoreRequirement("write:all", domain)));
             });
-
             var connectionString = Configuration.GetConnectionString("SoConnection");
             services.AddDbContext<SaluteOnlineDbContext>(options => options.UseSqlServer(connectionString));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton(Configuration);
+
+            services.AddCors(
+                options =>
+                {
+                    options.AddPolicy("CorsPolicy",
+                        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+                });
+
             services.AddMvc().AddJsonOptions(jsonOptions =>
             {
                 jsonOptions.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
@@ -73,6 +80,7 @@ namespace SaluteOnline.API
                 app.UseDeveloperExceptionPage();
             }
             app.UseAuthentication();
+            app.UseCors("CorsPolicy");
             app.UseMvc();
         }
     }

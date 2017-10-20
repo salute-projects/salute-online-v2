@@ -33,6 +33,7 @@
     <None Remove="ClientApp\app\services\context.ts" />
     <None Remove="ClientApp\app\services\context\accountApi.ts" />
     <None Remove="ClientApp\app\services\global.state.ts" />
+    <None Remove="ClientApp\app\services\snack.service.ts" />
     <None Remove="ClientApp\app\services\validators\equality-validator.ts" />
   </ItemGroup>
 
@@ -49,6 +50,7 @@
     <TypeScriptCompile Include="ClientApp\app\services\context\accountApi.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\context\context.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\global.state.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\snack.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\validators\equality-validator.ts" />
   </ItemGroup>
 

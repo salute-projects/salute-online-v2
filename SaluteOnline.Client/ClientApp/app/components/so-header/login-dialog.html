@@ -39,5 +39,5 @@
     </mat-tab-group>
 </div>
 <div class="login-dialog-footer">
-    <button mat-raised-button color="primary" [disabled]="submitDisabled()">{{buttonText()}}</button>
+    <button mat-raised-button color="primary" (click)="submit()" [disabled]="submitDisabled()">{{buttonText()}}</button>
 </div>

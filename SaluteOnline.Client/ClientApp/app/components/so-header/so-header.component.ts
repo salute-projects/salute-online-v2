@@ -2,6 +2,8 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { GlobalState } from "../../services/global.state";
+import { Context } from "../../services/context/context";
+import { SoSnackService } from "../../services/snack.service";
 import { AuthService } from "../../services/auth";
 import { MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA } from "@angular/material";
 import { EqualityValidation } from "../../services/validators/equality-validator";
@@ -39,12 +41,9 @@ export class SoHeader {
         };
         const dialogRef = this.loginDialog.open(LoginDialog, config);
         dialogRef.afterClosed().subscribe(result => {
+            debugger;
             var x = result;
         });
-    }
-
-    login() {
-        this.authService.login();
     }
 
     logout() {
@@ -59,7 +58,8 @@ export class SoHeader {
 
 @Component({
     selector: "login-dialog",
-    templateUrl: "./login-dialog.html"
+    templateUrl: "./login-dialog.html",
+    providers: [Context, SoSnackService]
 })
 
 export class LoginDialog {
@@ -73,7 +73,8 @@ export class LoginDialog {
 
     private logo = require('../../assets/logo.png');
 
-    constructor(public dialogRef: MatDialogRef<LoginDialog>, @Inject(MAT_DIALOG_DATA) public data: any, private readonly fb: FormBuilder) {
+    constructor(public dialogRef: MatDialogRef<LoginDialog>, @Inject(MAT_DIALOG_DATA) public data: any, private readonly fb: FormBuilder, private readonly context: Context,
+        private readonly snackService: SoSnackService) {
         this.currentTab = "login";
         this.createLoginForm();
         this.createSignupForm();
@@ -122,6 +123,48 @@ export class LoginDialog {
             return this.signupForm.invalid;
         }
         return true;
+    }
+
+    submit() {
+        if (this.currentTab === "login") {
+            const email = this.loginForm.get('email');
+            const password = this.loginForm.get('password');
+            if (!email || !password)
+                return;
+            this.email = email.value;
+            this.password = password.value;
+            this.login();
+        } else {
+            const email = this.signupForm.get('email');
+            const password = this.signupForm.get('password');
+            if (!email || !password)
+                return;
+            this.email = email.value;
+            this.password = password.value;
+            this.signUp();
+        }
+    }
+
+    login() {
+        this.context.accountApi.login(this.email, this.password).subscribe(result => {
+            const expiresAt = JSON.stringify((result.expiresIn * 1000) + new Date().getTime());
+            localStorage.setItem('token', result.token);
+            localStorage.setItem('expires_at', expiresAt);
+            this.dialogRef.close(result);
+        }, error => {
+            this.snackService.showError(error, 'OK', undefined);
+        });
+    }
+
+    signUp() {
+        this.context.accountApi.signUp(this.email, this.password).subscribe(result => {
+            const expiresAt = JSON.stringify((result.expiresIn * 1000) + new Date().getTime());
+            localStorage.setItem('token', result.token);
+            localStorage.setItem('expires_at', expiresAt);
+            this.dialogRef.close(result);
+        }, error => {
+            this.snackService.showError(error, 'OK', undefined);
+        });
     }
 
     onNoClick(): void {

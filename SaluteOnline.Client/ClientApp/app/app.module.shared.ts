@@ -19,7 +19,7 @@ import { provideAuthService } from 'auth0-angular2';
 
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
-import { MatButtonModule, MatIconModule, MatMenuModule, MatDialogModule, MatTabsModule, MatInputModule, MatFormFieldModule, MATERIAL_SANITY_CHECKS } from "@angular/material";
+import { MatButtonModule, MatIconModule, MatMenuModule, MatDialogModule, MatTabsModule, MatInputModule, MatFormFieldModule, MatSnackBarModule, MATERIAL_SANITY_CHECKS } from "@angular/material";
 
 @
 NgModule({
@@ -52,6 +52,7 @@ NgModule({
         MatTabsModule,
         MatInputModule,
         MatFormFieldModule,
+        MatSnackBarModule,
         CommonModule,
         HttpModule,
         FormsModule,
