@@ -8,60 +8,10 @@
     button {
         align-self: center;
     }
-
-    .so-dropdown-text {
-        margin-right: 16px;
-    }
 }
 
-.login-dialog-panel {
-    font-family: $font-family;
-
-    .mat-dialog-container {
-        padding: 0;
-
-        .login-dialog-header {
-            display: flex;
-            padding: 16px;
-            justify-content: center;
-            flex-direction: column;
-            align-content: center;
-
-            span {
-                align-self: center;
-            }
-        }
-
-        .login-dialog {
-            padding: 24px;
-
-            .mat-tab-label, .mat-input-element {
-                font-family: $font-family;
-            }
-
-            .login-form {
-                margin-top: 16px;
-                width: 100%;
-
-                .mat-form-field {
-                    width: 80%;
-                    margin-left: 10%;
-                }
-            }
-        }
-
-        .login-dialog-footer {
-            display: flex;
-            justify-content: center;
-
-            button {
-                width: 100%;
-                padding: 16px;
-                text-transform: uppercase;
-                align-self: center;
-            }
-        }
-    }
+.so-dropdown-text {
+    margin-right: 16px;
 }
 
 .so-header {

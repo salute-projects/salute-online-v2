@@ -54,5 +54,18 @@ namespace SaluteOnline.API.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpGet("forgotPassword/{email}")]
+        public async Task<IActionResult> RunForgotPasswordFlow(string email)
+        {
+            try
+            {
+                return Ok(await _accountService.RunForgotPasswordFlow(email));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

@@ -8,7 +8,6 @@ namespace SaluteOnline.API.Controllers
     public class ValuesController : Controller
     {
         // GET api/values
-        [Authorize("read:all")]
         [HttpGet]
         public IEnumerable<string> Get()
         {

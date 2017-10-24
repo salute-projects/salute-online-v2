@@ -1,0 +1,28 @@
+﻿@import "../app/style/theme";
+@import "../app/style/mixins";
+
+.so-user-profile {
+    top: $header-height;
+    position: relative;
+    margin-top: $default-margin;
+
+    .so-user-profile-container {
+        display: flex;
+        justify-content: center;
+
+        #main-info-card {
+            width: $wide-card-width;
+            padding-bottom: 16px;
+
+            .avatar-container {
+                display: flex;
+                justify-content: center;
+                padding: $default-padding;
+            }
+        }
+
+        .mat-card-actions {
+            margin: 0;
+        }
+    }
+}

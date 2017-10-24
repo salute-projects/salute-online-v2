@@ -1,0 +1,31 @@
+﻿<section class="so-user-profile container">
+    <div class="row">
+        <div class="col-md-12 so-user-profile-container">
+            <mat-card id="main-info-card">
+                <div class="row">
+                    <div class="col-md-3 avatar-container">
+                        <img height="128" [src]="logo" alt="logo" />
+                    </div>
+                    <div class="col-md-9">
+                        <mat-card-header>
+                            <mat-card-title>
+                                <mat-form-field>
+                                    <input matInput placeholder="First Name"/>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <input matInput placeholder="Last Name" />
+                                </mat-form-field>
+                            </mat-card-title>
+                            <mat-card-subtitle>User Subtitle</mat-card-subtitle>
+                        </mat-card-header>
+                    </div>
+                    <div class="col-md-12">
+                        <mat-card-actions align="end">
+                            <button mat-raised-button color="primary">SAVE</button>
+                        </mat-card-actions>
+                    </div>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+</section>

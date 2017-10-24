@@ -8,5 +8,8 @@ namespace SaluteOnline.API.Services.Interface
         bool UserExists(string email);
         Task<SignUpResultDto> SignUp(UserEssential user);
         Task<LoginResultDto> Login(UserEssential user);
+        Task<string> RunForgotPasswordFlow(string email);
+
+        UserDto GetUserInfo(string email);
     }
 }

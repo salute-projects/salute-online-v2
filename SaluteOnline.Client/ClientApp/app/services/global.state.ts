@@ -44,4 +44,14 @@ export class GlobalState {
             callback.call(null, data['data']);
         });
     }
+
+    events = {
+        global: {
+            logged: "global.logged"   
+        },
+        menu: {
+            isCollapsed: "menu.isCollapsed",
+            activeLink: "menu.activeLink"
+        }
+    }
 }

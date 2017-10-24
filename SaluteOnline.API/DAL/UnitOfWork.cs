@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using SaluteOnline.API.DAL.Entities;
+using SaluteOnline.Domain.Domain.EF;
+using SaluteOnline.Domain.Domain.Mongo;
 
 namespace SaluteOnline.API.DAL
 {
@@ -20,6 +21,10 @@ namespace SaluteOnline.API.DAL
         public GenericRepository<User> Users
             => _users ?? (_users = new GenericRepository<User>(_context, _configuration));
 
+
+        private GenericRepository<Activity> _activities;
+        public GenericRepository<Activity> Activities
+            => _activities ?? (_activities = new GenericRepository<Activity>(_context, _configuration));
 
         public void Save()
         {

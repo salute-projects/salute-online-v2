@@ -40,7 +40,7 @@ export class SoSidebar implements AfterViewInit, OnInit {
 
     sidebarCollapseStatusChange(collapse: boolean): void {
         this.isMenuCollapsed = collapse;
-        this.state.notifyDataChanged('menu.isCollapsed', this.isMenuCollapsed);
+        this.state.notifyDataChanged(this.state.events.menu.isCollapsed, this.isMenuCollapsed);
     }
 
     sidebarExpand(): void {

@@ -21,34 +21,38 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\app\components\callback\callback.component.ts" />
     <None Remove="ClientApp\app\components\so-header\so-header.component.ts" />
+    <None Remove="ClientApp\app\components\so-login-dialog.ts" />
     <None Remove="ClientApp\app\components\so-menu-item\so-menu-item.component.ts" />
     <None Remove="ClientApp\app\components\so-menu\so-menu.component.ts" />
     <None Remove="ClientApp\app\components\so-menu\so-menu.service.ts" />
     <None Remove="ClientApp\app\components\so-sidebar\so-sidebar.component.ts" />
+    <None Remove="ClientApp\app\components\so-user-profile\so-user-profile.component.ts" />
     <None Remove="ClientApp\app\configuration\constants.ts" />
     <None Remove="ClientApp\app\configuration\menu-list.ts" />
     <None Remove="ClientApp\app\services\auth.ts" />
     <None Remove="ClientApp\app\services\context.ts" />
     <None Remove="ClientApp\app\services\context\accountApi.ts" />
+    <None Remove="ClientApp\app\services\context\userApi.ts" />
     <None Remove="ClientApp\app\services\global.state.ts" />
     <None Remove="ClientApp\app\services\snack.service.ts" />
     <None Remove="ClientApp\app\services\validators\equality-validator.ts" />
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\app\components\callback\callback.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-header\so-header.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\so-login-dialog\so-login-dialog.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-menu-item\so-menu-item.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-menu\so-menu.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-menu\so-menu.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-sidebar\so-sidebar.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\so-user-profile\so-user-profile.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\configuration\constants.ts" />
     <TypeScriptCompile Include="ClientApp\app\configuration\menu-list.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\auth.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\context\accountApi.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\context\context.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\context\userApi.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\global.state.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\snack.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\validators\equality-validator.ts" />

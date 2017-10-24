@@ -41,7 +41,7 @@ export class SoMenu implements OnInit, OnDestroy {
     selectMenuAndNotify(): void {
         if (this.menuItems) {
             this.menuItems = this.service.selectMenuItem(this.menuItems);
-            this.state.notifyDataChanged('menu.activeLink', this.service.getCurrentItem());
+            this.state.notifyDataChanged(this.state.events.menu.activeLink, this.service.getCurrentItem());
         }
     }
 

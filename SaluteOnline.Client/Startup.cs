@@ -18,6 +18,12 @@ namespace SaluteOnline_Client
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(
+               options =>
+               {
+                   options.AddPolicy("CorsPolicy",
+                       builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+               });
             services.AddMvc();
         }
 
@@ -38,7 +44,7 @@ namespace SaluteOnline_Client
             }
 
             app.UseStaticFiles();
-
+            app.UseCors("CorsPolicy");
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

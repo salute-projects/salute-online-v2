@@ -1,3 +1,9 @@
 ﻿.full-width {
     width: 100%;
 }
+
+a.disabled {
+    color: gray;
+    cursor: not-allowed;
+    pointer-events: none;
+}

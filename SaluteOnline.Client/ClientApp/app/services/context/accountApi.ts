@@ -1,6 +1,6 @@
 ﻿import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { apiSettings } from "../../configuration/constants";
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 
 export class LoginResultDto {
     token: string;
@@ -15,7 +15,8 @@ export class AccountApi {
     urls: any = {
         userExists: '/account/userExists/',
         signUp: 'account/signUp/',
-        login: 'account/login/'
+        login: 'account/login/',
+        forgotPassword: 'account/forgotPassword/'
     }
 
     constructor(private readonly http: HttpClient) { }
@@ -41,5 +42,17 @@ export class AccountApi {
             password: password
         }
         return this.http.post<SignUpResultDto>(apiSettings.baseUrl + this.urls.signUp, body);
+    }
+
+    forgotPassword(email: string): Observable<string> {
+        return Observable.create((observer: Observer<string>) => {
+            this.http.get(apiSettings.baseUrl + this.urls.forgotPassword + email, { responseType: 'text' }).subscribe(data => {
+                observer.next(data);
+                observer.complete();
+            }, error => {
+                observer.error(error);
+                observer.complete();
+            });
+        });
     }
 }

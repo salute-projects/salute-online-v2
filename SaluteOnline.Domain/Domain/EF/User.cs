@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using SaluteOnline.Domain.Common;
-using Role = SaluteOnline.Domain.DTO.Enums.Role;
+using SaluteOnline.Domain.DTO;
 
-namespace SaluteOnline.API.DAL.Entities
+namespace SaluteOnline.Domain.Domain.EF
 {
     public class User : IEntity
     {
@@ -43,7 +43,7 @@ namespace SaluteOnline.API.DAL.Entities
         public string Skype { get; set; }
 
         public bool IsActive { get; set; }
-        public Role Role { get; set; }
+        public Enums.Role Role { get; set; }
 
         public DateTimeOffset Registered { get; set; }
         public DateTimeOffset LastActivity { get; set; }

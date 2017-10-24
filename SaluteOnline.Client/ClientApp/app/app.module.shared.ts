@@ -3,23 +3,20 @@ import { CommonModule } from '@angular/common';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-
 import { AppComponent } from './components/app/app.component';
 import { NavMenuComponent } from './components/navmenu/navmenu.component';
 import { HomeComponent } from './components/home/home.component';
 import { FetchDataComponent } from './components/fetchdata/fetchdata.component';
 import { CounterComponent } from './components/counter/counter.component';
 import { SoSidebar } from "./components/so-sidebar/so-sidebar.component";
-import { SoHeader, LoginDialog } from "./components/so-header/so-header.component";
+import { SoHeader } from "./components/so-header/so-header.component";
+import { LoginDialog } from "./components/so-login-dialog/so-login-dialog";
 import { SoMenu } from "./components/so-menu/so-menu.component";
 import { SoMenuItem } from "./components/so-menu-item/so-menu-item.component";
-import { SoCallback } from "./components/callback/callback.component";
-
-import { provideAuthService } from 'auth0-angular2';
-
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-
-import { MatButtonModule, MatIconModule, MatMenuModule, MatDialogModule, MatTabsModule, MatInputModule, MatFormFieldModule, MatSnackBarModule, MATERIAL_SANITY_CHECKS } from "@angular/material";
+import { SoUserProfile } from "./components/so-user-profile/so-user-profile.component";
+import { MatButtonModule, MatIconModule, MatMenuModule, MatDialogModule, MatTabsModule, MatInputModule, MatFormFieldModule, MatSnackBarModule, MatCardModule, MATERIAL_SANITY_CHECKS }
+    from "@angular/material";
 
 @
 NgModule({
@@ -34,14 +31,9 @@ NgModule({
         SoHeader,
         SoMenu,
         SoMenuItem,
-        SoCallback
+        SoUserProfile
     ],
     entryComponents: [LoginDialog],
-    providers: [
-        provideAuthService('3s-MDoybe9b6jDbMq6jvZAhMsRFhHTE7', 'saluteonline.eu.auth0.com', '/home', '/callback'), {
-            provide: MATERIAL_SANITY_CHECKS,
-            useValue: false
-    }],
     imports: [
         FormsModule,
         ReactiveFormsModule,
@@ -53,6 +45,7 @@ NgModule({
         MatInputModule,
         MatFormFieldModule,
         MatSnackBarModule,
+        MatCardModule,
         CommonModule,
         HttpModule,
         FormsModule,
@@ -62,7 +55,7 @@ NgModule({
             { path: 'home', component: HomeComponent },
             { path: 'counter', component: CounterComponent },
             { path: 'fetch-data', component: FetchDataComponent },
-            { path: 'callback', component: SoCallback },
+            { path: 'so-user-profile', component: SoUserProfile },
             { path: '**', redirectTo: 'home' }
         ])
     ]

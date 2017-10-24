@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SaluteOnline.API.DAL.Entities;
+using SaluteOnline.Domain.Domain.EF;
 
 namespace SaluteOnline.API.DAL
 {
