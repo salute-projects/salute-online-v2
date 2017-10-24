@@ -55,8 +55,8 @@ namespace SaluteOnline.API.Services.Implementation
                 _activityService.LogActivity(new Activity
                 {
                     UserId = newUser.Id,
-                    Importance = Enums.ActivityImportance.Critical,
-                    Type = Enums.ActivityType.SignUp,
+                    Importance = ActivityImportance.Critical,
+                    Type = ActivityType.SignUp,
                     Data = JsonConvert.SerializeObject(newUser)
                 });
                 return new SignUpResultDto
@@ -104,8 +104,8 @@ namespace SaluteOnline.API.Services.Implementation
                 _activityService.LogActivity(new Activity
                 {
                     UserId = existing.Id,
-                    Importance = Enums.ActivityImportance.Medium,
-                    Type = Enums.ActivityType.SignUp
+                    Importance = ActivityImportance.Medium,
+                    Type = ActivityType.SignUp
                 });
                 return new LoginResultDto
                 {
@@ -137,8 +137,8 @@ namespace SaluteOnline.API.Services.Implementation
                 _activityService.LogActivity(new Activity
                 {
                     UserId = existing.Id,
-                    Importance = Enums.ActivityImportance.High,
-                    Type = Enums.ActivityType.SignUp
+                    Importance = ActivityImportance.High,
+                    Type = ActivityType.SignUp
                 });
                 return changePasswordResult;
             }

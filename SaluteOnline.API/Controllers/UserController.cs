@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SaluteOnline.Domain.DTO;
 
 namespace SaluteOnline.API.Controllers
 {
@@ -8,7 +9,7 @@ namespace SaluteOnline.API.Controllers
     public class UserController : Controller
     {
         [HttpGet]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
         public IActionResult GetUserInfo()
         {
             try

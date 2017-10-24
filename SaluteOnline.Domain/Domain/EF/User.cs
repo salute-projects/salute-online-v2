@@ -43,7 +43,7 @@ namespace SaluteOnline.Domain.Domain.EF
         public string Skype { get; set; }
 
         public bool IsActive { get; set; }
-        public Enums.Role Role { get; set; }
+        public Role Role { get; set; }
 
         public DateTimeOffset Registered { get; set; }
         public DateTimeOffset LastActivity { get; set; }

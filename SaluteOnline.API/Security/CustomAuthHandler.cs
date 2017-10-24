@@ -34,9 +34,26 @@ namespace SaluteOnline.API.Security
             }
             var token = authorization.First();
             var user = GetUser(token, true);
-
-            var identities = new List<ClaimsIdentity> { new ClaimsIdentity("custom auth type") };
-            var ticket = new AuthenticationTicket(new ClaimsPrincipal(identities), "Auth");
+            if (!user.EmailVerified.HasValue || !user.EmailVerified.Value)
+                return Task.FromResult(AuthenticateResult.Fail("Users email is not verified."));
+            var identity = new ClaimsIdentity("Auth");
+            var metadata = user.AppMetadata;
+            if (metadata != null)
+            {
+                var role = user.AppMetadata["role"]?.ToString();
+                if (string.IsNullOrEmpty(role))
+                    return Task.FromResult(AuthenticateResult.Fail("Missing user role."));
+                identity.AddClaim(new Claim("role", role));
+            }
+            else
+            {
+                _memoryCache.Remove(token);
+            }
+            identity.AddClaim(new Claim("authUserId", user.UserId));
+            identity.AddClaim(new Claim("email", user.Email));
+            identity.AddClaim(new Claim("token", token));
+            identity.AddClaim(new Claim("avatar", user.Picture));
+            var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), null, "Auth");
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
 

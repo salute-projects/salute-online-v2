@@ -1,6 +1,6 @@
 ﻿namespace SaluteOnline.API.Security
 {
-    internal class Auth0Settings
+    public class Auth0Settings
     {
         public string Domain { get; set; }
         public string ApiIdentifier { get; set; }

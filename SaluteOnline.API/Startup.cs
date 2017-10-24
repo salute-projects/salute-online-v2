@@ -10,6 +10,8 @@ using SaluteOnline.API.Providers.Interface;
 using SaluteOnline.API.Security;
 using SaluteOnline.API.Services.Implementation;
 using SaluteOnline.API.Services.Interface;
+using SaluteOnline.Domain.DTO;
+using SaluteOnline.Domain.Extensions;
 
 namespace SaluteOnline.API
 {
@@ -58,6 +60,8 @@ namespace SaluteOnline.API
             InitializeSettings(services);
             InitializeProviders(services);
             InitializeServices(services);
+
+            SetPolicies(services);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -85,6 +89,21 @@ namespace SaluteOnline.API
         private void InitializeSettings(IServiceCollection services)
         {
             services.Configure<Auth0Settings>(Configuration.GetSection("Auth0"));
+        }
+
+        private static void SetPolicies(IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policies.User.ToString(),
+                    policyUser => policyUser.RequireClaim("role", Roles.User.ToLowerString(), Roles.ClubAdmin.ToLowerString(), Roles.GlobalAdmin.ToLowerString(), Roles.SilentDon.ToLowerString()));
+                options.AddPolicy(Policies.ClubAdmin.ToString(),
+                    policyUser => policyUser.RequireClaim("role", Roles.ClubAdmin.ToLowerString(), Roles.GlobalAdmin.ToLowerString(), Roles.SilentDon.ToLowerString()));
+                options.AddPolicy(Policies.GlobalAdmin.ToString(),
+                    policyUser => policyUser.RequireClaim("role", Roles.ClubAdmin.ToLowerString(), Roles.GlobalAdmin.ToLowerString(), Roles.SilentDon.ToLowerString()));
+                options.AddPolicy(Policies.SilendDon.ToString(),
+                    policyUser => policyUser.RequireClaim("role", Roles.SilentDon.ToLowerString()));
+            });
         }
     }
 }

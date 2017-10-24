@@ -2,7 +2,7 @@
 
 namespace SaluteOnline.API.Security
 {
-    internal class AuthPayload
+    public class AuthPayload
     {
         [JsonProperty(PropertyName = "iss")]
         public string Issuer { get; set; }
