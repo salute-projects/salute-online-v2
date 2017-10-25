@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaluteOnline.API", "SaluteO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaluteOnline.Domain", "SaluteOnline.Domain\SaluteOnline.Domain.csproj", "{69F215D5-26BD-4B6D-9294-54E47D2433C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaluteOnline.Tests", "SaluteOnline.Tests\SaluteOnline.Tests.csproj", "{8D27231A-4D29-4909-ADEB-D208978AE741}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaluteOnline.Client", "SaluteOnline.Client\SaluteOnline.Client.csproj", "{83E820E9-0E5A-497F-8B4B-5BCAF7608D05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaluteOnline.Client", "SaluteOnline.Client\SaluteOnline.Client.csproj", "{83E820E9-0E5A-497F-8B4B-5BCAF7608D05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaluteOnline.Tests", "SaluteOnline.Tests\SaluteOnline.Tests.csproj", "{8AC438F6-A963-433C-AC10-94843275A68E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +25,14 @@ Global
 		{69F215D5-26BD-4B6D-9294-54E47D2433C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69F215D5-26BD-4B6D-9294-54E47D2433C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69F215D5-26BD-4B6D-9294-54E47D2433C3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D27231A-4D29-4909-ADEB-D208978AE741}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D27231A-4D29-4909-ADEB-D208978AE741}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D27231A-4D29-4909-ADEB-D208978AE741}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D27231A-4D29-4909-ADEB-D208978AE741}.Release|Any CPU.Build.0 = Release|Any CPU
 		{83E820E9-0E5A-497F-8B4B-5BCAF7608D05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{83E820E9-0E5A-497F-8B4B-5BCAF7608D05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83E820E9-0E5A-497F-8B4B-5BCAF7608D05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83E820E9-0E5A-497F-8B4B-5BCAF7608D05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AC438F6-A963-433C-AC10-94843275A68E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AC438F6-A963-433C-AC10-94843275A68E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AC438F6-A963-433C-AC10-94843275A68E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AC438F6-A963-433C-AC10-94843275A68E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

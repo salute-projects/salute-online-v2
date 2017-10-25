@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { GlobalState } from "../../services/global.state";
 import { AuthService } from "../../services/auth";
+import { TokenService } from "../../services/token.service";
 import { SoSnackService } from "../../services/snack.service";
 import { Context } from "../../services/context/context";
 
@@ -8,7 +9,7 @@ import { Context } from "../../services/context/context";
     selector: 'app',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    providers: [GlobalState, AuthService, Context, SoSnackService],
+    providers: [GlobalState, AuthService, TokenService, Context, SoSnackService],
     encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {

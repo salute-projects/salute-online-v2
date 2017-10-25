@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -28,6 +27,7 @@ namespace SaluteOnline.API.Security
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
+            // ReSharper disable once CollectionNeverUpdated.Local
             if (!Request.Headers.TryGetValue(HeaderNames.Authorization, out var authorization))
             {
                 return Task.FromResult(AuthenticateResult.Fail("Missing or malformed Authorization header."));

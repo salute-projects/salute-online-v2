@@ -4,6 +4,7 @@ import { GlobalState } from "../services/global.state";
 import { Context } from "../services/context/context";
 import { LoginResultDto, SignUpResultDto } from "../services/context/accountApi";
 import { Observable, Observer } from 'rxjs';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class AuthService {
@@ -45,18 +46,24 @@ export class AuthService {
     }
 
     logout(): void {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('id_token');
+        localStorage.removeItem('token');
         localStorage.removeItem('expires_at');
         this.state.notifyDataChanged(this.state.events.global.logged, false);
         this.router.navigate(['/']);
     }
-
+            
     isAuthenticated(): boolean {
         const expires = localStorage.getItem('expires_at');
         if (!expires)
             return false;
         const expiresAt = JSON.parse(expires);
         return new Date().getTime() < expiresAt;
+    }
+
+    tryGetAuth(): HttpHeaders|undefined {
+        if (!this.isAuthenticated())
+            return undefined;
+        const token = localStorage.getItem('token');
+        return new HttpHeaders().set('Authorization', `Bearer ${token}`);
     }
 }

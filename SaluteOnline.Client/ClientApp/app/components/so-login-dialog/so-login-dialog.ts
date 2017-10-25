@@ -2,6 +2,7 @@
 import { Context } from "../../services/context/context";
 import { GlobalState } from "../../services/global.state";
 import { AuthService } from "../../services/auth";
+import { TokenService } from "../../services/token.service";
 import { SoSnackService } from "../../services/snack.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA } from "@angular/material";
@@ -12,7 +13,7 @@ import { EqualityValidation } from "../../services/validators/equality-validator
     templateUrl: "./so-login-dialog.html",
     styleUrls: ["./so-login-dialog.scss"],
     encapsulation: ViewEncapsulation.None,
-    providers: [Context, SoSnackService, GlobalState, AuthService]
+    providers: [Context, SoSnackService, GlobalState, AuthService, TokenService]
 })
 
 export class LoginDialog {
