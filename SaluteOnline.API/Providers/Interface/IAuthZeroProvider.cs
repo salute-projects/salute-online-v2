@@ -9,6 +9,7 @@ namespace SaluteOnline.API.Providers.Interface
     {
         Task<SignUpResponse> SignUp(UserEssential user);
         Task<LoginResponse> GetToken(UserEssential user);
+        Task<LoginResponse> RefreshToken(string refreshToken);
         Task<string> RunForgotPasswordFlow(string email);
         Task<User> GetUserById(string userId);
         Task<User> GetUserByEmail(string email);

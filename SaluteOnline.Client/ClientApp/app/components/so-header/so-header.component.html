@@ -15,7 +15,7 @@
         <button mat-raised-button color="primary" *ngIf="!logged" (click)="openDialog()">Увійти</button>
 
         <button mat-fab [matMenuTriggerFor]="menu" color="primary" class="so-user-button" *ngIf="logged">
-
+            <img [src]="avatar" alt="logo" />
         </button>
         <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="gotoUserProfile()">

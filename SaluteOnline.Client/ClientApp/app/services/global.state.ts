@@ -52,6 +52,9 @@ export class GlobalState {
         menu: {
             isCollapsed: "menu.isCollapsed",
             activeLink: "menu.activeLink"
+        },
+        user: {
+            avatarChanged: "user.avatarChanged"
         }
     }
 }

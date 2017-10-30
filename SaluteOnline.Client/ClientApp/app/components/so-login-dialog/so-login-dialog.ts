@@ -2,7 +2,6 @@
 import { Context } from "../../services/context/context";
 import { GlobalState } from "../../services/global.state";
 import { AuthService } from "../../services/auth";
-import { TokenService } from "../../services/token.service";
 import { SoSnackService } from "../../services/snack.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA } from "@angular/material";
@@ -13,7 +12,7 @@ import { EqualityValidation } from "../../services/validators/equality-validator
     templateUrl: "./so-login-dialog.html",
     styleUrls: ["./so-login-dialog.scss"],
     encapsulation: ViewEncapsulation.None,
-    providers: [Context, SoSnackService, GlobalState, AuthService, TokenService]
+    providers: [ SoSnackService ]
 })
 
 export class LoginDialog {
@@ -88,7 +87,7 @@ export class LoginDialog {
         if (!email)
             return;
         this.email = email.value;
-        this.context.accountApi.forgotPassword(this.email).subscribe(result => {
+        this.auth.forgotPassword(this.email).subscribe(result => {
             this.snackService.showGeneral(result, 'OK');
             this.dialogRef.close();
         }, error => {

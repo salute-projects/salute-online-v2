@@ -1,16 +1,19 @@
 ﻿import { Injectable, Injector } from "@angular/core";
-import { AccountApi } from "./accountApi";
 import { UserApi } from "./userApi";
+import { CommonApi } from "./commonApi";
+import { ClubsApi } from "./clubsApi";
 import { HttpClient } from '@angular/common/http';
-import { TokenService } from "../../services/token.service";
+import { AuthService } from "../../services/auth";
 
 @Injectable()
 export class Context {
-    accountApi: AccountApi;
     userApi: UserApi;
+    commonApi: CommonApi;
+    clubsApi: ClubsApi;
 
-    constructor(private readonly http: HttpClient, private readonly tokenService: TokenService) {
-        this.accountApi = new AccountApi(this.http);
-        this.userApi = new UserApi(this.http, this.tokenService);
+    constructor(private readonly userApiWrapper: UserApi, private readonly commonApiWrapper: CommonApi, private readonly clubsApiWrapper: ClubsApi) {
+        this.userApi = userApiWrapper;
+        this.commonApi = commonApiWrapper;
+        this.clubsApi = clubsApiWrapper;
     }
 }

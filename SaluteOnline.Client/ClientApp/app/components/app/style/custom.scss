@@ -7,3 +7,25 @@ a.disabled {
     cursor: not-allowed;
     pointer-events: none;
 }
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.flex-center-column {
+    flex-direction: column;
+}
+
+.m-r-6 {
+    margin-right: 6px;
+}
+
+.m-l-4 {
+    margin-left: 4px;
+}
+
+.m-t-20 { 
+    margin-top: 20px;
+}

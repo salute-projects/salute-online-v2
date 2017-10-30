@@ -12,5 +12,7 @@ namespace SaluteOnline.Domain.DTO.Auth0
         public int ExpiresIn { get; set; }
         [JsonProperty("token_type")]
         public string TokenType { get; set; }
+        [JsonProperty("refresh_token")]
+        public string RefreshToken { get; set; }
     }
 }

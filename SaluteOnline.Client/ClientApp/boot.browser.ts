@@ -13,7 +13,9 @@ if (module.hot) {
         const oldRootElem = document.querySelector('app');
         const newRootElem = document.createElement('app');
         oldRootElem!.parentNode!.insertBefore(newRootElem, oldRootElem);
-        modulePromise.then(appModule => appModule.destroy());
+        if (modulePromise) {
+            modulePromise.then(appModule => appModule.destroy());   
+        }
     });
 } else {
     enableProdMode();
@@ -22,3 +24,4 @@ if (module.hot) {
 // Note: @ng-tools/webpack looks for the following expression when performing production
 // builds. Don't change how this line looks, otherwise you may break tree-shaking.
 const modulePromise = platformBrowserDynamic().bootstrapModule(AppModule);
+

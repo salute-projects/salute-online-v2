@@ -1,0 +1,8 @@
+﻿@import "../app/style/theme";
+@import "../app/style/mixins";
+
+.so-clubs-list {
+    top: $header-height;
+    position: relative;
+    margin-top: $default-margin;
+}

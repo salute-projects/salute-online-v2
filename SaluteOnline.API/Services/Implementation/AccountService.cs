@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SaluteOnline.API.DAL;
@@ -45,7 +47,8 @@ namespace SaluteOnline.API.Services.Implementation
                     Guid = Guid.NewGuid(),
                     Registered = DateTimeOffset.UtcNow,
                     LastActivity = DateTimeOffset.UtcNow,
-                    Auth0Id = signUpResult.Id
+                    Auth0Id = signUpResult.Id,
+                    Role = Role.User
                 };
                 _unitOfWork.Users.Insert(newUser);
                 await _unitOfWork.SaveAsync();
@@ -63,7 +66,8 @@ namespace SaluteOnline.API.Services.Implementation
                 {
                     Id = newUser.Id,
                     ExpiresIn = loginResult.ExpiresIn,
-                    Token = loginResult.AccessToken
+                    Token = loginResult.AccessToken,
+                    RefreshToken = loginResult.RefreshToken
                 };
             }
             catch (ArgumentException)
@@ -110,7 +114,34 @@ namespace SaluteOnline.API.Services.Implementation
                 return new LoginResultDto
                 {
                     ExpiresIn = loginResult.ExpiresIn,
-                    Token = loginResult.AccessToken
+                    Token = loginResult.AccessToken,
+                    RefreshToken = loginResult.RefreshToken,
+                    Avatar = existing.Avatar
+                };
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<LoginResultDto> RefreshToken(string refreshToken)
+        {
+            try
+            {
+                var loginResult = await _authZeroProvider.RefreshToken(refreshToken);
+                if (loginResult == null)
+                    throw new ArgumentException("Auth0 login process failed");
+                return new LoginResultDto
+                {
+                    ExpiresIn = loginResult.ExpiresIn,
+                    Token = loginResult.AccessToken,
+                    RefreshToken = loginResult.RefreshToken
                 };
             }
             catch (ArgumentException)
@@ -169,7 +200,136 @@ namespace SaluteOnline.API.Services.Implementation
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
+                throw new Exception("Error while getting user info. Please try a bit later");
+            }
+        }
+
+        public void UpdateUserInfo(UserDto user, string email)
+        {
+            try
+            {
+                var existing = _unitOfWork.Users.GetById(id: user.Id);
+                if (existing == null)
+                    throw new ArgumentException("User does not exists");
+                if (existing.Email != email)
+                    throw new ArgumentException("Operation not allowed");
+                user.UpdateEntity(existing);
+                _activityService.LogActivity(new Activity
+                {
+                    UserId = existing.Id,
+                    Importance = ActivityImportance.Medium,
+                    Type = ActivityType.UserUpdate,
+                    Data = JsonConvert.SerializeObject(existing)
+                });
+                _unitOfWork.Users.Update(existing);
+                _unitOfWork.Save();
+            }
+            catch (ArgumentException)
+            {
                 throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while updating user info. Please try a bit later");
+            }
+        }
+
+        public void UpdateMainUserInfo(UserMainInfoDto user, string email)
+        {
+            try
+            {
+                var existing = _unitOfWork.Users.GetById(id: user.Id);
+                if (existing == null)
+                    throw new ArgumentException("User does not exists");
+                if (existing.Email != email)
+                    throw new ArgumentException("Operation not allowed");
+                user.UpdateEntity(existing);
+                _activityService.LogActivity(new Activity
+                {
+                    UserId = existing.Id,
+                    Importance = ActivityImportance.Medium,
+                    Type = ActivityType.UserUpdate,
+                    Data = JsonConvert.SerializeObject(existing)
+                });
+                _unitOfWork.Users.Update(existing);
+                _unitOfWork.Save();
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while updating user info. Please try a bit later");
+            }
+        }
+
+        public void UpdatePersonalUserInfo(UserPersonalInfoDto user, string email)
+        {
+            try
+            {
+                var existing = _unitOfWork.Users.GetById(id: user.Id);
+                if (existing == null)
+                    throw new ArgumentException("User does not exists");
+                if (existing.Email != email)
+                    throw new ArgumentException("Operation not allowed");
+                user.UpdateEntity(existing);
+                _activityService.LogActivity(new Activity
+                {
+                    UserId = existing.Id,
+                    Importance = ActivityImportance.Medium,
+                    Type = ActivityType.UserUpdate,
+                    Data = JsonConvert.SerializeObject(existing)
+                });
+                _unitOfWork.Users.Update(existing);
+                _unitOfWork.Save();
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while updating user info. Please try a bit later");
+            }
+        }
+
+        public async Task<string> UpdateUserAvatar(IFormFile avatar, string email)
+        {
+            try
+            {
+                if (avatar == null || avatar.Length == 0 || string.IsNullOrEmpty(email))
+                    throw new ArgumentException("File wasn't uploaded");
+                var existing = _unitOfWork.Users.Get(t => t.Email == email).SingleOrDefault();
+                if (existing == null)
+                    throw new ArgumentException("Could not found user");
+                using (var stream = new MemoryStream())
+                {
+                    await avatar.CopyToAsync(stream);
+                    existing.Avatar = Convert.ToBase64String(stream.ToArray());
+                    existing.LastActivity = DateTimeOffset.UtcNow;
+                    _unitOfWork.Save();
+                    _activityService.LogActivity(new Activity
+                    {
+                        UserId = existing.Id,
+                        Importance = ActivityImportance.Medium,
+                        Type = ActivityType.UserUpdate,
+                        Data = JsonConvert.SerializeObject(existing)
+                    });
+                    return existing.Avatar;
+                }
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while getting user info. Please try a bit later");
             }
         }
     }

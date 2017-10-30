@@ -21,10 +21,17 @@ namespace SaluteOnline.API.DAL
         public GenericRepository<User> Users
             => _users ?? (_users = new GenericRepository<User>(_context, _configuration));
 
+        private GenericRepository<Club> _clubs;
+        public GenericRepository<Club> Clubs
+            => _clubs ?? (_clubs = new GenericRepository<Club>(_context, _configuration));
 
         private GenericRepository<Activity> _activities;
         public GenericRepository<Activity> Activities
             => _activities ?? (_activities = new GenericRepository<Activity>(_context, _configuration));
+
+        private GenericRepository<Country> _countries;
+        public GenericRepository<Country> Countries
+            => _countries ?? (_countries = new GenericRepository<Country>(_context, _configuration));
 
         public void Save()
         {

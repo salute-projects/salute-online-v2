@@ -28,6 +28,8 @@ namespace SaluteOnline.Domain.Domain.EF
         public string City { get; set; }
         [StringLength(50)]
         public string Address { get; set; }
+        [StringLength(100)]
+        public string Nickname { get; set; }
 
         [StringLength(50)]
         public string AlternativeEmail { get; set; }
@@ -47,5 +49,7 @@ namespace SaluteOnline.Domain.Domain.EF
 
         public DateTimeOffset Registered { get; set; }
         public DateTimeOffset LastActivity { get; set; }
+
+        public string Avatar { get; set; }
     }
 }

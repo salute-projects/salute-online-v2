@@ -20,8 +20,10 @@ namespace SaluteOnline.Domain.DTO.User
         public string Instagram { get; set; }
         public string Skype { get; set; }
         public bool IsActive { get; set; }
+        public string Nickname { get; set; }
         public Role Role { get; set; }
         public DateTimeOffset Registered { get; set; }
         public DateTimeOffset LastActivity { get; set; }
+        public string Avatar { get; set; }
     }
 }

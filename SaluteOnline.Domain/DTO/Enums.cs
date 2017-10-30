@@ -12,7 +12,9 @@
     {
         SignUp = 0,
         Login = 1,
-        ForgotPassword = 2
+        ForgotPassword = 2,
+        UserUpdate = 3,
+        NewClubAdded = 4
     }
 
     public enum ActivityImportance
@@ -38,5 +40,14 @@
         ClubAdmin = 1,
         GlobalAdmin = 2,
         SilendDon = 5
+    }
+
+    public enum ClubStatus
+    {
+        None = 0,
+        Active = 1,
+        PendingActivation = 2,
+        Blocked = 3,
+        Deleted = 4
     }
 }

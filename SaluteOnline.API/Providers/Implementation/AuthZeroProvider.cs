@@ -85,6 +85,26 @@ namespace SaluteOnline.API.Providers.Implementation
                 parameter.audience = _settings.Audience;
                 parameter.client_id = _settings.ClientId;
                 parameter.client_secret = _settings.ClientSecret;
+                parameter.scope = "offline_access";
+                parameter.connection = "Username-Password-Authentication";
+                var requestBody = JsonConvert.SerializeObject(parameter);
+                var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+                var result = await client.PostAsync("/oauth/token", content);
+                var resultContent = await result.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<LoginResponse>(resultContent);
+            }
+        }
+
+        public async Task<LoginResponse> RefreshToken(string refreshToken)
+        {
+            using (var client = CreateClient())
+            {
+                dynamic parameter = new ExpandoObject();
+                parameter.grant_type = "refresh_token";
+                parameter.audience = _settings.Audience;
+                parameter.client_id = _settings.ClientId;
+                parameter.client_secret = _settings.ClientSecret;
+                parameter.refresh_token = refreshToken;
                 parameter.connection = "Username-Password-Authentication";
                 var requestBody = JsonConvert.SerializeObject(parameter);
                 var content = new StringContent(requestBody, Encoding.UTF8, "application/json");

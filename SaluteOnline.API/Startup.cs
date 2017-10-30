@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SaluteOnline.API.DAL;
 using SaluteOnline.API.Providers.Implementation;
@@ -53,7 +54,8 @@ namespace SaluteOnline.API
 
             services.AddMvc().AddJsonOptions(jsonOptions =>
             {
-                jsonOptions.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                jsonOptions.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
+                jsonOptions.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 jsonOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
@@ -79,6 +81,8 @@ namespace SaluteOnline.API
         {
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IActivityService, ActivityService>();
+            services.AddScoped<ICommonService, CommonService>();
+            services.AddScoped<IClubsService, ClubsService>();
         }
 
         private static void InitializeProviders(IServiceCollection services)

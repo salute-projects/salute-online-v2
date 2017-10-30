@@ -8,6 +8,25 @@
     button {
         align-self: center;
     }
+
+    .mat-fab.mat-primary.so-user-button {
+        background-color: transparent;
+
+        .mat-button-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+
+            img {
+                align-self: center;
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: cover;
+            }
+        }
+    }
 }
 
 .so-dropdown-text {

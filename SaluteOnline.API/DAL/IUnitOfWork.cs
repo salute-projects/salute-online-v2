@@ -7,7 +7,9 @@ namespace SaluteOnline.API.DAL
     public interface IUnitOfWork
     {
         GenericRepository<User> Users { get; }
+        GenericRepository<Club> Clubs { get; }
         GenericRepository<Activity> Activities { get; }
+        GenericRepository<Country> Countries { get; }
         void Save();
         Task<int> SaveAsync();
     }

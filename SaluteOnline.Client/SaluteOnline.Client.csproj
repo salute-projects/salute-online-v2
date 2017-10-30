@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\app\components\so-clubs-list\so-clubs-list.component.ts" />
     <None Remove="ClientApp\app\components\so-header\so-header.component.ts" />
     <None Remove="ClientApp\app\components\so-login-dialog.ts" />
     <None Remove="ClientApp\app\components\so-menu-item\so-menu-item.component.ts" />
@@ -30,17 +31,20 @@
     <None Remove="ClientApp\app\components\so-user-profile\so-user-profile.component.ts" />
     <None Remove="ClientApp\app\configuration\constants.ts" />
     <None Remove="ClientApp\app\configuration\menu-list.ts" />
+    <None Remove="ClientApp\app\dto\dto.ts" />
     <None Remove="ClientApp\app\services\auth.ts" />
+    <None Remove="ClientApp\app\services\authGuard.ts" />
     <None Remove="ClientApp\app\services\context.ts" />
-    <None Remove="ClientApp\app\services\context\accountApi.ts" />
+    <None Remove="ClientApp\app\services\context\clubsApi.ts" />
+    <None Remove="ClientApp\app\services\context\commonApi.ts" />
     <None Remove="ClientApp\app\services\context\userApi.ts" />
     <None Remove="ClientApp\app\services\global.state.ts" />
     <None Remove="ClientApp\app\services\snack.service.ts" />
-    <None Remove="ClientApp\app\services\token.service.ts" />
     <None Remove="ClientApp\app\services\validators\equality-validator.ts" />
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\app\components\so-clubs-list\so-clubs-list.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-header\so-header.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-login-dialog\so-login-dialog.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-menu-item\so-menu-item.component.ts" />
@@ -50,19 +54,20 @@
     <TypeScriptCompile Include="ClientApp\app\components\so-user-profile\so-user-profile.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\configuration\constants.ts" />
     <TypeScriptCompile Include="ClientApp\app\configuration\menu-list.ts" />
+    <TypeScriptCompile Include="ClientApp\app\dto\dto.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\auth.ts" />
-    <TypeScriptCompile Include="ClientApp\app\services\context\accountApi.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\authGuard.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\context\clubsApi.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\context\commonApi.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\context\context.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\context\userApi.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\global.state.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\snack.service.ts" />
-    <TypeScriptCompile Include="ClientApp\app\services\token.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\validators\equality-validator.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="ClientApp\app\assets\" />
-    <Folder Include="ClientApp\app\dto\" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

@@ -14,5 +14,9 @@
   {
     "outputFile": "ClientApp/app/components/app/style/components_override/material-tabs.css",
     "inputFile": "ClientApp/app/components/app/style/components_override/material-tabs.scss"
+  },
+  {
+    "outputFile": "ClientApp/app/components/so-header/so-header.component.css",
+    "inputFile": "ClientApp/app/components/so-header/so-header.component.html"
   }
 ]

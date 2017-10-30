@@ -55,6 +55,19 @@ namespace SaluteOnline.API.Controllers
             }
         }
 
+        [HttpGet("refreshToken/{refreshToken}")]
+        public async Task<IActionResult> RefreshToken(string refreshToken)
+        {
+            try
+            {
+                return Ok(await _accountService.RefreshToken(refreshToken));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpGet("forgotPassword/{email}")]
         public async Task<IActionResult> RunForgotPasswordFlow(string email)
         {

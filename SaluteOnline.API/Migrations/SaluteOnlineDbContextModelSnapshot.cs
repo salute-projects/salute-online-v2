@@ -3,7 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using SaluteOnline.API.DAL;
+using SaluteOnline.Domain.DTO;
 using System;
 
 namespace SaluteOnline.API.Migrations
@@ -18,7 +21,46 @@ namespace SaluteOnline.API.Migrations
                 .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("SaluteOnline.API.DAL.Entities.User", b =>
+            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.Club", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("City")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(50);
+
+                    b.Property<int>("CreatorId");
+
+                    b.Property<string>("Description");
+
+                    b.Property<Guid>("Guid");
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<bool>("IsFiim");
+
+                    b.Property<DateTimeOffset>("LastUpdate");
+
+                    b.Property<string>("Logo");
+
+                    b.Property<DateTimeOffset>("Registered");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("Club");
+                });
+
+            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -31,6 +73,8 @@ namespace SaluteOnline.API.Migrations
 
                     b.Property<string>("Auth0Id")
                         .HasMaxLength(25);
+
+                    b.Property<string>("Avatar");
 
                     b.Property<string>("City")
                         .HasMaxLength(50);
@@ -61,6 +105,9 @@ namespace SaluteOnline.API.Migrations
                     b.Property<string>("LastName")
                         .HasMaxLength(50);
 
+                    b.Property<string>("Nickname")
+                        .HasMaxLength(100);
+
                     b.Property<string>("Phone")
                         .HasMaxLength(50);
 
@@ -80,6 +127,14 @@ namespace SaluteOnline.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.Club", b =>
+                {
+                    b.HasOne("SaluteOnline.Domain.Domain.EF.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

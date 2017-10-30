@@ -9,10 +9,12 @@ namespace SaluteOnline.API.DAL
         public SaluteOnlineDbContext(DbContextOptions options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Club> Clubs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<Club>().ToTable("Club");
         }
     }
 }

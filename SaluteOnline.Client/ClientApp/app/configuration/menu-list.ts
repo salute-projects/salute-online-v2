@@ -9,7 +9,7 @@
         }
     },
     {
-        path: 'clubs',
+        path: 'so-clubs-list',
         data: {
             menu: {
                 title: 'Clubs',
