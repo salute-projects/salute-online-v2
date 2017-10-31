@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using SaluteOnline.Domain.Common;
+using SaluteOnline.Domain.Domain;
 using SaluteOnline.Domain.Extensions;
 
 namespace SaluteOnline.API.DAL
@@ -69,45 +70,40 @@ namespace SaluteOnline.API.DAL
             return await query.ToListAsync();
         }
 
-        public IEnumerable<TEntity> GetPage(int page, int items, Expression<Func<TEntity, bool>> filter = null,
+        public Page<TEntity> GetPage(int page, int items, Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
         {
             if (typeof(IMongoEntity).IsAssignableFrom(typeof(TEntity)))
             {
                 var type = typeof(TEntity).ToMongoCollectionName();
-                var collection = filter == null
+                var allCollection = filter == null
                     ? _mongoDb.GetCollection<TEntity>(type).Find(_ => true).Skip((page - 1) * items).Limit(items)
                     : _mongoDb.GetCollection<TEntity>(type)
-                        .Find(Builders<TEntity>.Filter.Where(filter))
-                        .Skip((page - 1) * items)
-                        .Limit(items);
-                return collection.ToList();
+                        .Find(Builders<TEntity>.Filter.Where(filter));
+                var collection = allCollection.Skip((page - 1) * items).Limit(items);
+                return new Page<TEntity>(page, (int)collection.Count(), allCollection.Count(), (int)Math.Ceiling((double)allCollection.Count() / items), collection.ToList());
             }
             var query = GetGeneric(filter, includeProperties);
-            return query.Skip((page - 1) * items).Take(items).ToList();
+            var slice = query.Skip((page - 1) * items).Take(items).ToList();
+            return new Page<TEntity>(page, slice.Count, query.Count(), (int)Math.Ceiling((double)query.Count() / items), slice);
         }
 
-        public async Task<IEnumerable<TEntity>> GetPageAsync(int page, int items,
-            Expression<Func<TEntity, bool>> filter = null,
+        public async Task<Page<TEntity>> GetPageAsync(int page, int items, Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
         {
             if (typeof(IMongoEntity).IsAssignableFrom(typeof(TEntity)))
             {
                 var type = typeof(TEntity).ToMongoCollectionName();
-                var collection = filter == null
-                    ? _mongoDb.GetCollection<TEntity>(type).Find(_ => true).Skip((page - 1) * items).Limit(items)
-                    : _mongoDb.GetCollection<TEntity>(type)
-                        .Find(Builders<TEntity>.Filter.Where(filter))
-                        .Skip((page - 1) * items)
-                        .Limit(items);
-                return await collection.ToListAsync();
+                var allCollection = filter == null
+                    ?  await _mongoDb.GetCollection<TEntity>(type).Find(_ => true).Skip((page - 1) * items).Limit(items).ToListAsync()
+                    : await _mongoDb.GetCollection<TEntity>(type)
+                        .Find(Builders<TEntity>.Filter.Where(filter)).ToListAsync();
+                var collection = allCollection.Skip((page - 1) * items).Take(items).ToList();
+                return new Page<TEntity>(page, collection.Count, allCollection.Count, (int)Math.Ceiling((double)allCollection.Count() / items), collection.ToList());
             }
-            var query = GetGeneric(filter, includeProperties);
-            if (orderBy != null)
-            {
-                return await orderBy.Invoke(query).Skip((page - 1) * items).ToListAsync();
-            }
-            return await query.Skip((page - 1) * items).ToListAsync();
+            var query = await GetGeneric(filter, includeProperties).ToListAsync();
+            var slice = query.Skip((page - 1) * items).Take(items).ToList();
+            return new Page<TEntity>(page, slice.Count, query.Count, (int)Math.Ceiling((double)query.Count() / items), slice);
         }
 
         public TEntity GetById(Guid guid = default(Guid), int? id = null)

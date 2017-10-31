@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SaluteOnline.API.DAL;
 using SaluteOnline.API.Services.Interface;
+using SaluteOnline.Domain.Conversion;
+using SaluteOnline.Domain.Domain;
 using SaluteOnline.Domain.Domain.EF;
 using SaluteOnline.Domain.Domain.Mongo;
 using SaluteOnline.Domain.DTO;
@@ -64,6 +66,34 @@ namespace SaluteOnline.API.Services.Implementation
             {
                 _logger.LogError(e.Message);
                 throw new Exception("Error while adding new club. Please try a bit later");
+            }
+        }
+
+        public async Task<Page<ClubDto>> GetClubs(ClubFilter filter)
+        {
+            try
+            {
+                Func<Club, bool> searchCriteria =
+                    t => (!filter.IsActive.HasValue || t.IsActive == filter.IsActive.Value)
+                         && (!filter.IsFiim.HasValue || t.IsFiim == filter.IsFiim.Value);
+                var clubs = await _unitOfWork.Clubs.GetPageAsync(filter.Page, filter.PageSize ?? 25, t => searchCriteria(t));
+                return new Page<ClubDto>
+                {
+                    Items = clubs.Items.Select(t => t.ToDto()).ToList(),
+                    Total = clubs.Total,
+                    TotalPages = clubs.TotalPages,
+                    PageSize = clubs.PageSize,
+                    CurrentPage = clubs.CurrentPage
+                };
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while fetching list of clubs. Please try a bit later");
             }
         }
     }

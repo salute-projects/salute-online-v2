@@ -1,0 +1,29 @@
+﻿<div class="dialog-header">
+    <div class="so-logo clearfix text-center">
+        <span class="logo-leftside">SALUTE</span>
+        <span class="logo-rightside-black">ONLINE</span>
+    </div>
+    <h2 class="dialog-name text-center">
+      REGISTER NEW CLUB  
+    </h2>
+</div>
+<div class="dialog-body">
+    <form class="login-form" [formGroup]="createClubForm">
+        <mat-form-field>
+            <input matInput placeholder="Title" formControlName="title">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="Country" formControlName="country">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="City" formControlName="city">
+        </mat-form-field>
+        <mat-form-field>
+            <textarea matInput placeholder="Description" formControlName="description"></textarea>
+        </mat-form-field>
+        <br />
+        <div class="dialog-footer">
+            <button type="submit" mat-raised-button color="primary" (click)="createClub()" [disabled]="!createClubForm.valid">CREATE</button>
+        </div>
+    </form>
+</div>

@@ -1,10 +1,46 @@
-﻿.mat-menu-panel {
+﻿.mat-dialog-container {
+  padding: 0; }
+  .mat-dialog-container .dialog-header {
+    display: flex;
+    padding: 16px;
+    justify-content: center;
+    flex-direction: column;
+    align-content: center; }
+    .mat-dialog-container .dialog-header span {
+      align-self: center; }
+    .mat-dialog-container .dialog-header .dialog-name {
+      font-family: #00abff;
+      font-weight: bold; }
+  .mat-dialog-container .dialog-body .mat-tab-label {
+    min-width: 50%; }
+  .mat-dialog-container .dialog-body .mat-tab-label, .mat-dialog-container .dialog-body .mat-input-element {
+    font-family: "Ubuntu Condensed", sans-serif; }
+  .mat-dialog-container .dialog-body .login-form {
+    margin-top: 16px;
+    width: 100%; }
+    .mat-dialog-container .dialog-body .login-form .mat-form-field {
+      width: 80%;
+      margin-left: 10%; }
+  .mat-dialog-container .dialog-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px; }
+    .mat-dialog-container .dialog-footer button {
+      width: 100%;
+      padding: 16px;
+      text-transform: uppercase;
+      align-self: center; }
+
+.mat-menu-panel {
   border-radius: 0 !important; }
 
 .mat-card-content.flex-center {
   display: flex;
   justify-content: center;
   flex-direction: row; }
+
+.mat-raised-button.large-button {
+  padding: 4px 64px; }
 
 .full-width {
   width: 100%; }

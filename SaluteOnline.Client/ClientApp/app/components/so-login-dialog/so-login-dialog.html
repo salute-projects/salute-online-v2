@@ -1,4 +1,4 @@
-﻿<div class="login-dialog-header">
+﻿<div class="dialog-header login-dialog-header">
     <div class="text-center">
         <img height="128" [src]="logo" alt="logo" />
     </div>
@@ -7,7 +7,7 @@
         <span class="logo-rightside-black">ONLINE</span>
     </div>
 </div>
-<div class="login-dialog" [@.disabled]="true">
+<div class="dialog-body login-dialog" [@.disabled]="true">
     <mat-tab-group class="login-tab-group" (selectedIndexChange)="tabChanged($event)" dynamicHeight="true">
         <mat-tab label="Login">
             <form class="login-form" [formGroup]="loginForm">
@@ -21,7 +21,7 @@
                 <div class="text-center">
                     <a href="javascript:void(0)" (click)="forgotPassword()" [class.disabled]="forgotPasswordDisabled()">Forgot password? Click here</a>
                 </div>
-                <div class="login-dialog-footer">
+                <div class="dialog-footer">
                     <button type="submit" mat-raised-button color="primary" (click)="submitLogin()" [disabled]="!loginForm.valid">LOG IN ></button>
                 </div>
             </form>
@@ -37,7 +37,7 @@
                 <mat-form-field>
                     <input matInput placeholder="Confirm password" formControlName="confirmPassword">
                 </mat-form-field>
-                <div class="login-dialog-footer">
+                <div class="dialog-footer">
                     <button type="submit" mat-raised-button color="primary" (click)="submitSignup()" [disabled]="!signupForm.valid">SIGN UP ></button>
                 </div>
             </form>

@@ -7,20 +7,7 @@
     .mat-dialog-container {
         padding: 0;
 
-        .login-dialog-header {
-            display: flex;
-            padding: 16px;
-            justify-content: center;
-            flex-direction: column;
-            align-content: center;
-
-            span {
-                align-self: center;
-            }
-        }
-
         .login-dialog {
-
             .mat-tab-label {
                 min-width: 50%;
             }
@@ -37,19 +24,6 @@
                     width: 80%;
                     margin-left: 10%;
                 }
-            }
-        }
-
-        .login-dialog-footer {
-            display: flex;
-            justify-content: center;
-            margin-top: 16px;
-
-            button {
-                width: 100%;
-                padding: 16px;
-                text-transform: uppercase;
-                align-self: center;
             }
         }
     }

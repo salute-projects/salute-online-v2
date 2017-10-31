@@ -32,12 +32,14 @@ import { SoMenu } from "./components/so-menu/so-menu.component";
 import { SoMenuItem } from "./components/so-menu-item/so-menu-item.component";
 import { SoUserProfile } from "./components/so-user-profile/so-user-profile.component";
 import { SoClubsList } from "./components/so-clubs-list/so-clubs-list.component";
+import { CreateClubDialog } from "./components/so-create-club-dialog/so-create-club-dialog";
 
 // services
 
 import { AuthGuard } from "./services/authGuard";
 import { GlobalState } from "./services/global.state";
 import { AuthService } from "./services/auth";
+import { Helpers } from "./services/helpers";
 
 // context
 
@@ -61,10 +63,12 @@ NgModule({
         SoMenu,
         SoMenuItem,
         SoUserProfile,
-        SoClubsList
+        SoClubsList,
+        CreateClubDialog
     ],
-    entryComponents: [LoginDialog],
+    entryComponents: [LoginDialog, CreateClubDialog],
     providers: [ 
+        Helpers,
         GlobalState,
         AuthService,
         CommonApi,

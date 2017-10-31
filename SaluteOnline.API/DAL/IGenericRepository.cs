@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using SaluteOnline.Domain.Domain;
 
 namespace SaluteOnline.API.DAL
 {
@@ -14,10 +15,10 @@ namespace SaluteOnline.API.DAL
         Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>,
             IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "");
 
-        IEnumerable<TEntity> GetPage(int page, int items, Expression<Func<TEntity, bool>> filter = null,
+        Page<TEntity> GetPage(int page, int items, Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "");
 
-        Task<IEnumerable<TEntity>> GetPageAsync(int page, int items,
+        Task<Page<TEntity>> GetPageAsync(int page, int items,
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "");
 

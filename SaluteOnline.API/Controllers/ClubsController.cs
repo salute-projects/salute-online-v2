@@ -20,7 +20,7 @@ namespace SaluteOnline.API.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
-        public async Task<IActionResult> CreateClub(CreateClubDto club)
+        public async Task<IActionResult> CreateClub([FromBody]CreateClubDto club)
         {
             try
             {
