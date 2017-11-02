@@ -5,5 +5,6 @@
         public int? PageSize { get; set; }
         public int Page { get; set; }
         public bool Asc { get; set; }
+        public string OrderBy { get; set; }
     }
 }

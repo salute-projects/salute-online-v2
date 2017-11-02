@@ -5,7 +5,7 @@ import { SoSnackService } from "../../services/snack.service";
 import { Observable } from 'rxjs/Observable';
 import { MatDialog, MatDialogConfig } from "@angular/material";
 import { CreateClubDialog } from "../so-create-club-dialog/so-create-club-dialog";
-import { Page, ClubDto, ClubFilter } from "../../dto/dto";
+import { Page, ClubDto, ClubFilter, ClubInfoAggregation } from "../../dto/dto";
 
 @Component({
     selector: 'so-clubs-list',
@@ -15,6 +15,7 @@ import { Page, ClubDto, ClubFilter } from "../../dto/dto";
 })
 
 export class SoClubsList {
+    clubInfoAggregation: ClubInfoAggregation;
     clubsFilter: ClubFilter;
     clubs: Page<ClubDto>;
 
@@ -27,6 +28,12 @@ export class SoClubsList {
     private refreshClubsList() {
         this.context.clubsApi.getList(this.clubsFilter).subscribe((result: Page<ClubDto>) => {
             this.clubs = result;
+        }, error => {
+            this.snackService.showError(error.error, "OK");
+            });
+        this.context.clubsApi.getClubInfoAggregation().subscribe((result: ClubInfoAggregation) => {
+            debugger;
+            this.clubInfoAggregation = result;
         }, error => {
             this.snackService.showError(error.error, "OK");
         });

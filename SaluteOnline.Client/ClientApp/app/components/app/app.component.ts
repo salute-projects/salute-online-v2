@@ -14,6 +14,7 @@ export class AppComponent {
     isMenuCollapsed = false;
 
     constructor(private readonly state: GlobalState, private readonly auth: AuthService) {
+        console.log(localStorage.getItem('refresh_token'));
         this.state.subscribe('menu.isCollapsed', (isCollapsed: boolean) => {
             this.isMenuCollapsed = isCollapsed;
         });

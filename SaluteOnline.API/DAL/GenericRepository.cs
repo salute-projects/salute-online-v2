@@ -73,7 +73,7 @@ namespace SaluteOnline.API.DAL
         public IQueryable<TEntity> GetAsQueryable(Expression<Func<TEntity, bool>> filter = null)
         {
             if (!typeof(IMongoEntity).IsAssignableFrom(typeof(TEntity)))
-                return GetGeneric(filter);
+                return filter != null ? _dbSet.Where(filter) : _dbSet;
             var type = typeof(TEntity).ToMongoCollectionName();
             var collection = filter == null
                 ? _mongoDb.GetCollection<TEntity>(type).AsQueryable()
@@ -274,7 +274,11 @@ namespace SaluteOnline.API.DAL
         private IQueryable<TEntity> GetGeneric(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "", Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, bool ascending = false)
         {
             var query = filter != null ? _dbSet.Where(filter) : _dbSet;
-            query = includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Aggregate(query, (current, includeProperty) => current.Include(t => includeProperty));
+            var navProperties = includeProperties.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+            if (navProperties.Length > 0)
+            {
+                query = navProperties.Aggregate(query, (current, nav) => current.Include(nav));
+            }
             if (orderBy == null)
                 return query;
             return ascending ? query.OrderByDescending(t => orderBy) : query.OrderBy(t => orderBy);

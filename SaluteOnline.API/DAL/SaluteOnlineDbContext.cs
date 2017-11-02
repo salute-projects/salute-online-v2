@@ -16,6 +16,7 @@ namespace SaluteOnline.API.DAL
         {
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<Club>().ToTable("Club");
+
             modelBuilder.Entity<ClubUserAdministrator>().HasKey(t => new {t.ClubId, t.UserId});
             modelBuilder.Entity<ClubUserAdministrator>()
                 .HasOne(t => t.User)
@@ -24,7 +25,19 @@ namespace SaluteOnline.API.DAL
             modelBuilder.Entity<ClubUserAdministrator>()
                 .HasOne(t => t.Club)
                 .WithMany(t => t.Administrators)
-                .HasForeignKey(t => t.ClubId).OnDelete(DeleteBehavior.Restrict); ;
+                .HasForeignKey(t => t.ClubId).OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ClubUserPlayers>().HasKey(t => new {t.ClubId, t.UserId});
+            modelBuilder.Entity<ClubUserPlayers>()
+                .HasOne(t => t.User)
+                .WithMany(t => t.ClubsParticipated)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ClubUserPlayers>()
+                .HasOne(t => t.Club)
+                .WithMany(t => t.Players)
+                .HasForeignKey(t => t.ClubId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

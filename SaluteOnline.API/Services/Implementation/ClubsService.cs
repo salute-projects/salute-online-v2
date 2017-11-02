@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SaluteOnline.API.DAL;
@@ -80,10 +82,13 @@ namespace SaluteOnline.API.Services.Implementation
             }
         }
 
-        public Page<ClubDto> GetClubs(ClubFilter filter)
+        public Page<ClubDto> GetClubs(ClubFilter filter, string email)
         {
             try
             {
+                var currentUser = _unitOfWork.Users.Get(t => t.Email == email).FirstOrDefault();
+                if (currentUser == null)
+                    throw new ArgumentException("Internal error happened. Please try a bit later");
                 Func<Club, bool> searchCriteria =
                     t => (!filter.IsActive.HasValue || t.IsActive == filter.IsActive.Value)
                          && (!filter.IsFiim.HasValue || t.IsFiim == filter.IsFiim.Value)
@@ -92,15 +97,23 @@ namespace SaluteOnline.API.Services.Implementation
                          && (string.IsNullOrEmpty(filter.Title) || t.Title.ToLower().StartsWith(filter.Title.ToLower()))
                          && (!filter.CreatorId.HasValue || t.CreatorId == filter.CreatorId.Value)
                          && (filter.Status == ClubStatus.ActiveAndPending ? (t.Status == ClubStatus.Active || t.Status == ClubStatus.PendingActivation) : t.Status == filter.Status);
-                var clubs = _unitOfWork.Clubs.GetPage(filter.Page, filter.PageSize ?? 25, t => searchCriteria(t), t => t.OrderBy(x => x.LastUpdate), ascending: filter.Asc);
-                return new Page<ClubDto>
-                {
-                    Items = clubs.Items.Select(t => t.ToDto()).ToList(),
-                    Total = clubs.Total,
-                    TotalPages = clubs.TotalPages,
-                    PageSize = clubs.PageSize,
-                    CurrentPage = clubs.CurrentPage
-                };
+                var skip = filter.Page == 0 ? 0 : (filter.Page - 1) * (filter.PageSize ?? 25);
+                var take = filter.PageSize ?? 25;
+                var orderByField = string.IsNullOrEmpty(filter.OrderBy) ? nameof(Club.LastUpdate) : filter.OrderBy;
+                var allClubs =
+                    _unitOfWork.Clubs.GetAsQueryable(t => searchCriteria(t))
+                        .Include(t => t.Administrators)
+                        .ThenInclude(t => t.User)
+                        .Include(t => t.Players)
+                        .ThenInclude(t => t.User);
+                var slice = (filter.Asc ? 
+                    allClubs.OrderBy(t => typeof(Club).GetProperty(orderByField).GetValue(t)) : 
+                    allClubs.OrderByDescending(t => typeof(Club).GetProperty(orderByField).GetValue(t)))
+                    .Skip(skip)
+                    .Take(take);
+                var allCount = allClubs.Select(t => t.Id).Count();
+                var page = new Page<ClubDto>(filter.Page, filter.PageSize ?? 25, allCount, slice.Select(t => t.ToDto(currentUser.Id)));
+                return page;
             }
             catch (ArgumentException)
             {
@@ -110,6 +123,39 @@ namespace SaluteOnline.API.Services.Implementation
             {
                 _logger.LogError(e.Message);
                 throw new Exception("Error while fetching list of clubs. Please try a bit later");
+            }
+        }
+
+        public ClubInfoAggregation GetInfoAggregation()
+        {
+            try
+            {
+                var allClubs = _unitOfWork.Clubs.GetAsQueryable();
+                var geography =
+                    allClubs.Select(t => t.Country)
+                        .Distinct()
+                        .Select(t => new KeyValuePair<string, IEnumerable<string>>(t,
+                            allClubs.Where(x => x.Country == t).Select(q => q.City)));
+                var byStatus =
+                    allClubs.Select(t => t.Status).Distinct().Select(
+                            t => new KeyValuePair<ClubStatus, int>(t, allClubs.Count(r => r.Status == t)));
+                var result = new ClubInfoAggregation
+                {
+                    Count = allClubs.Count(),
+                    IsFiim = allClubs.Count(t => t.IsFiim),
+                    ByStatus = byStatus,
+                    Geography = geography
+                };
+                return result;
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while loading club info aggregation. Please try a bit later");
             }
         }
     }

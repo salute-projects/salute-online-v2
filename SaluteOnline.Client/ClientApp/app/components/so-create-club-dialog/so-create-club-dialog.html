@@ -13,7 +13,13 @@
             <input matInput placeholder="Title" formControlName="title">
         </mat-form-field>
         <mat-form-field>
-            <input matInput placeholder="Country" formControlName="country">
+            <span matPrefix class="m-r-6"><i class="fa fa-location-arrow" aria-hidden="true"></i> </span>
+            <input matInput placeholder="Country" aria-label="Country" [matAutocomplete]="auto" formControlName="country">
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let country of filteredCountries | async" [value]="country.name">
+                    <span>{{country.name}}</span>
+                </mat-option>
+            </mat-autocomplete>
         </mat-form-field>
         <mat-form-field>
             <input matInput placeholder="City" formControlName="city">

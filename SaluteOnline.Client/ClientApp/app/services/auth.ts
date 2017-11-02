@@ -79,14 +79,14 @@ export class AuthService {
     refreshToken(): Observable<LoginResultDto> {
         return Observable.create((observer: Observer<LoginResultDto>) => {
             const refreshToken = localStorage.getItem("refresh_token");
-            if (!refreshToken) {
+            if (!refreshToken || refreshToken == 'undefined') {
                 return Observable.create(() => {
                     observer.error('Refresh token not found');
                     observer.complete();
                 });
             }
             return this.http.get<LoginResultDto>(apiSettings.baseUrl + this.urls.refreshToken + refreshToken).subscribe(result => {
-                if (!result.token || !result.refreshToken || !result.expiresIn) {
+                if (!result.token || !result.expiresIn) {
                     this.state.notifyDataChanged(this.state.events.global.logged, false);
                     observer.error('Not logged');
                     observer.complete();
@@ -94,7 +94,6 @@ export class AuthService {
                     const expiresAt = JSON.stringify((result.expiresIn * 1000) + new Date().getTime());
                     sessionStorage.setItem('token', result.token);
                     sessionStorage.setItem('expires_at', expiresAt);
-                    localStorage.setItem('refresh_token', result.refreshToken);
                     this.state.notifyDataChanged(this.state.events.global.logged, true);
                     observer.next(result);
                     observer.complete();   

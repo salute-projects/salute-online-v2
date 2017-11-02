@@ -101,6 +101,7 @@ export class BaseFilter {
     pageSize: number | null;
     page: number;
     asc: boolean;
+    orderBy: string;
 }
 
 // clubs
@@ -125,6 +126,9 @@ export class ClubDto {
     creatorId: number;
     status: ClubStatus;
     logo: string;
+    administrators: Array<number> | null;
+    players: Array<number> | null;
+    canBeEdited: boolean;
 }
 
 export class CreateClubDto {
@@ -154,6 +158,7 @@ export class ClubFilter extends BaseFilter {
         this.status = ClubStatus.ActiveAndPending;
         this.page = 1;
         this.pageSize = 25;
+        this.orderBy = "";
     }
 
     title: string | null;
@@ -163,4 +168,12 @@ export class ClubFilter extends BaseFilter {
     isActive: boolean | null;
     creatorId: number | null;
     status: ClubStatus;
+}
+
+export class ClubInfoAggregation {
+    count: number;
+    isFiim: number;
+    byStatus: Map<ClubStatus, number>;
+    geography: Map<string, Array<string>>;
+
 }

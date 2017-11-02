@@ -44,7 +44,24 @@ namespace SaluteOnline.API.Controllers
                 var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
                 if (string.IsNullOrEmpty(email))
                     return BadRequest("Authorization failed.");
-                return Ok(_service.GetClubs(filter));
+                return Ok(_service.GetClubs(filter, email));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        public IActionResult GetClubInfoAggregation()
+        {
+            try
+            {
+                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
+                if (string.IsNullOrEmpty(email))
+                    return BadRequest("Authorization failed.");
+                return Ok(_service.GetInfoAggregation());
             }
             catch (Exception e)
             {
