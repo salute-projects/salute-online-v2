@@ -49,6 +49,10 @@ import { CommonApi } from "./services/context/commonApi";
 import { UserApi } from "./services/context/userApi";
 import { Context } from "./services/context/context";
 
+// pipes
+
+import { TruncatePipe } from "./pipes/string-pipes";
+
 @
 NgModule({
     declarations: [
@@ -64,7 +68,8 @@ NgModule({
         SoMenuItem,
         SoUserProfile,
         SoClubsList,
-        CreateClubDialog
+        CreateClubDialog,
+        TruncatePipe
     ],
     entryComponents: [LoginDialog, CreateClubDialog],
     providers: [ 

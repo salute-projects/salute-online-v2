@@ -8,6 +8,7 @@ using SaluteOnline.API.Services.Interface;
 using SaluteOnline.Domain.Conversion;
 using SaluteOnline.Domain.Domain;
 using SaluteOnline.Domain.Domain.EF;
+using SaluteOnline.Domain.Domain.EF.LinkEntities;
 using SaluteOnline.Domain.Domain.Mongo;
 using SaluteOnline.Domain.DTO;
 using SaluteOnline.Domain.DTO.Club;
@@ -48,13 +49,23 @@ namespace SaluteOnline.API.Services.Implementation
                     LastUpdate = DateTimeOffset.UtcNow
                 };
                 await _unitOfWork.Clubs.InsertAsync(newClub);
+                var relation = new ClubUserAdministrator
+                {
+                    User = user,
+                    Club = newClub
+                };
+                newClub.Administrators.Add(relation);
+                user.ClubsAdministrated.Add(relation);
                 _unitOfWork.Save();
                 _activityService.LogActivity(new Activity
                 {
                     UserId = user.Id,
                     Importance = ActivityImportance.High,
                     Type = ActivityType.NewClubAdded,
-                    Data = JsonConvert.SerializeObject(newClub)
+                    Data = JsonConvert.SerializeObject(newClub, new JsonSerializerSettings
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    })
                 });
                 return newClub.Id;
             }
@@ -69,14 +80,19 @@ namespace SaluteOnline.API.Services.Implementation
             }
         }
 
-        public async Task<Page<ClubDto>> GetClubs(ClubFilter filter)
+        public Page<ClubDto> GetClubs(ClubFilter filter)
         {
             try
             {
                 Func<Club, bool> searchCriteria =
                     t => (!filter.IsActive.HasValue || t.IsActive == filter.IsActive.Value)
-                         && (!filter.IsFiim.HasValue || t.IsFiim == filter.IsFiim.Value);
-                var clubs = await _unitOfWork.Clubs.GetPageAsync(filter.Page, filter.PageSize ?? 25, t => searchCriteria(t));
+                         && (!filter.IsFiim.HasValue || t.IsFiim == filter.IsFiim.Value)
+                         && (string.IsNullOrEmpty(filter.Country) || t.Country.ToLower() == filter.Country)
+                         && (string.IsNullOrEmpty(filter.City) || t.City.ToLower() == filter.City)
+                         && (string.IsNullOrEmpty(filter.Title) || t.Title.ToLower().StartsWith(filter.Title.ToLower()))
+                         && (!filter.CreatorId.HasValue || t.CreatorId == filter.CreatorId.Value)
+                         && (filter.Status == ClubStatus.ActiveAndPending ? (t.Status == ClubStatus.Active || t.Status == ClubStatus.PendingActivation) : t.Status == filter.Status);
+                var clubs = _unitOfWork.Clubs.GetPage(filter.Page, filter.PageSize ?? 25, t => searchCriteria(t), t => t.OrderBy(x => x.LastUpdate), ascending: filter.Asc);
                 return new Page<ClubDto>
                 {
                     Items = clubs.Items.Select(t => t.ToDto()).ToList(),

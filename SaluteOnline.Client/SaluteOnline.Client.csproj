@@ -33,6 +33,7 @@
     <None Remove="ClientApp\app\configuration\constants.ts" />
     <None Remove="ClientApp\app\configuration\menu-list.ts" />
     <None Remove="ClientApp\app\dto\dto.ts" />
+    <None Remove="ClientApp\app\pipes\string-pipes.ts" />
     <None Remove="ClientApp\app\services\auth.ts" />
     <None Remove="ClientApp\app\services\authGuard.ts" />
     <None Remove="ClientApp\app\services\context.ts" />
@@ -58,6 +59,7 @@
     <TypeScriptCompile Include="ClientApp\app\configuration\constants.ts" />
     <TypeScriptCompile Include="ClientApp\app\configuration\menu-list.ts" />
     <TypeScriptCompile Include="ClientApp\app\dto\dto.ts" />
+    <TypeScriptCompile Include="ClientApp\app\pipes\string-pipes.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\auth.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\authGuard.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\context\clubsApi.ts" />

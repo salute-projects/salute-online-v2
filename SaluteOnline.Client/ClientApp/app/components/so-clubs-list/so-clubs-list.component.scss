@@ -5,4 +5,37 @@
     top: $header-height;
     position: relative;
     margin-top: $default-margin;
+
+    .so-clubs-list-container {
+        .club-card {
+            width: 100%;
+
+            .mat-card-avatar {
+                height: 64px;
+                width: 100px;
+                text-align: center;
+
+                img {
+                    object-fit: cover;
+                }
+            }
+
+            .mat-card-content {
+                height: 60px;
+            }
+
+            .mat-card-header {
+                .mat-card-title {
+                    font-size: 24px;
+                    margin-bottom: 8px;
+                }
+            }
+
+            .mat-card-actions {
+                .mat-button-wrapper {
+                    font-weight: bold;
+                }
+            }
+        }
+    }
 }

@@ -13,9 +13,13 @@ import { SoSnackService } from "../../services/snack.service";
 export class AppComponent {
     isMenuCollapsed = false;
 
-    constructor(private readonly state: GlobalState) {
+    constructor(private readonly state: GlobalState, private readonly auth: AuthService) {
         this.state.subscribe('menu.isCollapsed', (isCollapsed: boolean) => {
             this.isMenuCollapsed = isCollapsed;
+        });
+        this.auth.refreshToken().subscribe(result => {
+        },
+        error => {
         });
     }
 }

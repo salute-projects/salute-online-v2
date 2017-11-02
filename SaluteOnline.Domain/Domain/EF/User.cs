@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 using SaluteOnline.Domain.Common;
+using SaluteOnline.Domain.Domain.EF.LinkEntities;
 using SaluteOnline.Domain.DTO;
 
 namespace SaluteOnline.Domain.Domain.EF
@@ -51,5 +54,9 @@ namespace SaluteOnline.Domain.Domain.EF
         public DateTimeOffset LastActivity { get; set; }
 
         public string Avatar { get; set; }
+
+        [JsonIgnore]
+        public ICollection<ClubUserAdministrator> ClubsAdministrated { get; set; } = new List<ClubUserAdministrator>();
+        
     }
 }

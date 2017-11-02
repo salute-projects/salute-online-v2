@@ -57,6 +57,7 @@ namespace SaluteOnline.API
                 jsonOptions.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
                 jsonOptions.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 jsonOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                jsonOptions.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
 
             InitializeSettings(services);

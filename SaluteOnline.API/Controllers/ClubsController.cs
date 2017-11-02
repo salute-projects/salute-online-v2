@@ -34,5 +34,22 @@ namespace SaluteOnline.API.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpPost("list")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        public IActionResult GetClubsList([FromBody] ClubFilter filter)
+        {
+            try
+            {
+                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
+                if (string.IsNullOrEmpty(email))
+                    return BadRequest("Authorization failed.");
+                return Ok(_service.GetClubs(filter));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

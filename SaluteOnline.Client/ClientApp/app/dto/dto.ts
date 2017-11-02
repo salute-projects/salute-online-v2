@@ -83,12 +83,49 @@ export class SignUpResultDto extends LoginResultDto {
 
 // common
 
+export class Page<TEntity> {
+    currentPage: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+    totalItems: number;
+    items: Array<TEntity>;
+}
+
 export class Country {
     name: string;
     code: string;
 }
 
+export class BaseFilter {
+    pageSize: number | null;
+    page: number;
+    asc: boolean;
+}
+
 // clubs
+export enum ClubStatus {
+    None = 0,
+    Active = 1,
+    PendingActivation = 2,
+    Blocked = 3,
+    Deleted = 4,
+    ActiveAndPending = 5
+}
+
+export class ClubDto {
+    id: number;
+    title: string;
+    country: string;
+    description: string;
+    registered: string;
+    lastUpdate: string;
+    isFiim: boolean | null;
+    isActive: boolean | null;
+    creatorId: number;
+    status: ClubStatus;
+    logo: string;
+}
 
 export class CreateClubDto {
     constructor() {
@@ -102,4 +139,28 @@ export class CreateClubDto {
     country: string;
     city: string;
     description: string;
+}
+
+export class ClubFilter extends BaseFilter {
+
+    constructor() {
+        super();
+        this.title = "";
+        this.asc = false;
+        this.city = "";
+        this.isFiim = null;
+        this.isActive = true;
+        this.creatorId = null;
+        this.status = ClubStatus.ActiveAndPending;
+        this.page = 1;
+        this.pageSize = 25;
+    }
+
+    title: string | null;
+    country: string | null;
+    city: string | null;
+    isFiim: boolean | null;
+    isActive: boolean | null;
+    creatorId: number | null;
+    status: ClubStatus;
 }

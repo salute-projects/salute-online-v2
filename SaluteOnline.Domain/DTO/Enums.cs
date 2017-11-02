@@ -48,6 +48,7 @@
         Active = 1,
         PendingActivation = 2,
         Blocked = 3,
-        Deleted = 4
+        Deleted = 4,
+        ActiveAndPending = 5
     }
 }

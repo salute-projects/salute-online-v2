@@ -35,7 +35,7 @@ namespace SaluteOnline.API.DAL
         }
 
         public IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "", bool ascending = false)
         {
             if (typeof(IMongoEntity).IsAssignableFrom(typeof(TEntity)))
             {
@@ -46,12 +46,12 @@ namespace SaluteOnline.API.DAL
                         .ToList();
                 return orderBy?.Invoke(collection.AsQueryable()).ToList() ?? collection;
             }
-            var query = GetGeneric(filter, includeProperties);
+            var query = GetGeneric(filter, includeProperties, orderBy, ascending);
             return orderBy?.Invoke(query).ToList() ?? query.ToList();
         }
 
         public async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "", bool ascending = false)
         {
 
             if (typeof(IMongoEntity).IsAssignableFrom(typeof(TEntity)))
@@ -62,7 +62,7 @@ namespace SaluteOnline.API.DAL
                     : _mongoDb.GetCollection<TEntity>(type).Find(Builders<TEntity>.Filter.Where(filter));
                 return await collection.ToListAsync();
             }
-            var query = GetGeneric(filter, includeProperties);
+            var query = GetGeneric(filter, includeProperties, orderBy, ascending);
             if (orderBy != null)
             {
                 return await orderBy.Invoke(query).ToListAsync();
@@ -70,40 +70,52 @@ namespace SaluteOnline.API.DAL
             return await query.ToListAsync();
         }
 
+        public IQueryable<TEntity> GetAsQueryable(Expression<Func<TEntity, bool>> filter = null)
+        {
+            if (!typeof(IMongoEntity).IsAssignableFrom(typeof(TEntity)))
+                return GetGeneric(filter);
+            var type = typeof(TEntity).ToMongoCollectionName();
+            var collection = filter == null
+                ? _mongoDb.GetCollection<TEntity>(type).AsQueryable()
+                : _mongoDb.GetCollection<TEntity>(type).AsQueryable().Where(filter);
+            return collection;
+        }
+
         public Page<TEntity> GetPage(int page, int items, Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "", bool ascending = false)
         {
             if (typeof(IMongoEntity).IsAssignableFrom(typeof(TEntity)))
             {
                 var type = typeof(TEntity).ToMongoCollectionName();
                 var allCollection = filter == null
-                    ? _mongoDb.GetCollection<TEntity>(type).Find(_ => true).Skip((page - 1) * items).Limit(items)
+                    ? _mongoDb.GetCollection<TEntity>(type).Find(_ => true)
                     : _mongoDb.GetCollection<TEntity>(type)
                         .Find(Builders<TEntity>.Filter.Where(filter));
-                var collection = allCollection.Skip((page - 1) * items).Limit(items);
-                return new Page<TEntity>(page, (int)collection.Count(), allCollection.Count(), (int)Math.Ceiling((double)allCollection.Count() / items), collection.ToList());
+                var collection = allCollection.SortBy(t => orderBy).Skip((page - 1) * items).Limit(items);
+                return new Page<TEntity>(page, (int)collection.Count(), allCollection.Count(), collection.ToList());
             }
-            var query = GetGeneric(filter, includeProperties);
-            var slice = query.Skip((page - 1) * items).Take(items).ToList();
-            return new Page<TEntity>(page, slice.Count, query.Count(), (int)Math.Ceiling((double)query.Count() / items), slice);
+            var needed = GetGeneric(filter, includeProperties, orderBy, ascending);
+            var all = needed.Count();
+            var slice = needed.Skip((page - 1) * items).Take(items).ToList();
+            return new Page<TEntity>(page, items, all, slice);
         }
 
         public async Task<Page<TEntity>> GetPageAsync(int page, int items, Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "", bool ascending = false)
         {
             if (typeof(IMongoEntity).IsAssignableFrom(typeof(TEntity)))
             {
                 var type = typeof(TEntity).ToMongoCollectionName();
                 var allCollection = filter == null
-                    ?  await _mongoDb.GetCollection<TEntity>(type).Find(_ => true).Skip((page - 1) * items).Limit(items).ToListAsync()
+                    ?  await _mongoDb.GetCollection<TEntity>(type).Find(_ => true).ToListAsync()
                     : await _mongoDb.GetCollection<TEntity>(type)
                         .Find(Builders<TEntity>.Filter.Where(filter)).ToListAsync();
-                var collection = allCollection.Skip((page - 1) * items).Take(items).ToList();
-                return new Page<TEntity>(page, collection.Count, allCollection.Count, (int)Math.Ceiling((double)allCollection.Count() / items), collection.ToList());
+                var collection = allCollection.OrderBy(t => orderBy).Skip((page - 1) * items).Take(items).ToList();
+                return new Page<TEntity>(page, collection.Count, allCollection.Count, collection.ToList());
             }
-            var query = await GetGeneric(filter, includeProperties).ToListAsync();
+            var query = GetGeneric(filter, includeProperties, orderBy, ascending);
             var slice = query.Skip((page - 1) * items).Take(items).ToList();
-            return new Page<TEntity>(page, slice.Count, query.Count, (int)Math.Ceiling((double)query.Count() / items), slice);
+            return new Page<TEntity>(page, slice.Count, query.Count(), slice);
         }
 
         public TEntity GetById(Guid guid = default(Guid), int? id = null)
@@ -259,11 +271,13 @@ namespace SaluteOnline.API.DAL
             return await query.CountAsync();
         }
 
-        private IQueryable<TEntity> GetGeneric(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "")
+        private IQueryable<TEntity> GetGeneric(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "", Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, bool ascending = false)
         {
             var query = filter != null ? _dbSet.Where(filter) : _dbSet;
             query = includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Aggregate(query, (current, includeProperty) => current.Include(t => includeProperty));
-            return query;
+            if (orderBy == null)
+                return query;
+            return ascending ? query.OrderByDescending(t => orderBy) : query.OrderBy(t => orderBy);
         }
     }
 }

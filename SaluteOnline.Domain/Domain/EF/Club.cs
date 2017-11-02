@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 using SaluteOnline.Domain.Common;
+using SaluteOnline.Domain.Domain.EF.LinkEntities;
 using SaluteOnline.Domain.DTO;
 
 namespace SaluteOnline.Domain.Domain.EF
@@ -27,10 +30,13 @@ namespace SaluteOnline.Domain.Domain.EF
 
         [ForeignKey(nameof(Creator))]
         public int CreatorId { get; set; }
+        [JsonIgnore]
         public User Creator { get; set; }
 
         public ClubStatus Status { get; set; }
         public string Logo { get; set; }
 
+        [JsonIgnore]
+        public ICollection<ClubUserAdministrator> Administrators { get; set; } = new List<ClubUserAdministrator>();
     }
 }
