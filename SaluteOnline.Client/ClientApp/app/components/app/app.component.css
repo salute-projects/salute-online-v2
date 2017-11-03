@@ -42,6 +42,16 @@
 .mat-raised-button.large-button {
   padding: 4px 64px; }
 
+.custom-tree.ui-tree {
+  width: auto;
+  border: none;
+  background-color: transparent;
+  color: #1F1F1F;
+  font-size: 1.2em; }
+  .custom-tree.ui-tree .ui-state-highlight {
+    border-radius: 2px;
+    background: #3f51b5; }
+
 .full-width {
   width: 100%; }
 
@@ -63,6 +73,9 @@ a.disabled {
 
 .m-l-4 {
   margin-left: 4px; }
+
+.m-t-8 {
+  margin-top: 8px; }
 
 .m-t-20 {
   margin-top: 20px; }

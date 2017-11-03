@@ -92,8 +92,8 @@ namespace SaluteOnline.API.Services.Implementation
                 Func<Club, bool> searchCriteria =
                     t => (!filter.IsActive.HasValue || t.IsActive == filter.IsActive.Value)
                          && (!filter.IsFiim.HasValue || t.IsFiim == filter.IsFiim.Value)
-                         && (string.IsNullOrEmpty(filter.Country) || t.Country.ToLower() == filter.Country)
-                         && (string.IsNullOrEmpty(filter.City) || t.City.ToLower() == filter.City)
+                         && (string.IsNullOrEmpty(filter.Country) || string.Equals(t.Country, filter.Country, StringComparison.CurrentCultureIgnoreCase))
+                         && (string.IsNullOrEmpty(filter.City) || string.Equals(t.City, filter.City, StringComparison.CurrentCultureIgnoreCase))
                          && (string.IsNullOrEmpty(filter.Title) || t.Title.ToLower().StartsWith(filter.Title.ToLower()))
                          && (!filter.CreatorId.HasValue || t.CreatorId == filter.CreatorId.Value)
                          && (filter.Status == ClubStatus.ActiveAndPending ? (t.Status == ClubStatus.Active || t.Status == ClubStatus.PendingActivation) : t.Status == filter.Status);

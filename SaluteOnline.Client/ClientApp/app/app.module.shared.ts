@@ -15,6 +15,8 @@ import {
     MatNativeDateModule, MatGridListModule, MatAutocompleteModule, MatExpansionModule, MATERIAL_SANITY_CHECKS, MAT_DATE_LOCALE, MAT_NATIVE_DATE_FORMATS, MAT_DATE_FORMATS
 } from "@angular/material";
 
+import { TreeModule } from 'primeng/primeng';
+
 
 // old
 
@@ -104,6 +106,7 @@ NgModule({
         HttpModule,
         FormsModule,
         BrowserAnimationsModule,
+        TreeModule,
         RouterModule.forRoot([
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },

@@ -1,9 +1,13 @@
-﻿<section class="so-clubs-list container">
+﻿<section class="so-clubs-list container-fluid">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-8 col-md-offset-2">
             <div class="button-row">
                 <button mat-raised-button class="large-button" color="primary" (click)="createClub()">REGISTER NEW</button>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
             <br/>
             <mat-grid-list cols="2" rowHeight="240px" gutterSize="10px" class="so-clubs-list-container">
                 <mat-grid-tile *ngFor="let club of clubs.items">
@@ -27,6 +31,14 @@
                     </mat-card>
                 </mat-grid-tile>
             </mat-grid-list>
+        </div>
+        <div class="col-md-2 so-clubs-list-sidebar pull-right m-t-8">
+            <br/>
+            <mat-card class="club-card">
+                <mat-card-content>
+                    <p-tree [value]="geographyTreeNodes" [(selection)]="selectedCountry" selectionMode="single" (onNodeSelect)="countrySelected($event)" styleClass="custom-tree"></p-tree>
+                </mat-card-content>
+            </mat-card>
         </div>
     </div>
 </section>

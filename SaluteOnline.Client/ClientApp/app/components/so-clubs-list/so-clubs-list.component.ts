@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { MatDialog, MatDialogConfig } from "@angular/material";
 import { CreateClubDialog } from "../so-create-club-dialog/so-create-club-dialog";
 import { Page, ClubDto, ClubFilter, ClubInfoAggregation } from "../../dto/dto";
+import { TreeNode } from 'primeng/primeng';
 
 @Component({
     selector: 'so-clubs-list',
@@ -15,6 +16,8 @@ import { Page, ClubDto, ClubFilter, ClubInfoAggregation } from "../../dto/dto";
 })
 
 export class SoClubsList {
+    geographyTreeNodes: TreeNode[];
+    selectedCountry: TreeNode;
     clubInfoAggregation: ClubInfoAggregation;
     clubsFilter: ClubFilter;
     clubs: Page<ClubDto>;
@@ -32,8 +35,8 @@ export class SoClubsList {
             this.snackService.showError(error.error, "OK");
             });
         this.context.clubsApi.getClubInfoAggregation().subscribe((result: ClubInfoAggregation) => {
-            debugger;
             this.clubInfoAggregation = result;
+            this.geographyTreeNodes = this.convertToTreeNodes(result.geography);
         }, error => {
             this.snackService.showError(error.error, "OK");
         });
@@ -54,5 +57,41 @@ export class SoClubsList {
 
     getClubAvatar(base64: string) {
         return `data:image/jpg;base64,${base64}`;
+    }
+
+    countrySelected(event: any) {
+        const node = event.node;
+        if (!node.parent) {
+            this.clubsFilter.country = node.data || '';
+            this.clubsFilter.city = '';
+        } else {
+            this.clubsFilter.city = node.data || '';
+            this.clubsFilter.country = (node.parent ? node.parent.data : '') || '';
+        }
+        this.refreshClubsList();
+    }
+
+    private convertToTreeNodes(data: Map<string, Array<string>>) : TreeNode[] {
+        if (!data || !data)
+            return new Array<TreeNode>();
+        const result = new Array<any>();
+        data.forEach((item: any, key: string) => {
+            result.push({
+                label: item.key + " (" + item.value.length + ")",
+                data: item.key,
+                expanded: true,
+                expandedIcon: 'fa-map-marker',
+                collapsedIcon: 'fa-map-marker',
+                children: item.value.map((subitem: string) => {
+                    return {
+                        label: subitem,
+                        data: subitem,
+                        expandedIcon: "fa-location-arrow",
+                        collapsedIcon: "fa-location-arrow"
+                    }
+                })
+            });
+        });
+        return result as TreeNode[];
     }
 }
