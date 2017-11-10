@@ -1,5 +1,6 @@
 ﻿using System;
 using SaluteOnline.Domain.Domain.EF;
+using SaluteOnline.Domain.DTO.Club;
 using SaluteOnline.Domain.DTO.User;
 
 namespace SaluteOnline.Domain.Conversion

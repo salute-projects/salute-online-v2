@@ -14,5 +14,4 @@ export class Helpers {
         }
         return target;
     }
-    
 }

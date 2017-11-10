@@ -1,35 +1,37 @@
-﻿.mat-dialog-container {
-  padding: 0; }
-  .mat-dialog-container .dialog-header {
-    display: flex;
-    padding: 16px;
-    justify-content: center;
-    flex-direction: column;
-    align-content: center; }
-    .mat-dialog-container .dialog-header span {
-      align-self: center; }
-    .mat-dialog-container .dialog-header .dialog-name {
-      font-family: #00abff;
-      font-weight: bold; }
-  .mat-dialog-container .dialog-body .mat-tab-label {
-    min-width: 50%; }
-  .mat-dialog-container .dialog-body .mat-tab-label, .mat-dialog-container .dialog-body .mat-input-element {
-    font-family: "Ubuntu Condensed", sans-serif; }
-  .mat-dialog-container .dialog-body .login-form {
-    margin-top: 16px;
-    width: 100%; }
-    .mat-dialog-container .dialog-body .login-form .mat-form-field {
-      width: 80%;
-      margin-left: 10%; }
-  .mat-dialog-container .dialog-footer {
-    display: flex;
-    justify-content: center;
-    margin-top: 16px; }
-    .mat-dialog-container .dialog-footer button {
-      width: 100%;
+﻿.custom-dialog {
+  font-family: "Ubuntu Condensed", sans-serif; }
+  .custom-dialog .mat-dialog-container {
+    padding: 0; }
+    .custom-dialog .mat-dialog-container .dialog-header {
+      display: flex;
       padding: 16px;
-      text-transform: uppercase;
-      align-self: center; }
+      justify-content: center;
+      flex-direction: column;
+      align-content: center; }
+      .custom-dialog .mat-dialog-container .dialog-header span {
+        align-self: center; }
+      .custom-dialog .mat-dialog-container .dialog-header .dialog-name {
+        font-family: #00abff;
+        font-weight: bold; }
+    .custom-dialog .mat-dialog-container .dialog-body .mat-tab-label {
+      min-width: 50%; }
+    .custom-dialog .mat-dialog-container .dialog-body .mat-tab-label, .custom-dialog .mat-dialog-container .dialog-body .mat-input-element {
+      font-family: "Ubuntu Condensed", sans-serif; }
+    .custom-dialog .mat-dialog-container .dialog-body .login-form {
+      margin-top: 16px;
+      width: 100%; }
+      .custom-dialog .mat-dialog-container .dialog-body .login-form .mat-form-field {
+        width: 80%;
+        margin-left: 10%; }
+    .custom-dialog .mat-dialog-container .dialog-footer {
+      display: flex;
+      justify-content: center;
+      margin-top: 16px; }
+      .custom-dialog .mat-dialog-container .dialog-footer button {
+        width: 100%;
+        padding: 16px;
+        text-transform: uppercase;
+        align-self: center; }
 
 .mat-menu-panel {
   border-radius: 0 !important; }
@@ -42,6 +44,14 @@
 .mat-raised-button.large-button {
   padding: 4px 64px; }
 
+.mat-mini-fab.header-fab-button {
+  line-height: 30px;
+  width: 32px;
+  height: 32px; }
+  .mat-mini-fab.header-fab-button .mat-button-wrapper {
+    line-height: 0;
+    font-size: 10px; }
+
 .custom-tree.ui-tree {
   width: auto;
   border: none;
@@ -51,6 +61,17 @@
   .custom-tree.ui-tree .ui-state-highlight {
     border-radius: 2px;
     background: #3f51b5; }
+
+.mat-figure.full-width {
+  width: 100%; }
+
+.no-gutters {
+  margin-right: 0;
+  margin-left: 0; }
+  .no-gutters > .col,
+  .no-gutters > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0; }
 
 .full-width {
   width: 100%; }
@@ -73,6 +94,9 @@ a.disabled {
 
 .m-l-4 {
   margin-left: 4px; }
+
+.m-r-4 {
+  margin-right: 4px; }
 
 .m-t-8 {
   margin-top: 8px; }

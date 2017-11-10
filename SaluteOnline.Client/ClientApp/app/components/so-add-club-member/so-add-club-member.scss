@@ -1,13 +1,13 @@
-﻿@import "../mixins.scss";
-@import "../theme.scss";
+﻿@import "../app/style/theme";
+@import "../app/style/mixins";
 
-.custom-dialog {
+/*.login-dialog-panel {
     font-family: $font-family;
 
     .mat-dialog-container {
         padding: 0;
 
-        .dialog-header {
+        .create-club-dialog-header {
             display: flex;
             padding: 16px;
             justify-content: center;
@@ -17,14 +17,9 @@
             span {
                 align-self: center;
             }
-
-            .dialog-name {
-                font-family: $primary;
-                font-weight: bold;
-            }
         }
 
-        .dialog-body {
+        .create-club-dialog-body {
 
             .mat-tab-label {
                 min-width: 50%;
@@ -45,7 +40,7 @@
             }
         }
 
-        .dialog-footer {
+        .create-club-dialog-footer {
             display: flex;
             justify-content: center;
             margin-top: 16px;
@@ -58,4 +53,4 @@
             }
         }
     }
-}
+}*/

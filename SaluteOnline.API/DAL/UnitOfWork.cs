@@ -33,6 +33,10 @@ namespace SaluteOnline.API.DAL
         public GenericRepository<Country> Countries
             => _countries ?? (_countries = new GenericRepository<Country>(_context, _configuration));
 
+        private GenericRepository<Player> _players;
+        public GenericRepository<Player> Players
+            => _players ?? (_players = new GenericRepository<Player>(_context, _configuration));
+
         public void Save()
         {
             _context.SaveChanges();

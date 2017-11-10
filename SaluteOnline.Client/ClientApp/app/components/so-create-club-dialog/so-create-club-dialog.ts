@@ -47,7 +47,6 @@ export class CreateClubDialog {
     }
 
     createClub() {
-        debugger;
         const args = this.helpers.formToObject(this.createClubForm, new CreateClubDto());
         this.context.clubsApi.createClub(args).subscribe((result: any) => {
             this.dialogRef.close(result);

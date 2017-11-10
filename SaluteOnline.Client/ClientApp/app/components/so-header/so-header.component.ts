@@ -38,7 +38,7 @@ export class SoHeader {
     openDialog(): void {
         const config: MatDialogConfig = {
             width: '400px',
-            panelClass: 'login-dialog-panel',
+            panelClass: 'custom-dialog',
             data: { email: this.email, password: this.password }
         };
         const dialogRef = this.loginDialog.open(LoginDialog, config);

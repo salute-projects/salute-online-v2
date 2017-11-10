@@ -10,6 +10,7 @@ namespace SaluteOnline.API.DAL
         GenericRepository<Club> Clubs { get; }
         GenericRepository<Activity> Activities { get; }
         GenericRepository<Country> Countries { get; }
+        GenericRepository<Player> Players { get;  }
         void Save();
         Task<int> SaveAsync();
     }

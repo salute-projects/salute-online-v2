@@ -13,6 +13,7 @@ module.exports = (env) => {
         resolve: { extensions: [ '.js', '.ts' ] },
         output: {
             filename: '[name].js',
+            filename: '[name].js',
             publicPath: 'dist/' // Webpack dev middleware, if enabled, handles requests for this URL prefix
         },
         module: {
@@ -24,7 +25,10 @@ module.exports = (env) => {
                 { test: /\.scss$/, exclude: /node_modules/, loaders: ['raw-loader', 'sass-loader'] }
             ]
         },
-        plugins: [new CheckerPlugin()]
+        plugins: [new CheckerPlugin(), new webpack.ContextReplacementPlugin(
+            /angular(\\|\/)core/,
+            path.resolve(__dirname, '../src')
+        )]
     };
 
     // Configuration for client-side bundle suitable for running in browsers

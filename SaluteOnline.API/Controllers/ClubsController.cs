@@ -68,5 +68,56 @@ namespace SaluteOnline.API.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        public IActionResult GetClubInfo(int id)
+        {
+            try
+            {
+                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
+                if (string.IsNullOrEmpty(email))
+                    return BadRequest("Authorization failed.");
+                return Ok(_service.GetClub(id, email));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("admins")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        public IActionResult GetClubAdministrators([FromBody] ClubMembersFilter filter)
+        {
+            try
+            {
+                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
+                if (string.IsNullOrEmpty(email))
+                    return BadRequest("Authorization failed.");
+                return Ok(_service.GetClubAdministrators(filter));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("members")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        public IActionResult GetClubMembers([FromBody] ClubMembersFilter filter)
+        {
+            try
+            {
+                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
+                if (string.IsNullOrEmpty(email))
+                    return BadRequest("Authorization failed.");
+                return Ok(_service.GetClubMembers(filter));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

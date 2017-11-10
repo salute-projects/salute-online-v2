@@ -115,6 +115,20 @@ export enum ClubStatus {
 }
 
 export class ClubDto {
+    constructor() {
+        this.id = -1;
+        this.title = '';
+        this.country = '';
+        this.registered = '';
+        this.lastUpdate = '';
+        this.isFiim = false;
+        this.isActive = false;
+        this.creatorId = -1;
+        this.status = ClubStatus.None;
+        this.logo = '';
+        this.canBeEdited = false;
+    }
+
     id: number;
     title: string;
     country: string;
@@ -126,8 +140,16 @@ export class ClubDto {
     creatorId: number;
     status: ClubStatus;
     logo: string;
-    administrators: Array<number> | null;
-    players: Array<number> | null;
+    canBeEdited: boolean;
+}
+
+export class ClubSummaryDto {
+    id: number;
+    title: string;
+    country: string;
+    city: string;
+    description: string;
+    logo: string;
     canBeEdited: boolean;
 }
 
@@ -170,10 +192,41 @@ export class ClubFilter extends BaseFilter {
     status: ClubStatus;
 }
 
+export class ClubMemberFilter extends BaseFilter {
+    constructor(clubId: number) {
+        super();
+        this.pageSize = 25;
+        this.asc = false;
+        this.clubId = clubId;
+        this.page = 1;
+        this.search = '';
+    }
+
+    search: string;
+    clubId: number;
+}
+
 export class ClubInfoAggregation {
     count: number;
     isFiim: number;
     byStatus: Map<ClubStatus, number>;
     geography: Map<string, Array<string>>;
+}
 
+export class ClubMemberSummary {
+    playerId: number | null;
+    userId: number | null;
+    firstName: string;
+    lastName: string;
+    email: string;
+    country: string;
+    city: string;
+    isActive: boolean;
+    nickname: string;
+    registered: Date;
+    avatar: string;
+}
+
+export class CreateClubMemberDto {
+    nickname: string;
 }

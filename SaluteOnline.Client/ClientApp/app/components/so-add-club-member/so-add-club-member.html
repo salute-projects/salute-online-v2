@@ -1,0 +1,20 @@
+﻿<div class="dialog-header">
+    <div class="so-logo clearfix text-center">
+        <span class="logo-leftside">SALUTE</span>
+        <span class="logo-rightside-black">ONLINE</span>
+    </div>
+    <h2 class="dialog-name text-center">
+        ADD MEMBER
+    </h2>
+</div>
+<div class="dialog-body">
+    <form class="login-form" [formGroup]="createClubMember">
+        <mat-form-field>
+            <input matInput placeholder="Nickname" formControlName="nickname">
+        </mat-form-field>
+        <br />
+        <div class="dialog-footer">
+            <button type="submit" mat-raised-button color="primary" (click)="addMember()" [disabled]="!createClubMember.valid">ADD</button>
+        </div>
+    </form>
+</div>

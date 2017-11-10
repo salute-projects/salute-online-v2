@@ -3,3 +3,16 @@
         padding: 4px 64px;
     }
 }
+
+.mat-mini-fab {
+    &.header-fab-button {
+        line-height: 30px;
+        width: 32px;
+        height: 32px;
+
+        .mat-button-wrapper {
+            line-height: 0;
+            font-size: 10px;
+        }
+    }
+}

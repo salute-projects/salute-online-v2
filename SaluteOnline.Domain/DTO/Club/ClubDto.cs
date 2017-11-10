@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace SaluteOnline.Domain.DTO.Club
 {
@@ -17,8 +16,6 @@ namespace SaluteOnline.Domain.DTO.Club
         public int CreatorId { get; set; }
         public ClubStatus Status { get; set; }
         public string Logo { get; set; }
-        public IEnumerable<int> Administrators { get; set; }
-        public IEnumerable<int> Players { get; set; }
         public bool CanBeEdited { get; set; }
     }
 }

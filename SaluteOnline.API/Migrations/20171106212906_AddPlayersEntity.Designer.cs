@@ -12,9 +12,10 @@ using System;
 namespace SaluteOnline.API.Migrations
 {
     [DbContext(typeof(SaluteOnlineDbContext))]
-    partial class SaluteOnlineDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171106212906_AddPlayersEntity")]
+    partial class AddPlayersEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,13 +83,9 @@ namespace SaluteOnline.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Avatar");
-
                     b.Property<int>("CludId");
 
                     b.Property<Guid>("Guid");
-
-                    b.Property<bool>("IsActive");
 
                     b.Property<DateTimeOffset>("LastChanged");
 

@@ -7,7 +7,10 @@ namespace SaluteOnline.API.Services.Interface
     public interface IClubsService
     {
         Task<int> CreateClub(CreateClubDto club, string email);
-        Page<ClubDto> GetClubs(ClubFilter filter, string email);
+        Page<ClubSummaryDto> GetClubs(ClubFilter filter, string email);
+        ClubDto GetClub(int id, string email);
         ClubInfoAggregation GetInfoAggregation();
+        Page<ClubMemberSummary> GetClubAdministrators(ClubMembersFilter filter);
+        Page<ClubMemberSummary> GetClubMembers(ClubMembersFilter filter);
     }
 }

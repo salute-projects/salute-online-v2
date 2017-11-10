@@ -1,4 +1,21 @@
-﻿.full-width {
+﻿.mat-figure {
+    &.full-width { 
+        width: 100%;
+    }
+}
+
+.no-gutters {
+    margin-right: 0;
+    margin-left: 0;
+
+    > .col,
+    > [class*="col-"] {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}
+
+.full-width {
     width: 100%;
 }
 
@@ -24,6 +41,10 @@ a.disabled {
 
 .m-l-4 {
     margin-left: 4px;
+}
+
+.m-r-4 {
+    margin-right: 4px;
 }
 
 .m-t-8 {

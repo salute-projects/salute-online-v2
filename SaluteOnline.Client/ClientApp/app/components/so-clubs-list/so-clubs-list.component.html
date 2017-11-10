@@ -25,8 +25,8 @@
                             </p>
                         </mat-card-content>
                         <mat-card-actions>
-                            <button mat-button color="primary">OPEN</button>
-                            <button *ngIf="club.canBeEdited" mat-button>MANAGE</button>
+                            <button mat-button color="primary">DETAILS</button>
+                            <button *ngIf="club.canBeEdited" mat-button (click)="edit(club.id)">EDIT</button>
                         </mat-card-actions>
                     </mat-card>
                 </mat-grid-tile>

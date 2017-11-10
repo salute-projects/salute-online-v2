@@ -12,11 +12,11 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import {
     MatButtonModule, MatIconModule, MatMenuModule, MatDialogModule, MatTabsModule, MatInputModule, MatFormFieldModule, MatSnackBarModule, MatCardModule, MatDatepickerModule,
-    MatNativeDateModule, MatGridListModule, MatAutocompleteModule, MatExpansionModule, MATERIAL_SANITY_CHECKS, MAT_DATE_LOCALE, MAT_NATIVE_DATE_FORMATS, MAT_DATE_FORMATS
+    MatNativeDateModule, MatGridListModule, MatAutocompleteModule, MatExpansionModule, MatTableModule, MatPaginatorModule, MATERIAL_SANITY_CHECKS, MAT_DATE_LOCALE, MAT_NATIVE_DATE_FORMATS, MAT_DATE_FORMATS
 } from "@angular/material";
 
 import { TreeModule } from 'primeng/primeng';
-
+import { MomentModule } from "angular2-moment";
 
 // old
 
@@ -35,6 +35,8 @@ import { SoMenuItem } from "./components/so-menu-item/so-menu-item.component";
 import { SoUserProfile } from "./components/so-user-profile/so-user-profile.component";
 import { SoClubsList } from "./components/so-clubs-list/so-clubs-list.component";
 import { CreateClubDialog } from "./components/so-create-club-dialog/so-create-club-dialog";
+import { SoClubsEdit } from "./components/so-club-edit/so-club-edit";
+import { AddClubMemberDialog } from "./components/so-add-club-member/so-add-club-member";
 
 // services
 
@@ -42,6 +44,7 @@ import { AuthGuard } from "./services/authGuard";
 import { GlobalState } from "./services/global.state";
 import { AuthService } from "./services/auth";
 import { Helpers } from "./services/helpers";
+import { CustomDataSource } from "./services/datatable.service";
 
 // context
 
@@ -71,11 +74,14 @@ NgModule({
         SoUserProfile,
         SoClubsList,
         CreateClubDialog,
+        AddClubMemberDialog,
+        SoClubsEdit,
         TruncatePipe
     ],
-    entryComponents: [LoginDialog, CreateClubDialog],
+    entryComponents: [LoginDialog, CreateClubDialog, AddClubMemberDialog],
     providers: [ 
         Helpers,
+        CustomDataSource,
         GlobalState,
         AuthService,
         CommonApi,
@@ -102,11 +108,14 @@ NgModule({
         MatGridListModule,
         MatAutocompleteModule,
         MatExpansionModule,
+        MatTableModule,
+        MatPaginatorModule,
         CommonModule,
         HttpModule,
         FormsModule,
         BrowserAnimationsModule,
         TreeModule,
+        MomentModule,
         RouterModule.forRoot([
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
@@ -114,6 +123,7 @@ NgModule({
             { path: 'fetch-data', component: FetchDataComponent },
             { path: 'so-user-profile', component: SoUserProfile },
             { path: 'so-clubs-list', component: SoClubsList },
+            { path: 'so-club-edit/:id', component: SoClubsEdit },
             { path: '**', redirectTo: 'home' }
         ])
     ]

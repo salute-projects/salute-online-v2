@@ -82,7 +82,7 @@ namespace SaluteOnline.API.Services.Implementation
             }
         }
 
-        public Page<ClubDto> GetClubs(ClubFilter filter, string email)
+        public Page<ClubSummaryDto> GetClubs(ClubFilter filter, string email)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace SaluteOnline.API.Services.Implementation
                     .Skip(skip)
                     .Take(take);
                 var allCount = allClubs.Select(t => t.Id).Count();
-                var page = new Page<ClubDto>(filter.Page, filter.PageSize ?? 25, allCount, slice.Select(t => t.ToDto(currentUser.Id)));
+                var page = new Page<ClubSummaryDto>(filter.Page, filter.PageSize ?? 25, allCount, slice.Select(t => t.ToSummaryDto(currentUser.Id)));
                 return page;
             }
             catch (ArgumentException)
@@ -156,6 +156,118 @@ namespace SaluteOnline.API.Services.Implementation
             {
                 _logger.LogError(e.Message);
                 throw new Exception("Error while loading club info aggregation. Please try a bit later");
+            }
+        }
+
+        public ClubDto GetClub(int id, string email)
+        {
+            try
+            {
+                var currentUser = _unitOfWork.Users.Get(t => t.Email == email).FirstOrDefault();
+                if (currentUser == null)
+                    throw new ArgumentException("Internal error happened. Please try a bit later");
+                var club = _unitOfWork.Clubs.GetById(id: id);
+                if (club == null)
+                    throw new ArgumentException("Error while getting club info. Please try a bit later");
+                if (currentUser.Role == Role.User && club.Administrators.All(t => t.UserId != id))
+                    throw new ArgumentException("Operation not allowed");
+                return club.ToDto(id);
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while loading club info. Please try a bit later");
+            }
+        }
+
+        public Page<ClubMemberSummary> GetClubAdministrators(ClubMembersFilter filter)
+        {
+            try
+            {
+                var club =
+                    _unitOfWork.Clubs.GetAsQueryable()
+                        .Include(t => t.Administrators)
+                        .ThenInclude(t => t.User)
+                        .FirstOrDefault(t => t.Id == filter.ClubId);
+                if (club == null)
+                    throw new ArgumentException("Club not found");
+                var orderByField = string.IsNullOrEmpty(filter.OrderBy) ? nameof(ClubMemberSummary.Registered) : filter.OrderBy;
+                var all = club.Administrators.Where(t => string.IsNullOrEmpty(filter.Search) || t.User != null && t.User.Nickname.ToLower().Contains(filter.Search.ToLower()))
+                    .Select(t => new ClubMemberSummary
+                {
+                    Country = t.User.Country,
+                    Email = t.User.Email,
+                    Registered = t.Registered,
+                    City = t.User.City,
+                    UserId = t.UserId,
+                    IsActive = t.IsActive,
+                    Avatar = t.User.Avatar,
+                    LastName = t.User.LastName,
+                    FirstName = t.User.FirstName,
+                    Nickname = t.User.Nickname
+                }).ToList();
+                all = filter.Asc
+                    ? all.OrderBy(t => typeof(ClubMemberSummary).GetProperty(orderByField).GetValue(t)).ToList()
+                    : all.OrderByDescending(t => typeof(ClubMemberSummary).GetProperty(orderByField).GetValue(t)).ToList();
+                var slice = all.Skip((filter.Page - 1) * filter.PageSize ?? 25).Take(filter.PageSize ?? 25);
+                return new Page<ClubMemberSummary>(filter.Page, filter.PageSize ?? 25, all.Count, slice);
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while loading club administrators list. Please try a bit later");
+            }
+        }
+
+        public Page<ClubMemberSummary> GetClubMembers(ClubMembersFilter filter)
+        {
+            try
+            {
+                var club =
+                    _unitOfWork.Clubs.GetAsQueryable()
+                        .Include(t => t.Players)
+                        .ThenInclude(t => t.User)
+                        .FirstOrDefault(t => t.Id == filter.ClubId);
+                if (club == null)
+                    throw new ArgumentException("Club not found");
+                var orderByField = string.IsNullOrEmpty(filter.OrderBy) ? nameof(ClubMemberSummary.Registered) : filter.OrderBy;
+                var all = club.Players.Where(t => string.IsNullOrEmpty(filter.Search) || t.Nickname.ToLower().Contains(filter.Search))
+                    .Select(t => new ClubMemberSummary
+                {
+                    Country = t.User?.Country,
+                    Email = t.User?.Email,
+                    Registered = t.Registered,
+                    City = t.User?.City,
+                    UserId = t.UserId,
+                    IsActive = t.IsActive,
+                    Avatar = t.Avatar ?? t.User?.Avatar,
+                    FirstName = t.User?.FirstName,
+                    LastName = t.User?.LastName,
+                    Nickname = t.Nickname ?? t.User?.Nickname,
+                    PlayerId = t.Id
+                }).ToList();
+                all = filter.Asc
+                    ? all.OrderBy(t => typeof(ClubMemberSummary).GetProperty(orderByField).GetValue(t)).ToList()
+                    : all.OrderByDescending(t => typeof(ClubMemberSummary).GetProperty(orderByField).GetValue(t)).ToList();
+                var slice = all.Skip((filter.Page - 1) * filter.PageSize ?? 25).Take(filter.PageSize ?? 25);
+                return new Page<ClubMemberSummary>(filter.Page, filter.PageSize ?? 25, all.Count, slice);
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while loading club members list. Please try a bit later");
             }
         }
     }

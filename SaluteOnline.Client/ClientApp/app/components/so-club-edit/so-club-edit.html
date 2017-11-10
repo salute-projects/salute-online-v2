@@ -1,0 +1,136 @@
+﻿<section class="so-club-edit container">
+    <div class="row">
+        <div class="col-md-12 so-club-edit-container">
+            <mat-card id="main-info-card">
+                <div class="row">
+                    <div class="col-md-3 avatar-container">
+                        <img height="128" [src]="clubInfo.logo" alt="logo" />
+                        <div class="avatar-upload-overlay" (click)="fileInput.click()">
+                            <input type="file" id="avatar" (change)="onAvatarChange($event)" [style.display]="'none'" #fileInput>
+                            <span>Upload</span>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <mat-card-header class="flex-center">
+                            <mat-card-title>
+                                <mat-form-field class="mat-form-field-2x">
+                                    <input matInput placeholder="Club Title" [(ngModel)]="clubInfo.title" />
+                                </mat-form-field>
+                            </mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content class="flex-center-column">
+                            <div class="flex-center">
+                                <mat-form-field class="m-r-4">
+                                    <span matPrefix class="m-r-6"><i class="fa fa-location-arrow" aria-hidden="true"></i> </span>
+                                    <input matInput placeholder="Country" aria-label="Country" [matAutocomplete]="auto" [(ngModel)]="countryInputValue" (ngModelChange)="countryOnChange()" >
+                                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="countrySelected()">
+                                        <mat-option *ngFor="let country of filteredCountries | async" [value]="country.name">
+                                            <span>{{country.name}}</span>
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <input matInput placeholder="City" [(ngModel)]="clubInfo.city"/>
+                                </mat-form-field>
+                            </div>
+                        </mat-card-content>
+                    </div>
+                    <div class="col-md-12">
+                        <mat-card-actions align="end">
+                            <button mat-raised-button color="primary" (click)="updateMainClubInfo()">SAVE</button>
+                        </mat-card-actions>
+                    </div>
+                </div>
+            </mat-card>
+        </div>
+        <br />
+        <div class="col-md-12 so-club-edit-container m-t-20">
+            <mat-card id="club-info-card">
+                <mat-tab-group (selectedTabChange)="tabChanged($event)">
+                    <mat-tab label="INFO">
+                        <br/>
+                        <div class="row no-gutters">
+                            <div class="col-md-6">
+                                <mat-form-field class="full-width">
+                                    <span matPrefix class="m-r-6"><i class="fa fa-pencil" aria-hidden="true"></i> </span>
+                                    <textarea matInput placeholder="Description" [(ngModel)]="clubInfo.description"></textarea>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <mat-card-actions align="end">
+                            <button mat-raised-button color="primary">SAVE</button>
+                        </mat-card-actions>
+                    </mat-tab>
+                    <mat-tab label="ADMINISTRATORS">
+                        <mat-table #table [dataSource]="clubAdminsDataSet">
+                            <ng-container matColumnDef="nickname">
+                                <mat-header-cell *matHeaderCellDef> NICKNAME </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.nickname}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="firstName">
+                                <mat-header-cell *matHeaderCellDef> FIRST NAME </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.firstName}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="lastName">
+                                <mat-header-cell *matHeaderCellDef> LAST NAME </mat-header-cell>
+                                <mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.lastName}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="registered">
+                                <mat-header-cell *matHeaderCellDef> REGISTERED </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.registered | amUtc | amDateFormat: 'MMMM Do YYYY, h:mm:ss a'}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="actions">
+                                <mat-header-cell *matHeaderCellDef class="text-right"></mat-header-cell>
+                                <mat-cell *matCellDef="let row">  </mat-cell>
+                            </ng-container>
+                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                        </mat-table>
+
+                        <mat-paginator #paginator
+                                       [length]="getLength(clubAdmins)"
+                                       [pageIndex]="clubAdmins.currentPage - 1"
+                                       [pageSize]="clubAdmins.pageSize"
+                                       [pageSizeOptions]="[5, 10, 25, 100]"
+                                       (page)="adminsPaginationEvent($event)">
+                        </mat-paginator>
+                    </mat-tab>
+                    <mat-tab label="MEMBERS">
+                        <mat-table #table [dataSource]="clubMembersDataSet">
+                            <ng-container matColumnDef="nickname">
+                                <mat-header-cell *matHeaderCellDef> NICKNAME </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.nickname}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="firstName">
+                                <mat-header-cell *matHeaderCellDef> FIRST NAME </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.firstName}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="lastName">
+                                <mat-header-cell *matHeaderCellDef> LAST NAME </mat-header-cell>
+                                <mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.lastName}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="registered">
+                                <mat-header-cell *matHeaderCellDef> REGISTERED </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.registered | amUtc | amDateFormat: 'MMMM Do YYYY, h:mm:ss a'}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="actions">
+                                <mat-header-cell *matHeaderCellDef class="text-right"><button class="header-fab-button" mat-mini-fab (click)="addMember()" >ADD</button></mat-header-cell>
+                                <mat-cell *matCellDef="let row">  </mat-cell>
+                            </ng-container>
+                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                        </mat-table>
+
+                        <mat-paginator #paginator
+                                       [length]="getLength(clubMembers)"
+                                       [pageIndex]="clubAdmins.currentPage"
+                                       [pageSize]="clubAdmins.pageSize"
+                                       [pageSizeOptions]="[5, 10, 25, 100]"
+                                       (page)="usersPaginationEvent($event)">
+                        </mat-paginator>
+                    </mat-tab>
+                </mat-tab-group>
+            </mat-card>
+        </div>
+    </div>
+</section>

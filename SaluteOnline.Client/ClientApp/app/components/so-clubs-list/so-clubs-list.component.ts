@@ -1,11 +1,12 @@
 ﻿import { Component, ViewEncapsulation } from "@angular/core";
+import { Router } from "@angular/router";
 import { Context } from "../../services/context/context";
 import { GlobalState } from "../../services/global.state";
 import { SoSnackService } from "../../services/snack.service";
 import { Observable } from 'rxjs/Observable';
 import { MatDialog, MatDialogConfig } from "@angular/material";
 import { CreateClubDialog } from "../so-create-club-dialog/so-create-club-dialog";
-import { Page, ClubDto, ClubFilter, ClubInfoAggregation } from "../../dto/dto";
+import { Page, ClubDto, ClubFilter, ClubInfoAggregation, ClubSummaryDto } from "../../dto/dto";
 import { TreeNode } from 'primeng/primeng';
 
 @Component({
@@ -20,16 +21,17 @@ export class SoClubsList {
     selectedCountry: TreeNode;
     clubInfoAggregation: ClubInfoAggregation;
     clubsFilter: ClubFilter;
-    clubs: Page<ClubDto>;
+    clubs: Page<ClubSummaryDto>;
 
-    constructor(private readonly context: Context, private readonly snackService: SoSnackService, private readonly state: GlobalState, private readonly loginDialog: MatDialog) {
-        this.clubs = new Page<ClubDto>();
+    constructor(private readonly context: Context, private readonly snackService: SoSnackService, private readonly state: GlobalState,
+        private readonly loginDialog: MatDialog, private readonly router: Router) {
+        this.clubs = new Page<ClubSummaryDto>();
         this.clubsFilter = new ClubFilter();
         this.refreshClubsList();
     }
 
     private refreshClubsList() {
-        this.context.clubsApi.getList(this.clubsFilter).subscribe((result: Page<ClubDto>) => {
+        this.context.clubsApi.getList(this.clubsFilter).subscribe((result: Page<ClubSummaryDto>) => {
             this.clubs = result;
         }, error => {
             this.snackService.showError(error.error, "OK");
@@ -45,7 +47,7 @@ export class SoClubsList {
     createClub() : void {
         const config: MatDialogConfig = {
             width: '400px',
-            panelClass: 'login-dialog-panel'
+            panelClass: 'custom-dialog'
         };
         const dialogRef = this.loginDialog.open(CreateClubDialog, config);
         dialogRef.afterClosed().subscribe(result => {
@@ -93,5 +95,9 @@ export class SoClubsList {
             });
         });
         return result as TreeNode[];
+    }
+
+    edit(id: number) {
+        this.router.navigate(['so-club-edit', id]);
     }
 }

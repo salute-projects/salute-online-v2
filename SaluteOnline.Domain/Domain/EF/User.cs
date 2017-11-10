@@ -59,7 +59,7 @@ namespace SaluteOnline.Domain.Domain.EF
         public ICollection<ClubUserAdministrator> ClubsAdministrated { get; set; } = new List<ClubUserAdministrator>();
 
         [JsonIgnore]
-        public ICollection<ClubUserPlayers> ClubsParticipated { get; set; } = new List<ClubUserPlayers>();
+        public ICollection<Player> PlayersAccounts { get; set; } = new List<Player>();
         
     }
 }

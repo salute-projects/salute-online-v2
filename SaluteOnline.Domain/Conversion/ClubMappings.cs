@@ -22,8 +22,20 @@ namespace SaluteOnline.Domain.Conversion
                 Description = club.Description,
                 Title = club.Title,
                 IsFiim = club.IsFiim,
-                Administrators = club.Administrators.Select(t => t.UserId),
-                Players = club.Players.Select(t => t.UserId),
+                CanBeEdited = club.Administrators.Any(t => t.UserId == currentUserId)
+            };
+        }
+
+        public static ClubSummaryDto ToSummaryDto(this Club club, int currentUserId)
+        {
+            return new ClubSummaryDto
+            {
+                Country = club.Country,
+                Id = club.Id,
+                City = club.City,
+                Logo = club.Logo,
+                Description = club.Description,
+                Title = club.Title,
                 CanBeEdited = club.Administrators.Any(t => t.UserId == currentUserId)
             };
         }

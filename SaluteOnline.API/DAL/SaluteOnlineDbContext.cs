@@ -11,6 +11,7 @@ namespace SaluteOnline.API.DAL
 
         public DbSet<User> Users { get; set; }
         public DbSet<Club> Clubs { get; set; }
+        public DbSet<Player> Players { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,17 +28,7 @@ namespace SaluteOnline.API.DAL
                 .WithMany(t => t.Administrators)
                 .HasForeignKey(t => t.ClubId).OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ClubUserPlayers>().HasKey(t => new {t.ClubId, t.UserId});
-            modelBuilder.Entity<ClubUserPlayers>()
-                .HasOne(t => t.User)
-                .WithMany(t => t.ClubsParticipated)
-                .HasForeignKey(t => t.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<ClubUserPlayers>()
-                .HasOne(t => t.Club)
-                .WithMany(t => t.Players)
-                .HasForeignKey(t => t.ClubId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Club>().HasMany(t => t.Players).WithOne(t => t.Club).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
