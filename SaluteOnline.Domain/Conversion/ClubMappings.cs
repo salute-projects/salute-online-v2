@@ -39,5 +39,19 @@ namespace SaluteOnline.Domain.Conversion
                 CanBeEdited = club.Administrators.Any(t => t.UserId == currentUserId)
             };
         }
+
+        public static MembershipRequestDto ToDto(this MembershipRequest request)
+        {
+            return new MembershipRequestDto
+            {
+                Status = request.Status,
+                Nickname = request.Nickname,
+                Id = request.Id,
+                LastActivity = request.LastActivity,
+                SelectedFromExisting = request.SelectedFromExisting,
+                Created = request.Created,
+                UserInfo = request.User.ToMainInfoDto()
+            };
+        }
     }
 }

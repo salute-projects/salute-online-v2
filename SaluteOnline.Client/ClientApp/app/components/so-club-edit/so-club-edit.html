@@ -123,10 +123,48 @@
 
                         <mat-paginator #paginator
                                        [length]="getLength(clubMembers)"
-                                       [pageIndex]="clubAdmins.currentPage"
+                                       [pageIndex]="clubAdmins.currentPage - 1"
                                        [pageSize]="clubAdmins.pageSize"
                                        [pageSizeOptions]="[5, 10, 25, 100]"
                                        (page)="usersPaginationEvent($event)">
+                        </mat-paginator>
+                    </mat-tab>
+                    <mat-tab label="PENDING REQUESTS">
+                        <mat-table #table [dataSource]="memberRequestsDataSet">
+                            <ng-container matColumnDef="created">
+                                <mat-header-cell *matHeaderCellDef> CREATED </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.created | amUtc | amDateFormat: 'MMMM Do YYYY, h:mm:ss a'}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="nickname">
+                                <mat-header-cell *matHeaderCellDef> NICKNAME </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.nickname}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="status">
+                                <mat-header-cell *matHeaderCellDef> STATUS </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.status}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="firstName">
+                                <mat-header-cell *matHeaderCellDef> FIRST NAME </mat-header-cell>
+                                <mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.userInfo.firstName}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="lastName">
+                                <mat-header-cell *matHeaderCellDef> LAST NAME </mat-header-cell>
+                                <mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.userInfo.lastName}} </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="actions">
+                                <mat-header-cell *matHeaderCellDef class="text-right"></mat-header-cell>
+                                <mat-cell *matCellDef="let row">  </mat-cell>
+                            </ng-container>
+                            <mat-header-row *matHeaderRowDef="membershipColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: membershipColumns;"></mat-row>
+                        </mat-table>
+
+                        <mat-paginator #paginator
+                                       [length]="getLength(memberRequests)"
+                                       [pageIndex]="memberRequests.currentPage - 1"
+                                       [pageSize]="memberRequests.pageSize"
+                                       [pageSizeOptions]="[5, 10, 25, 100]"
+                                       (page)="requestsPaginationEvent($event)">
                         </mat-paginator>
                     </mat-tab>
                 </mat-tab-group>

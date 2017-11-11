@@ -5,7 +5,7 @@ import { AuthService } from "../../services/auth";
 import { SoSnackService } from "../../services/snack.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA } from "@angular/material";
-import { EqualityValidation } from "../../services/validators/equality-validator";
+import { EqualityValidation } from "../../services/validators";
 
 @Component({
     selector: "login-dialog",

@@ -1,0 +1,35 @@
+﻿<div class="dialog-header">
+    <div class="so-logo clearfix text-center">
+        <span class="logo-leftside">SALUTE</span>
+        <span class="logo-rightside-black">ONLINE</span>
+    </div>
+    <h2 class="dialog-name text-center">
+        MEMBERSHIP REQUEST
+    </h2>
+</div>
+<div class="dialog-body">
+    <form class="login-form" [formGroup]="membershipRequestForm">
+        <div class="text-center">
+            <h4>ENTER YOUR NICKNAME</h4>
+        </div>
+        <mat-form-field>
+            <input matInput placeholder="Nickname" formControlName="nicknameManual">
+        </mat-form-field>
+        <div class="text-center">
+            <h4>OR SELECT FROM EXISTING</h4>
+        </div>
+        <mat-form-field>
+            <span matPrefix class="m-r-6"><i class="fa fa-location-arrow" aria-hidden="true"></i> </span>
+            <input matInput placeholder="Existing nickname" aria-label="Nickname" [matAutocomplete]="auto" formControlName="nickname">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="nicknameSelected()">
+                <mat-option *ngFor="let member of filteredMembers | async" [value]="member.nickname">
+                    <span>{{member.nickname}}</span>
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <br/>
+        <div class="dialog-footer">
+            <button type="submit" mat-raised-button color="primary" (click)="sendMembershipRequest()" [disabled]="!membershipRequestForm.valid">SEND</button>
+        </div>
+    </form>
+</div>

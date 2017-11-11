@@ -26,6 +26,7 @@
     <None Remove="ClientApp\app\components\so-create-club-dialog\so-create-club-dialog.ts" />
     <None Remove="ClientApp\app\components\so-header\so-header.component.ts" />
     <None Remove="ClientApp\app\components\so-login-dialog.ts" />
+    <None Remove="ClientApp\app\components\so-membership-request-dialog\so-membership-request-dialog.ts" />
     <None Remove="ClientApp\app\components\so-menu-item\so-menu-item.component.ts" />
     <None Remove="ClientApp\app\components\so-menu\so-menu.component.ts" />
     <None Remove="ClientApp\app\components\so-menu\so-menu.service.ts" />
@@ -45,7 +46,6 @@
     <None Remove="ClientApp\app\services\global.state.ts" />
     <None Remove="ClientApp\app\services\helpers.ts" />
     <None Remove="ClientApp\app\services\snack.service.ts" />
-    <None Remove="ClientApp\app\services\validators\equality-validator.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +55,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\so-create-club-dialog\so-create-club-dialog.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-header\so-header.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-login-dialog\so-login-dialog.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\so-membership-request-dialog\so-membership-request-dialog.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-menu-item\so-menu-item.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-menu\so-menu.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-menu\so-menu.service.ts" />
@@ -74,7 +75,7 @@
     <TypeScriptCompile Include="ClientApp\app\services\global.state.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\helpers.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\snack.service.ts" />
-    <TypeScriptCompile Include="ClientApp\app\services\validators\equality-validator.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\validators.ts" />
   </ItemGroup>
 
   <ItemGroup>

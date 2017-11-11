@@ -27,6 +27,11 @@ namespace SaluteOnline.API.DAL
                 .HasOne(t => t.Club)
                 .WithMany(t => t.Administrators)
                 .HasForeignKey(t => t.ClubId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<MembershipRequest>()
+                .HasOne(t => t.Club)
+                .WithMany(t => t.MembershipRequests)
+                .HasForeignKey(t => t.ClubId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Club>().HasMany(t => t.Players).WithOne(t => t.Club).OnDelete(DeleteBehavior.Restrict);
         }

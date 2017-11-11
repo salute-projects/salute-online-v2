@@ -106,5 +106,17 @@ namespace SaluteOnline.Domain.Conversion
             user.Phone = userDto.Phone;
             user.LastActivity = DateTimeOffset.UtcNow;
         }
+
+        public static UserMainInfoDto ToMainInfoDto(this User user)
+        {
+            return new UserMainInfoDto
+            {
+                Id = user.Id,
+                Nickname = user.Nickname,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                DateOfBirth = user.DateOfBirth
+            };
+        }
     }
 }

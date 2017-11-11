@@ -12,9 +12,10 @@ using System;
 namespace SaluteOnline.API.Migrations
 {
     [DbContext(typeof(SaluteOnlineDbContext))]
-    partial class SaluteOnlineDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171111211207_MembershipRequests")]
+    partial class MembershipRequests
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,8 +88,6 @@ namespace SaluteOnline.API.Migrations
                     b.Property<DateTimeOffset>("Created");
 
                     b.Property<Guid>("Guid");
-
-                    b.Property<DateTimeOffset>("LastActivity");
 
                     b.Property<string>("Nickname");
 

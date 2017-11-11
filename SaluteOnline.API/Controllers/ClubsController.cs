@@ -119,5 +119,56 @@ namespace SaluteOnline.API.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpPost("addClubMember")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        public IActionResult AddClubMember([FromBody] CreateClubMemberDto dto)
+        {
+            try
+            {
+                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
+                if (string.IsNullOrEmpty(email))
+                    return BadRequest("Authorization failed.");
+                return Ok(_service.AddClubMember(dto, email));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("addMembershipRequest")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        public IActionResult AddMembershipRequest([FromBody] MembershipRequestCreateDto dto)
+        {
+            try
+            {
+                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
+                if (string.IsNullOrEmpty(email))
+                    return BadRequest("Authorization failed.");
+                return Ok(_service.AddMembershipRequest(dto, email));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("getMembershipRequests")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        public IActionResult GetMembershipRequests([FromBody] EntityFilter filter)
+        {
+            try
+            {
+                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
+                if (string.IsNullOrEmpty(email))
+                    return BadRequest("Authorization failed.");
+                return Ok(_service.GetClubMembershipRequests(filter, email));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

@@ -26,6 +26,7 @@
                         </mat-card-content>
                         <mat-card-actions>
                             <button mat-button color="primary">DETAILS</button>
+                            <button mat-button (click)="sendMembershipRequest(club.id)">MEMBERSHIP REQUEST</button>
                             <button *ngIf="club.canBeEdited" mat-button (click)="edit(club.id)">EDIT</button>
                         </mat-card-actions>
                     </mat-card>

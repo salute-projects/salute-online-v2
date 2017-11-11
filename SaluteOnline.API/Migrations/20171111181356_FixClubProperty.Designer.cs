@@ -12,9 +12,10 @@ using System;
 namespace SaluteOnline.API.Migrations
 {
     [DbContext(typeof(SaluteOnlineDbContext))]
-    partial class SaluteOnlineDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171111181356_FixClubProperty")]
+    partial class FixClubProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,36 +76,6 @@ namespace SaluteOnline.API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ClubUserAdministrator");
-                });
-
-            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.MembershipRequest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("ClubId");
-
-                    b.Property<DateTimeOffset>("Created");
-
-                    b.Property<Guid>("Guid");
-
-                    b.Property<DateTimeOffset>("LastActivity");
-
-                    b.Property<string>("Nickname");
-
-                    b.Property<bool>("SelectedFromExisting");
-
-                    b.Property<int>("Status");
-
-                    b.Property<int?>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClubId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("MembershipRequest");
                 });
 
             modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.Player", b =>
@@ -225,18 +196,6 @@ namespace SaluteOnline.API.Migrations
                         .WithMany("ClubsAdministrated")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.MembershipRequest", b =>
-                {
-                    b.HasOne("SaluteOnline.Domain.Domain.EF.Club", "Club")
-                        .WithMany("MembershipRequests")
-                        .HasForeignKey("ClubId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("SaluteOnline.Domain.Domain.EF.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.Player", b =>

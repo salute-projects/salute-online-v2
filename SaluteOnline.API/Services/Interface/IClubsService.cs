@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using SaluteOnline.Domain.Domain;
+using SaluteOnline.Domain.DTO;
 using SaluteOnline.Domain.DTO.Club;
 
 namespace SaluteOnline.API.Services.Interface
@@ -12,5 +13,8 @@ namespace SaluteOnline.API.Services.Interface
         ClubInfoAggregation GetInfoAggregation();
         Page<ClubMemberSummary> GetClubAdministrators(ClubMembersFilter filter);
         Page<ClubMemberSummary> GetClubMembers(ClubMembersFilter filter);
+        ClubMemberSummary AddClubMember(CreateClubMemberDto member, string email);
+        int AddMembershipRequest(MembershipRequestCreateDto request, string email);
+        Page<MembershipRequestDto> GetClubMembershipRequests(EntityFilter filter, string email);
     }
 }

@@ -41,5 +41,8 @@ namespace SaluteOnline.Domain.Domain.EF
 
         [JsonIgnore]
         public ICollection<Player> Players { get; set; } = new List<Player>();
+
+        [JsonIgnore]
+        public ICollection<MembershipRequest> MembershipRequests { get; set; } = new List<MembershipRequest>();
     }
 }

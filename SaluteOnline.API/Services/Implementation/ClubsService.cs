@@ -270,5 +270,125 @@ namespace SaluteOnline.API.Services.Implementation
                 throw new Exception("Error while loading club members list. Please try a bit later");
             }
         }
+
+        public ClubMemberSummary AddClubMember(CreateClubMemberDto member, string email)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(member.Nickname))
+                    throw new ArgumentException("Nickname cannot be empty");
+                var club = _unitOfWork.Clubs.GetAsQueryable(y => y.Id == member.ClubId).Include(t => t.Administrators).Include(t => t.Players).FirstOrDefault();
+                if (club == null)
+                    throw new ArgumentException("Club not found");
+                var currentMember = _unitOfWork.Users.Get(t => t.Email == email).FirstOrDefault();
+                if (currentMember == null)
+                    throw new ArgumentException("Error while authorization");
+                if (club.Administrators.All(t => t.UserId != currentMember.Id))
+                    throw new ArgumentException("Operation not allowed");
+                var alreadyExists = club.Players.Any(t => string.Equals(t.Nickname, member.Nickname, StringComparison.CurrentCultureIgnoreCase));
+                if (alreadyExists)
+                    throw new ArgumentException("Member with that nickname already exists");
+                var newPlayer = new Player
+                {
+                    ClubId = member.ClubId,
+                    Guid = Guid.NewGuid(),
+                    IsActive = true,
+                    Registered = DateTimeOffset.UtcNow,
+                    LastChanged = DateTimeOffset.UtcNow,
+                    Nickname = member.Nickname
+                };
+                club.Players.Add(newPlayer);
+                _unitOfWork.Save();
+                return new ClubMemberSummary
+                {
+                    Nickname = member.Nickname,
+                    IsActive = newPlayer.IsActive,
+                    PlayerId = newPlayer.Id
+                };
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while adding club members. Please try a bit later");
+            }
+        }
+
+        public int AddMembershipRequest(MembershipRequestCreateDto request, string email)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.Nickname))
+                    throw new ArgumentException("Nickname cannot be empty");
+                var existingMember = _unitOfWork.Users.Get(t => t.Email == email).FirstOrDefault();
+                if (existingMember == null)
+                    throw new ArgumentException("User not found");
+                var club = _unitOfWork.Clubs.GetAsQueryable(t => t.Id == request.ClubId).Include(t => t.MembershipRequests).SingleOrDefault();
+                if (club == null)
+                    throw new ArgumentException("Club not found");
+                if (club.MembershipRequests.Any(t => t.Nickname == request.Nickname))
+                    throw new ArgumentException($"Membership request for nickname {request.Nickname} already exists");
+                var newRequest = new MembershipRequest
+                {
+                    ClubId = request.ClubId,
+                    UserId = existingMember.Id,
+                    Created = DateTimeOffset.UtcNow,
+                    LastActivity = DateTimeOffset.UtcNow,
+                    Nickname = request.Nickname,
+                    SelectedFromExisting = request.SelectedFromExisting,
+                    Status = MembershipRequestStatus.Pending
+                };
+                club.MembershipRequests.Add(newRequest);
+                _unitOfWork.Save();
+                return newRequest.Id;
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while adding membership request. Please try a bit later");
+            }
+        }
+
+        public Page<MembershipRequestDto> GetClubMembershipRequests(EntityFilter filter, string email)
+        {
+            try
+            {
+                var existingMember = _unitOfWork.Users.Get(t => t.Email == email).FirstOrDefault();
+                if (existingMember == null)
+                    throw new ArgumentException("User not found");
+                var club = _unitOfWork.Clubs.GetAsQueryable(t => t.Id == filter.EntityId).Include(t => t.MembershipRequests).ThenInclude(t => t.User).FirstOrDefault();
+                if (club == null)
+                    throw new ArgumentException("Club not found");
+                var allRequests = string.IsNullOrEmpty(filter.SearchBy) ? club.MembershipRequests : club.MembershipRequests.Where(t => t.Nickname.ToLower().Contains(filter.SearchBy.ToLower())).ToList();
+                var skip = filter.Page == 0 ? 0 : (filter.Page - 1) * (filter.PageSize ?? 25);
+                var take = filter.PageSize ?? 25;
+                var orderByField = string.IsNullOrEmpty(filter.OrderBy) ? nameof(MembershipRequest.Created) : filter.OrderBy;
+                var allCount = allRequests.Count;
+                var slice = (filter.Asc ?
+                    allRequests.OrderBy(t => typeof(MembershipRequest).GetProperty(orderByField).GetValue(t)) :
+                    allRequests.OrderByDescending(t => typeof(MembershipRequest).GetProperty(orderByField).GetValue(t)))
+                    .Skip(skip)
+                    .Take(take);
+                var page = new Page<MembershipRequestDto>(filter.Page, filter.PageSize ?? 25, allCount, slice.Select(t => t.ToDto()));
+                return page;
+
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while fetching club membership requests. Please try a bit later");
+            }
+        }
     }
 }

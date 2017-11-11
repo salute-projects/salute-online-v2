@@ -5,7 +5,7 @@ import { GlobalState } from "../../services/global.state";
 import { SoSnackService } from "../../services/snack.service";
 import { Observable } from 'rxjs/Observable';
 import { MatDialog, MatDialogConfig, PageEvent } from "@angular/material";
-import { ClubDto, Country, Page, ClubMemberSummary, ClubMemberFilter } from "../../dto/dto";
+import { ClubDto, Country, Page, ClubMemberSummary, ClubMemberFilter, MembershipRequestDto, EntityFilter } from "../../dto/dto";
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DataSource } from '@angular/cdk/collections';
 import { CustomDataSource } from "../../services/datatable.service";
@@ -38,7 +38,13 @@ export class SoClubsEdit {
     clubMembers = new Page<ClubMemberSummary>();
     clubMembersFilter: ClubMemberFilter;
 
-    displayedColumns = [ 'nickname', 'firstName', 'lastName', 'registered', 'actions'];
+    // requests tab
+    memberRequestsDataSet: DataSource<MembershipRequestDto>;
+    memberRequests = new Page<MembershipRequestDto>();
+    memberRequestsFilter: EntityFilter;
+
+    displayedColumns = ['nickname', 'firstName', 'lastName', 'registered', 'actions'];
+    membershipColumns = ['created', 'nickname', 'status', 'firstName', 'lastName', 'actions' ];
 
     //#endregion
 
@@ -53,6 +59,7 @@ export class SoClubsEdit {
                 this.countryInputValue = result.country;
                 this.clubAdminsFilter = new ClubMemberFilter(this.id);
                 this.clubMembersFilter = new ClubMemberFilter(this.id);
+                this.memberRequestsFilter = new EntityFilter(this.id);
             }, error => {
                 this.snackService.showError(error.error, 'OK');
             });
@@ -94,6 +101,9 @@ export class SoClubsEdit {
         case 2:
             this.getClubMembers();
             break;
+        case 3:
+            this.getMemberRequests();
+            break;;
         }
     }
 
@@ -115,6 +125,15 @@ export class SoClubsEdit {
         });
     }
 
+    getMemberRequests() {
+        this.context.clubsApi.getMembershipRequests(this.memberRequestsFilter).subscribe(result => {
+            this.memberRequests = result;
+            this.memberRequestsDataSet = new CustomDataSource<MembershipRequestDto>(result.items);
+        }, error => {
+            this.snackService.showError(error.error, 'OK');
+        });
+    }
+
     getLength<T>(page: Page<T>) {
         return page.items ? page.items.length : 0;
     }
@@ -127,10 +146,15 @@ export class SoClubsEdit {
         debugger;
     }
 
+    requestsPaginationEvent(event: any) {
+        debugger;
+    }
+
     addMember() {
         const config: MatDialogConfig = {
             width: '400px',
-            panelClass: 'custom-dialog'
+            panelClass: 'custom-dialog',
+            data: { clubId: this.id }
         };
         const dialogRef = this.addMemberDialog.open(AddClubMemberDialog, config);
         dialogRef.afterClosed().subscribe(result => {

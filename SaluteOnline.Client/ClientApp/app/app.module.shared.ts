@@ -12,7 +12,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import {
     MatButtonModule, MatIconModule, MatMenuModule, MatDialogModule, MatTabsModule, MatInputModule, MatFormFieldModule, MatSnackBarModule, MatCardModule, MatDatepickerModule,
-    MatNativeDateModule, MatGridListModule, MatAutocompleteModule, MatExpansionModule, MatTableModule, MatPaginatorModule, MATERIAL_SANITY_CHECKS, MAT_DATE_LOCALE, MAT_NATIVE_DATE_FORMATS, MAT_DATE_FORMATS
+    MatNativeDateModule, MatGridListModule, MatAutocompleteModule, MatExpansionModule, MatTableModule, MatPaginatorModule, MatSelectModule,
+    MATERIAL_SANITY_CHECKS, MAT_DATE_LOCALE, MAT_NATIVE_DATE_FORMATS, MAT_DATE_FORMATS
 } from "@angular/material";
 
 import { TreeModule } from 'primeng/primeng';
@@ -37,6 +38,7 @@ import { SoClubsList } from "./components/so-clubs-list/so-clubs-list.component"
 import { CreateClubDialog } from "./components/so-create-club-dialog/so-create-club-dialog";
 import { SoClubsEdit } from "./components/so-club-edit/so-club-edit";
 import { AddClubMemberDialog } from "./components/so-add-club-member/so-add-club-member";
+import { MembershipRequestDialog } from "./components/so-membership-request-dialog/so-membership-request-dialog";
 
 // services
 
@@ -75,10 +77,11 @@ NgModule({
         SoClubsList,
         CreateClubDialog,
         AddClubMemberDialog,
+        MembershipRequestDialog,
         SoClubsEdit,
         TruncatePipe
     ],
-    entryComponents: [LoginDialog, CreateClubDialog, AddClubMemberDialog],
+    entryComponents: [LoginDialog, CreateClubDialog, AddClubMemberDialog, MembershipRequestDialog],
     providers: [ 
         Helpers,
         CustomDataSource,
@@ -110,6 +113,7 @@ NgModule({
         MatExpansionModule,
         MatTableModule,
         MatPaginatorModule,
+        MatSelectModule,
         CommonModule,
         HttpModule,
         FormsModule,

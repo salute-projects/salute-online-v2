@@ -23,7 +23,7 @@ namespace SaluteOnline.Domain.Domain.EF
         public User User { get; set; }
 
         [ForeignKey("Club")]
-        public int CludId { get; set; }
+        public int ClubId { get; set; }
         [JsonIgnore]
         public Club Club { get; set; }
     }

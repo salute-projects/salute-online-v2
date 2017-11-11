@@ -31,7 +31,10 @@ export class AddClubMemberDialog {
     }
 
     addMember() {
-        const args = this.helpers.formToObject(this.createClubMember, new CreateClubMemberDto());
+        const args = new CreateClubMemberDto();
+        args.clubId = this.data.clubId;
+        const nickname = this.createClubMember.get('nickname');
+        args.nickname = nickname ? nickname.value : '';
         this.context.clubsApi.addClubMember(args).subscribe((result: any) => {
             this.dialogRef.close(result);
         }, error => {

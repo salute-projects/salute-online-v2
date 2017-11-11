@@ -13,3 +13,17 @@ export class EqualityValidation {
         }
     }
 }
+
+export class AtLeastOneValidation {
+    static checkAtLeastOne(control: AbstractControl) {
+        const password = control.get('nickname');
+        const confirm = control.get('nicknameManual');
+        if (!password || !confirm)
+            return null;
+        if (!password.value && !confirm.value) {
+            confirm.setErrors({ checkAtLeastOne: true });
+        } else {
+            return null;
+        }
+    }
+}

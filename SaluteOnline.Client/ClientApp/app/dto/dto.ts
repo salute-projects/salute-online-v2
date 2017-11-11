@@ -104,6 +104,21 @@ export class BaseFilter {
     orderBy: string;
 }
 
+export class EntityFilter extends BaseFilter {
+    constructor(id: number) {
+        super();
+        this.entityId = id;
+        this.asc = false;
+        this.searchBy = '';
+        this.page = 1;
+        this.pageSize = 25;
+        this.orderBy = "";
+    }
+
+    entityId: number | null;
+    searchBy: string;
+}
+
 // clubs
 export enum ClubStatus {
     None = 0,
@@ -229,4 +244,28 @@ export class ClubMemberSummary {
 
 export class CreateClubMemberDto {
     nickname: string;
+    clubId: number;
+}
+
+export class MembershipRequestCreateDto {
+    clubId: number;
+    nickname: string;
+    selectedFromExisting: boolean;
+}
+
+export class MembershipRequestDto {
+    id: number;
+    nickname: string;
+    selectedFromExisting: boolean;
+    created: Date;
+    lastActivity: Date;
+    status: MembershipRequestStatus;
+    userInfo: UserMainInfoDto;
+}
+
+export enum MembershipRequestStatus {
+    None = 0,
+    Pending = 1,
+    Accepted = 2,
+    Declined = 3
 }

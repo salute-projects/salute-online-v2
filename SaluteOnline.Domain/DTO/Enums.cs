@@ -51,4 +51,12 @@
         Deleted = 4,
         ActiveAndPending = 5
     }
+
+    public enum MembershipRequestStatus
+    {
+        None = 0,
+        Pending = 1,
+        Accepted = 2,
+        Declined = 3
+    }
 }

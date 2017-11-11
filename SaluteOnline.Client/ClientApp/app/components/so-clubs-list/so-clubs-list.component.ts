@@ -6,6 +6,7 @@ import { SoSnackService } from "../../services/snack.service";
 import { Observable } from 'rxjs/Observable';
 import { MatDialog, MatDialogConfig } from "@angular/material";
 import { CreateClubDialog } from "../so-create-club-dialog/so-create-club-dialog";
+import { MembershipRequestDialog } from "../so-membership-request-dialog/so-membership-request-dialog";
 import { Page, ClubDto, ClubFilter, ClubInfoAggregation, ClubSummaryDto } from "../../dto/dto";
 import { TreeNode } from 'primeng/primeng';
 
@@ -99,5 +100,19 @@ export class SoClubsList {
 
     edit(id: number) {
         this.router.navigate(['so-club-edit', id]);
+    }
+
+    sendMembershipRequest(id: number) {
+        const config: MatDialogConfig = {
+            width: '400px',
+            panelClass: 'custom-dialog',
+            data: { clubId: id }
+        };
+        const dialogRef = this.loginDialog.open(MembershipRequestDialog, config);
+        dialogRef.afterClosed().subscribe(result => {
+            debugger;
+        }, error => {
+            this.snackService.showError(error.error, "OK");
+        });
     }
 }

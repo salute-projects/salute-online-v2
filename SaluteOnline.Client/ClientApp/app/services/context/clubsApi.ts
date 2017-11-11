@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { apiSettings } from "../../configuration/constants";
 import { AuthService } from "../../services/auth";
 import { Observable, Observer } from 'rxjs';
-import { CreateClubDto, ClubFilter, Page, ClubDto, ClubSummaryDto, ClubInfoAggregation, ClubMemberFilter, ClubMemberSummary, CreateClubMemberDto } from "../../dto/dto";
+import { CreateClubDto, ClubFilter, Page, ClubDto, ClubSummaryDto, ClubInfoAggregation, ClubMemberFilter, ClubMemberSummary, CreateClubMemberDto,
+    MembershipRequestCreateDto, MembershipRequestDto, EntityFilter } from "../../dto/dto";
 
 @Injectable()
 export class ClubsApi {
@@ -14,7 +15,9 @@ export class ClubsApi {
         getClubInfo: 'clubs/',
         getClubAdministrators: 'clubs/admins',
         getClubMembers: 'clubs/members',
-        addClubMember: 'clubs/addClubMember'
+        addClubMember: 'clubs/addClubMember',
+        addMembershipRequest: 'clubs/addMembershipRequest',
+        getMembershipRequests: 'clubs/getMembershipRequests'
     }
 
     constructor(private readonly http: HttpClient, private readonly auth: AuthService) {
@@ -88,5 +91,25 @@ export class ClubsApi {
                 observer.complete();
             });
         return this.http.post(apiSettings.baseUrl + this.urls.addClubMember, member, { headers: headers, responseType: "text" });
+    }
+
+    addMembershipRequest(dto: MembershipRequestCreateDto): Observable<string> {
+        const headers = this.auth.tryGetAuth();
+        if (headers === undefined)
+            return Observable.create((observer: Observer<any>) => {
+                observer.error("Not authenticated");
+                observer.complete();
+            });
+        return this.http.post(apiSettings.baseUrl + this.urls.addMembershipRequest, dto, { headers: headers, responseType: "text" });
+    }
+
+    getMembershipRequests(filter: EntityFilter): Observable<Page<MembershipRequestDto>> {
+        const headers = this.auth.tryGetAuth();
+        if (headers === undefined)
+            return Observable.create((observer: Observer<any>) => {
+                observer.error("Not authenticated");
+                observer.complete();
+            });
+        return this.http.post<Page<MembershipRequestDto>>(apiSettings.baseUrl + this.urls.getMembershipRequests, filter, { headers: headers });
     }
 }
