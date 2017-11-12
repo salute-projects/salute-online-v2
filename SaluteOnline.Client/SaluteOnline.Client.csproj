@@ -37,6 +37,7 @@
     <None Remove="ClientApp\app\dto\club.ts" />
     <None Remove="ClientApp\app\dto\common.ts" />
     <None Remove="ClientApp\app\dto\dto.ts" />
+    <None Remove="ClientApp\app\dto\innerMessage.ts" />
     <None Remove="ClientApp\app\dto\user.ts" />
     <None Remove="ClientApp\app\pipes\string-pipes.ts" />
     <None Remove="ClientApp\app\services\auth.ts" />
@@ -44,6 +45,7 @@
     <None Remove="ClientApp\app\services\context.ts" />
     <None Remove="ClientApp\app\services\context\clubsApi.ts" />
     <None Remove="ClientApp\app\services\context\commonApi.ts" />
+    <None Remove="ClientApp\app\services\context\innerMessageApi.ts" />
     <None Remove="ClientApp\app\services\context\userApi.ts" />
     <None Remove="ClientApp\app\services\datatable.service.ts" />
     <None Remove="ClientApp\app\services\global.state.ts" />
@@ -70,6 +72,7 @@
     <TypeScriptCompile Include="ClientApp\app\dto\club.ts" />
     <TypeScriptCompile Include="ClientApp\app\dto\common.ts" />
     <TypeScriptCompile Include="ClientApp\app\dto\dto.ts" />
+    <TypeScriptCompile Include="ClientApp\app\dto\innerMessage.ts" />
     <TypeScriptCompile Include="ClientApp\app\dto\user.ts" />
     <TypeScriptCompile Include="ClientApp\app\pipes\string-pipes.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\auth.ts" />
@@ -77,6 +80,7 @@
     <TypeScriptCompile Include="ClientApp\app\services\context\clubsApi.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\context\commonApi.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\context\context.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\context\innerMessageApi.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\context\userApi.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\datatable.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\global.state.ts" />

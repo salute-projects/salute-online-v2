@@ -60,6 +60,12 @@ namespace SaluteOnline.Domain.Domain.EF
 
         [JsonIgnore]
         public ICollection<Player> PlayersAccounts { get; set; } = new List<Player>();
+
+        [JsonIgnore]
+        public ICollection<InnerMessage> InnerMessagesSend { get; set; } = new List<InnerMessage>();
+
+        [JsonIgnore]
+        public ICollection<InnerMessage> InnerMessagesReceived { get; set; } = new List<InnerMessage>();
         
     }
 }

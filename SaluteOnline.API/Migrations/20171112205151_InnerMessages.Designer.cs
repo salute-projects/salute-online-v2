@@ -12,9 +12,10 @@ using System;
 namespace SaluteOnline.API.Migrations
 {
     [DbContext(typeof(SaluteOnlineDbContext))]
-    partial class SaluteOnlineDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171112205151_InnerMessages")]
+    partial class InnerMessages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,10 +68,6 @@ namespace SaluteOnline.API.Migrations
 
                     b.Property<string>("Body");
 
-                    b.Property<int?>("ClubId");
-
-                    b.Property<int?>("ClubId1");
-
                     b.Property<DateTimeOffset>("Created");
 
                     b.Property<Guid>("Guid");
@@ -98,10 +95,6 @@ namespace SaluteOnline.API.Migrations
                     b.Property<int?>("UserId1");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ClubId");
-
-                    b.HasIndex("ClubId1");
 
                     b.HasIndex("UserId");
 
@@ -266,14 +259,6 @@ namespace SaluteOnline.API.Migrations
 
             modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.InnerMessage", b =>
                 {
-                    b.HasOne("SaluteOnline.Domain.Domain.EF.Club")
-                        .WithMany("InnerMessagesReceived")
-                        .HasForeignKey("ClubId");
-
-                    b.HasOne("SaluteOnline.Domain.Domain.EF.Club")
-                        .WithMany("InnerMessagesSend")
-                        .HasForeignKey("ClubId1");
-
                     b.HasOne("SaluteOnline.Domain.Domain.EF.User")
                         .WithMany("InnerMessagesReceived")
                         .HasForeignKey("UserId");

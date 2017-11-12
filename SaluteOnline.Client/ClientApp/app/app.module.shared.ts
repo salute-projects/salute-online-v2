@@ -56,6 +56,7 @@ import { AuthInterceptor } from "./services/httpInterceptor";
 import { ClubsApi } from "./services/context/clubsApi";
 import { CommonApi } from "./services/context/commonApi";
 import { UserApi } from "./services/context/userApi";
+import { InnerMessageApi } from "./services/context/innerMessageApi";
 import { Context } from "./services/context/context";
 
 // pipes
@@ -92,6 +93,7 @@ NgModule({
         CommonApi,
         UserApi,
         ClubsApi,
+        InnerMessageApi,
         Context,
         { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
         { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },

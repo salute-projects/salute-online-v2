@@ -326,7 +326,9 @@ namespace SaluteOnline.API.Services.Implementation
                 var existingMember = _unitOfWork.Users.Get(t => t.Email == email).FirstOrDefault();
                 if (existingMember == null)
                     throw new ArgumentException("User not found");
-                var club = _unitOfWork.Clubs.GetAsQueryable(t => t.Id == request.ClubId).Include(t => t.MembershipRequests).SingleOrDefault();
+                var club = _unitOfWork.Clubs.GetAsQueryable(t => t.Id == request.ClubId)
+                    .Include(t => t.Administrators).ThenInclude(t => t.User)
+                    .Include(t => t.MembershipRequests).SingleOrDefault();
                 if (club == null)
                     throw new ArgumentException("Club not found");
                 if (club.MembershipRequests.Any(t => t.Nickname == request.Nickname))
@@ -342,6 +344,24 @@ namespace SaluteOnline.API.Services.Implementation
                     Status = MembershipRequestStatus.Pending
                 };
                 club.MembershipRequests.Add(newRequest);
+                var messageGuid = Guid.NewGuid();
+                foreach (var administrator in club.Administrators)
+                {
+                    administrator.User.InnerMessagesReceived.Add(new InnerMessage
+                    {
+                        Status = MessageStatus.Pending,
+                        Body = $"You have a new membership request in club {club.Title} from user with nickname {request.Nickname}",
+                        Created = DateTimeOffset.UtcNow,
+                        Guid = messageGuid,
+                        OneResponseForAll = true,
+                        LastActivity = DateTimeOffset.UtcNow,
+                        SentBySystem = true,
+                        Title = "New Membership Request",
+                        SenderType = EntityType.System,
+                        ReceiverType = EntityType.User,
+                        ReceiverId = administrator.UserId
+                    });
+                }
                 _unitOfWork.Save();
                 return newRequest.Id;
             }

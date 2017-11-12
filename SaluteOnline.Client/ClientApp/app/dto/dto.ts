@@ -7,4 +7,8 @@ export { Country, BaseFilter, EntityFilter, Page };
 import { ClubMemberSummary, ClubDto, ClubFilter, ClubInfoAggregation, ClubMemberFilter, ClubStatus, ClubSummaryDto, CreateClubDto, CreateClubMemberDto,
     MembershipRequestCreateDto, MembershipRequestDto, MembershipRequestStatus, HandleMembershipRequestDto, MembershipRequestFilter } from "./club";
 export { ClubMemberSummary, ClubDto, ClubFilter, ClubInfoAggregation, ClubMemberFilter, ClubStatus, ClubSummaryDto, CreateClubDto, CreateClubMemberDto,
-    MembershipRequestCreateDto, MembershipRequestDto, MembershipRequestStatus, HandleMembershipRequestDto, MembershipRequestFilter };
+    MembershipRequestCreateDto, MembershipRequestDto, MembershipRequestStatus, HandleMembershipRequestDto, MembershipRequestFilter
+};
+
+import { EntityType, InnerMessageDto, InnerMessagesFilter, MessageStatus } from "./innerMessage";
+export { EntityType, InnerMessageDto, InnerMessagesFilter, MessageStatus };

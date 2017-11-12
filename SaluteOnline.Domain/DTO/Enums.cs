@@ -59,4 +59,18 @@
         Accepted = 2,
         Declined = 3
     }
+
+    public enum MessageStatus
+    {
+        None = 0,
+        Pending = 1,
+        Closed = 2
+    }
+
+    public enum EntityType
+    {
+        System = 0,
+        User = 1,
+        Club = 2
+    }
 }

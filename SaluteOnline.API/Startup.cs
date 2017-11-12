@@ -84,6 +84,7 @@ namespace SaluteOnline.API
             services.AddScoped<IActivityService, ActivityService>();
             services.AddScoped<ICommonService, CommonService>();
             services.AddScoped<IClubsService, ClubsService>();
+            services.AddScoped<IMessageService, MessageService>();
         }
 
         private static void InitializeProviders(IServiceCollection services)

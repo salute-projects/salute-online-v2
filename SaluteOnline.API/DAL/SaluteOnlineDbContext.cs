@@ -12,11 +12,13 @@ namespace SaluteOnline.API.DAL
         public DbSet<User> Users { get; set; }
         public DbSet<Club> Clubs { get; set; }
         public DbSet<Player> Players { get; set; }
+        public DbSet<InnerMessage> InnerMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<Club>().ToTable("Club");
+            modelBuilder.Entity<InnerMessage>().ToTable("InnerMessages");
 
             modelBuilder.Entity<ClubUserAdministrator>().HasKey(t => new {t.ClubId, t.UserId});
             modelBuilder.Entity<ClubUserAdministrator>()
