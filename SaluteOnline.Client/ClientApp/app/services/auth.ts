@@ -79,7 +79,7 @@ export class AuthService {
     refreshToken(): Observable<LoginResultDto> {
         return Observable.create((observer: Observer<LoginResultDto>) => {
             const refreshToken = localStorage.getItem("refresh_token");
-            if (!refreshToken || refreshToken == 'undefined') {
+            if (!refreshToken || refreshToken === 'undefined') {
                 return Observable.create(() => {
                     observer.error('Refresh token not found');
                     observer.complete();
@@ -132,17 +132,17 @@ export class AuthService {
         return new Date().getTime() < expiresAt;
     }
 
-    tryGetAuth(): HttpHeaders | undefined {
+    tryGetToken(): string | undefined {
         if (!this.isAuthenticated()) {
             if (localStorage.getItem('refresh_token')) {
                 this.refreshToken().subscribe(() => {
-                    return new HttpHeaders().set('Authorization', `Bearer ${sessionStorage.getItem('token')}`);
+                    return `Bearer ${sessionStorage.getItem('token')}`;
                 }, () => {
                     return undefined;
                 });
             }
             return undefined;
         }
-        return new HttpHeaders().set('Authorization', `Bearer ${sessionStorage.getItem('token')}`);
+        return `Bearer ${sessionStorage.getItem('token')}`;
     }
 }

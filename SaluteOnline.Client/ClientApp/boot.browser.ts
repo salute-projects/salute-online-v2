@@ -13,9 +13,9 @@ if (module.hot) {
         const oldRootElem = document.querySelector('app');
         const newRootElem = document.createElement('app');
         oldRootElem!.parentNode!.insertBefore(newRootElem, oldRootElem);
-        if (modulePromise) {
-            modulePromise.then(appModule => appModule.destroy());   
-        }
+        //if (modulePromise) {
+        //    modulePromise.then(appModule => appModule.destroy());   
+        //}
     });
 } else {
     enableProdMode();

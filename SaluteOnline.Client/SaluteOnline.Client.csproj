@@ -34,7 +34,10 @@
     <None Remove="ClientApp\app\components\so-user-profile\so-user-profile.component.ts" />
     <None Remove="ClientApp\app\configuration\constants.ts" />
     <None Remove="ClientApp\app\configuration\menu-list.ts" />
+    <None Remove="ClientApp\app\dto\club.ts" />
+    <None Remove="ClientApp\app\dto\common.ts" />
     <None Remove="ClientApp\app\dto\dto.ts" />
+    <None Remove="ClientApp\app\dto\user.ts" />
     <None Remove="ClientApp\app\pipes\string-pipes.ts" />
     <None Remove="ClientApp\app\services\auth.ts" />
     <None Remove="ClientApp\app\services\authGuard.ts" />
@@ -45,6 +48,7 @@
     <None Remove="ClientApp\app\services\datatable.service.ts" />
     <None Remove="ClientApp\app\services\global.state.ts" />
     <None Remove="ClientApp\app\services\helpers.ts" />
+    <None Remove="ClientApp\app\services\httpInterceptor.ts" />
     <None Remove="ClientApp\app\services\snack.service.ts" />
   </ItemGroup>
 
@@ -63,7 +67,10 @@
     <TypeScriptCompile Include="ClientApp\app\components\so-user-profile\so-user-profile.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\configuration\constants.ts" />
     <TypeScriptCompile Include="ClientApp\app\configuration\menu-list.ts" />
+    <TypeScriptCompile Include="ClientApp\app\dto\club.ts" />
+    <TypeScriptCompile Include="ClientApp\app\dto\common.ts" />
     <TypeScriptCompile Include="ClientApp\app\dto\dto.ts" />
+    <TypeScriptCompile Include="ClientApp\app\dto\user.ts" />
     <TypeScriptCompile Include="ClientApp\app\pipes\string-pipes.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\auth.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\authGuard.ts" />
@@ -74,6 +81,7 @@
     <TypeScriptCompile Include="ClientApp\app\services\datatable.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\global.state.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\helpers.ts" />
+    <TypeScriptCompile Include="ClientApp\app\services\httpInterceptor.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\snack.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\validators.ts" />
   </ItemGroup>

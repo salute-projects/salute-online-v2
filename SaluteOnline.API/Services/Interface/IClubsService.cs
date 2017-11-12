@@ -15,6 +15,7 @@ namespace SaluteOnline.API.Services.Interface
         Page<ClubMemberSummary> GetClubMembers(ClubMembersFilter filter);
         ClubMemberSummary AddClubMember(CreateClubMemberDto member, string email);
         int AddMembershipRequest(MembershipRequestCreateDto request, string email);
-        Page<MembershipRequestDto> GetClubMembershipRequests(EntityFilter filter, string email);
+        Page<MembershipRequestDto> GetClubMembershipRequests(MembershipRequestFilter filter, string email);
+        void HandleMembershipRequest(HandleMembershipRequestDto dto, string email);
     }
 }

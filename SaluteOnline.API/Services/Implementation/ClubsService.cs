@@ -356,7 +356,7 @@ namespace SaluteOnline.API.Services.Implementation
             }
         }
 
-        public Page<MembershipRequestDto> GetClubMembershipRequests(EntityFilter filter, string email)
+        public Page<MembershipRequestDto> GetClubMembershipRequests(MembershipRequestFilter filter, string email)
         {
             try
             {
@@ -366,7 +366,9 @@ namespace SaluteOnline.API.Services.Implementation
                 var club = _unitOfWork.Clubs.GetAsQueryable(t => t.Id == filter.EntityId).Include(t => t.MembershipRequests).ThenInclude(t => t.User).FirstOrDefault();
                 if (club == null)
                     throw new ArgumentException("Club not found");
-                var allRequests = string.IsNullOrEmpty(filter.SearchBy) ? club.MembershipRequests : club.MembershipRequests.Where(t => t.Nickname.ToLower().Contains(filter.SearchBy.ToLower())).ToList();
+                var allRequests = string.IsNullOrEmpty(filter.SearchBy) ? 
+                    club.MembershipRequests.Where(t => t.Status == filter.Status).ToList() : 
+                    club.MembershipRequests.Where(t => t.Nickname.ToLower().Contains(filter.SearchBy.ToLower()) && t.Status == filter.Status).ToList();
                 var skip = filter.Page == 0 ? 0 : (filter.Page - 1) * (filter.PageSize ?? 25);
                 var take = filter.PageSize ?? 25;
                 var orderByField = string.IsNullOrEmpty(filter.OrderBy) ? nameof(MembershipRequest.Created) : filter.OrderBy;
@@ -379,6 +381,70 @@ namespace SaluteOnline.API.Services.Implementation
                 var page = new Page<MembershipRequestDto>(filter.Page, filter.PageSize ?? 25, allCount, slice.Select(t => t.ToDto()));
                 return page;
 
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while fetching club membership requests. Please try a bit later");
+            }
+        }
+
+        public void HandleMembershipRequest(HandleMembershipRequestDto dto, string email)
+        {
+            try
+            {
+                var existingMember = _unitOfWork.Users.Get(t => t.Email == email).SingleOrDefault();
+                if (existingMember == null)
+                    throw new ArgumentException("User not found");
+                var club =
+                    _unitOfWork.Clubs.GetAsQueryable(t => t.Id == dto.ClubId)
+                        .Include(t => t.Players)
+                        .Include(t => t.MembershipRequests).ThenInclude(t => t.User)
+                        .Include(t => t.Administrators)
+                        .FirstOrDefault();
+                if (club == null)
+                    throw new ArgumentException("Club not found");
+                if (club.Administrators.All(t => t.UserId != existingMember.Id))
+                    throw new ArgumentException("Operation not allowed");
+                var request = club.MembershipRequests.SingleOrDefault(t => t.Id == dto.RequestId);
+                if (request == null)
+                    throw new ArgumentException("Request not found");
+                request.Status = dto.Status;
+                request.LastActivity = DateTimeOffset.UtcNow;
+                if (dto.Status == MembershipRequestStatus.Accepted)
+                {
+                    var user = request.User;
+                    if (request.SelectedFromExisting)
+                    {
+                        var player = club.Players.SingleOrDefault(t => t.Nickname == request.Nickname);
+                        if (player == null)
+                            throw new ArgumentException("Requested member account not found");
+                        player.User = user;
+                        player.Nickname = request.Nickname;
+                        player.LastChanged = DateTimeOffset.UtcNow;
+                        user.PlayersAccounts.Add(player);
+                    }
+                    else
+                    {
+                        var newPlayer = new Player
+                        {
+                            ClubId = club.Id,
+                            Guid = Guid.NewGuid(),
+                            IsActive = true,
+                            Registered = DateTimeOffset.UtcNow,
+                            LastChanged = DateTimeOffset.UtcNow,
+                            Nickname = request.Nickname,
+                            UserId = user.Id
+                        };
+                        club.Players.Add(newPlayer);
+                        user.PlayersAccounts.Add(newPlayer);
+                    }
+                }
+                _unitOfWork.Save();
             }
             catch (ArgumentException)
             {

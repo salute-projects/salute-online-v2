@@ -129,7 +129,7 @@
                                        (page)="usersPaginationEvent($event)">
                         </mat-paginator>
                     </mat-tab>
-                    <mat-tab label="PENDING REQUESTS">
+                    <mat-tab label="MEMBERSHIP REQUESTS 1">
                         <mat-table #table [dataSource]="memberRequestsDataSet">
                             <ng-container matColumnDef="created">
                                 <mat-header-cell *matHeaderCellDef> CREATED </mat-header-cell>
@@ -152,8 +152,17 @@
                                 <mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.userInfo.lastName}} </mat-cell>
                             </ng-container>
                             <ng-container matColumnDef="actions">
-                                <mat-header-cell *matHeaderCellDef class="text-right"></mat-header-cell>
-                                <mat-cell *matCellDef="let row">  </mat-cell>
+                                <mat-header-cell *matHeaderCellDef class="text-right">
+                                    <mat-form-field>
+                                        <mat-select placeholder="Status" (change)="requestFilterStatusChanged($event)">
+                                            <mat-option *ngFor="let status of requestStatuses" [value]="status">{{ status }}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let row" class="text-nowrap">
+                                    <button mat-raised-button color="primary" (click)="handleMembershipRequest(true, row.id)" *ngIf="row.status === 1">ACCEPT</button>
+                                    <button mat-raised-button color="accent" (click)="handleMembershipRequest(false, row.id)" *ngIf="row.status === 1">DECLINE</button>
+                                </mat-cell>
                             </ng-container>
                             <mat-header-row *matHeaderRowDef="membershipColumns"></mat-header-row>
                             <mat-row *matRowDef="let row; columns: membershipColumns;"></mat-row>

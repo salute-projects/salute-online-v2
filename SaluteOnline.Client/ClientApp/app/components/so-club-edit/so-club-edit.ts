@@ -5,7 +5,7 @@ import { GlobalState } from "../../services/global.state";
 import { SoSnackService } from "../../services/snack.service";
 import { Observable } from 'rxjs/Observable';
 import { MatDialog, MatDialogConfig, PageEvent } from "@angular/material";
-import { ClubDto, Country, Page, ClubMemberSummary, ClubMemberFilter, MembershipRequestDto, EntityFilter } from "../../dto/dto";
+import { ClubDto, Country, Page, ClubMemberSummary, ClubMemberFilter, MembershipRequestDto, EntityFilter, HandleMembershipRequestDto, MembershipRequestStatus, MembershipRequestFilter } from "../../dto/dto";
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DataSource } from '@angular/cdk/collections';
 import { CustomDataSource } from "../../services/datatable.service";
@@ -41,10 +41,11 @@ export class SoClubsEdit {
     // requests tab
     memberRequestsDataSet: DataSource<MembershipRequestDto>;
     memberRequests = new Page<MembershipRequestDto>();
-    memberRequestsFilter: EntityFilter;
+    memberRequestsFilter: MembershipRequestFilter;
 
     displayedColumns = ['nickname', 'firstName', 'lastName', 'registered', 'actions'];
-    membershipColumns = ['created', 'nickname', 'status', 'firstName', 'lastName', 'actions' ];
+    membershipColumns = ['created', 'nickname', 'status', 'firstName', 'lastName', 'actions'];
+    requestStatuses = ['Pending', 'Accepted', 'Declined'];
 
     //#endregion
 
@@ -59,7 +60,7 @@ export class SoClubsEdit {
                 this.countryInputValue = result.country;
                 this.clubAdminsFilter = new ClubMemberFilter(this.id);
                 this.clubMembersFilter = new ClubMemberFilter(this.id);
-                this.memberRequestsFilter = new EntityFilter(this.id);
+                this.memberRequestsFilter = new MembershipRequestFilter(this.id);
             }, error => {
                 this.snackService.showError(error.error, 'OK');
             });
@@ -162,5 +163,25 @@ export class SoClubsEdit {
         }, error => {
             this.snackService.showError(error.error, "OK");
         });
+    }
+
+    handleMembershipRequest(accept: boolean, requestId: number) {
+        const dto = new HandleMembershipRequestDto();
+        dto.requestId = requestId;
+        dto.clubId = this.id;
+        dto.status = accept ? MembershipRequestStatus.Accepted : MembershipRequestStatus.Declined;
+        this.context.clubsApi.handleMembershipRequest(dto).subscribe(result => {
+        }, error => {
+        });
+    }
+
+    requestFilterStatusChanged(event: any) {
+        const status: MembershipRequestStatus = (MembershipRequestStatus as any)[event.value];
+        this.memberRequestsFilter.status = status;
+        this.getMemberRequests();
+    }
+
+    getDateColumnHeader(row: any) {
+        return 'CREATED';
     }
 }

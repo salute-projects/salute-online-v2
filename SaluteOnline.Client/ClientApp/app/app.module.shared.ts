@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AppComponent } from './components/app/app.component';
 import { CanActivate } from '@angular/router';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // third party
 
@@ -47,6 +48,7 @@ import { GlobalState } from "./services/global.state";
 import { AuthService } from "./services/auth";
 import { Helpers } from "./services/helpers";
 import { CustomDataSource } from "./services/datatable.service";
+import { AuthInterceptor } from "./services/httpInterceptor";
 
 // context
 
@@ -92,7 +94,8 @@ NgModule({
         ClubsApi,
         Context,
         { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
-        { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS }
+        { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
     ],
     imports: [
         FormsModule,

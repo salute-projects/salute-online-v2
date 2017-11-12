@@ -156,7 +156,7 @@ namespace SaluteOnline.API.Controllers
 
         [HttpPost("getMembershipRequests")]
         [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
-        public IActionResult GetMembershipRequests([FromBody] EntityFilter filter)
+        public IActionResult GetMembershipRequests([FromBody] MembershipRequestFilter filter)
         {
             try
             {
@@ -164,6 +164,24 @@ namespace SaluteOnline.API.Controllers
                 if (string.IsNullOrEmpty(email))
                     return BadRequest("Authorization failed.");
                 return Ok(_service.GetClubMembershipRequests(filter, email));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("handleMembershipRequest")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        public IActionResult HandleMembershipRequest([FromBody] HandleMembershipRequestDto dto)
+        {
+            try
+            {
+                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
+                if (string.IsNullOrEmpty(email))
+                    return BadRequest("Authorization failed.");
+                _service.HandleMembershipRequest(dto, email);
+                return Ok();
             }
             catch (Exception e)
             {

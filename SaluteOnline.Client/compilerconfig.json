@@ -17,6 +17,6 @@
   },
   {
     "outputFile": "ClientApp/app/components/so-header/so-header.component.css",
-    "inputFile": "ClientApp/app/components/so-header/so-header.component.html"
+    "inputFile": "ClientApp/app/components/so-header/so-header.component.scss"
   }
 ]
