@@ -14,7 +14,6 @@ export class Context {
     innerMessageApi: InnerMessageApi;
 
     constructor(private readonly userApiWrapper: UserApi, private readonly commonApiWrapper: CommonApi, private readonly clubsApiWrapper: ClubsApi, private readonly innerMessageApiWrapper: InnerMessageApi) {
-        debugger;
         this.userApi = userApiWrapper;
         this.commonApi = commonApiWrapper;
         this.clubsApi = clubsApiWrapper;

@@ -140,15 +140,12 @@ export class SoClubsEdit {
     }
 
     adminsPaginationEvent(event: any) {
-        debugger;
     }
 
     usersPaginationEvent(event: any) {
-        debugger;
     }
 
     requestsPaginationEvent(event: any) {
-        debugger;
     }
 
     addMember() {
@@ -159,7 +156,6 @@ export class SoClubsEdit {
         };
         const dialogRef = this.addMemberDialog.open(AddClubMemberDialog, config);
         dialogRef.afterClosed().subscribe(result => {
-            debugger;
         }, error => {
             this.snackService.showError(error.error, "OK");
         });

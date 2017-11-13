@@ -11,11 +11,18 @@ if (module.hot) {
     module.hot.dispose(() => {
         // Before restarting the app, we create a new root element and dispose the old one
         const oldRootElem = document.querySelector('app');
+        const old = document.getElementsByTagName('app');
         const newRootElem = document.createElement('app');
         oldRootElem!.parentNode!.insertBefore(newRootElem, oldRootElem);
-        //if (modulePromise) {
-        //    modulePromise.then(appModule => appModule.destroy());   
-        //}
+        if (modulePromise) {
+            modulePromise.then(
+                appModule => {
+                    if (oldRootElem && oldRootElem.parentNode) {
+                        oldRootElem.parentNode.removeChild(oldRootElem);
+                    }
+                    appModule.destroy();
+                });   
+        }
     });
 } else {
     enableProdMode();

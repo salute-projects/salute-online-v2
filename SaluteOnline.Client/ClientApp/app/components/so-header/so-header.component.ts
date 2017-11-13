@@ -21,6 +21,7 @@ export class SoHeader {
     logged = false;
     email: string;
     password: string;
+    messages : InnerMessageDto[] = [];
 
     constructor(private readonly state: GlobalState, private readonly router: Router, private readonly authService: AuthService, public loginDialog: MatDialog,
         private readonly sanitizer: DomSanitizer, private readonly context: Context ) {
@@ -34,14 +35,13 @@ export class SoHeader {
             if (logged) {
                 const filter = new InnerMessagesFilter(EntityType.User, null);
                 this.context.innerMessageApi.getMessages(filter).subscribe(result => {
-                    debugger;
+                    this.messages = result;
                 }, error => {
-                    debugger;
                 });
             }
         });
         this.state.subscribe(this.state.events.user.avatarChanged, () => {
-            var avatar = localStorage.getItem('avatar') || '';
+            const avatar = localStorage.getItem('avatar') || '';
             this.avatar = this.sanitizer.bypassSecurityTrustResourceUrl(avatar);
         });
     }

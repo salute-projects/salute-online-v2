@@ -14,6 +14,15 @@
     <div class="header-actions-container pull-right">
         <button mat-raised-button color="primary" *ngIf="!logged" (click)="openDialog()">Увійти</button>
 
+        <button mat-fab color="primary" *ngIf="logged" [matMenuTriggerFor]="messageMenu">
+            <span>{{messages.length}}</span>
+        </button>
+        <mat-menu #messageMenu="matMenu">
+            <div *ngFor="let message of messages">
+                <span>{{message.body}}</span>
+            </div>
+        </mat-menu>
+
         <button mat-fab [matMenuTriggerFor]="menu" color="primary" class="so-user-button" *ngIf="logged">
             <img [src]="avatar" alt="logo" />
         </button>

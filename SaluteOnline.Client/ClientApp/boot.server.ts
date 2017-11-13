@@ -22,7 +22,6 @@ export default createServerRenderer(params => {
         const zone = moduleRef.injector.get(NgZone) as NgZone;
 
         return new Promise<RenderResult>((resolve, reject) => {
-            
             zone.onError.subscribe((errorInfo: any) => reject(errorInfo));
             appRef.isStable.first(isStable => isStable).subscribe(() => {
                 // Because 'onStable' fires before 'onError', we have to delay slightly before

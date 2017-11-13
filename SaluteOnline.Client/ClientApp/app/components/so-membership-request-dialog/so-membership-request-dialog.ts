@@ -83,7 +83,6 @@ export class MembershipRequestDialog {
         args.nickname = nicknameManualControl && nicknameManualControl.value
             ? nicknameManualControl.value
             : nicknameControl ? nicknameControl.value : '';
-        debugger;
         this.context.clubsApi.addMembershipRequest(args).subscribe(result => {
             this.snackService.showGeneral('Request successfully sent', 'OK');
             this.dialogRef.close(result);

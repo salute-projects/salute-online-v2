@@ -34,6 +34,7 @@ namespace SaluteOnline.API.Services.Implementation
                 {
                     case EntityType.User:
                         var targetUser = _unitOfWork.Users.GetAsQueryable(t => t.Id == currentUser.Id)
+                            .Include(t => t.InnerMessagesReceived)
                             .Include(t => t.ClubsAdministrated)
                             .ThenInclude(t => t.Club)
                             .ThenInclude(t => t.InnerMessagesReceived)

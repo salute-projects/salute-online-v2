@@ -110,7 +110,6 @@ export class SoClubsList {
         };
         const dialogRef = this.loginDialog.open(MembershipRequestDialog, config);
         dialogRef.afterClosed().subscribe(result => {
-            debugger;
         }, error => {
             this.snackService.showError(error.error, "OK");
         });
