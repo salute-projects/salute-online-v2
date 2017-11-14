@@ -35,6 +35,10 @@ a.disabled {
     flex-direction: column;
 }
 
+.m-t-8 {
+    margin-top: 8px;
+}
+
 .m-r-6 {
     margin-right: 6px;
 }
@@ -57,4 +61,32 @@ a.disabled {
 
 .m-t-20 { 
     margin-top: 20px;
+}
+
+.m-b-16 {
+    margin-bottom: 16px;
+}
+
+.m-b-8 {
+    margin-bottom: 8px;
+}
+
+.m-r-16 {
+    margin-right: 16px !important;
+}
+
+.font-07 {
+    font-size: 0.7em;
+}
+
+.font-08 {
+    font-size: 0.8em;
+}
+
+.font-10 {
+    font-size: 1em;
+}
+
+.no-padding {
+    padding: 0;
 }

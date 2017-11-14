@@ -72,4 +72,8 @@ export class SoHeader {
     gotoUserProfile() {
         this.router.navigateByUrl('/so-user-profile');
     }
+
+    getAvatar(avatar: string) {
+        return this.avatar;
+    }
 }

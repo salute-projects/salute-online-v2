@@ -70,3 +70,25 @@
     display: block;
     margin: 4px 0; }
 
+.messages-popup {
+  font-size: "Ubuntu Condensed", sans-serif; }
+  .messages-popup .messages-popup-header {
+    padding-left: 16px;
+    padding-right: 16px; }
+    .messages-popup .messages-popup-header h4 {
+      font-family: "Ubuntu Condensed", sans-serif;
+      font-weight: bold; }
+  .messages-popup .messages-popup-item {
+    cursor: pointer;
+    padding: 8px; }
+    .messages-popup .messages-popup-item:hover {
+      background-color: #E5F6FF; }
+    .messages-popup .messages-popup-item .mesage-item-container {
+      padding: 8px;
+      margin-bottom: 12px; }
+  .messages-popup .messages-popup-footer button {
+    width: 100%;
+    padding: 16px;
+    text-transform: uppercase;
+    align-self: center; }
+

@@ -99,3 +99,41 @@
         }
     }
 }
+
+.messages-popup {
+    font-size: $font-family;
+
+    .messages-popup-header {
+        padding-left: 16px;
+        padding-right: 16px;
+
+        h4 {
+            font-family: $font-family;
+            font-weight: bold;
+        }
+    }
+
+    .messages-popup-item {
+        cursor: pointer;
+
+        &:hover {
+            background-color: $main-blue-lighter;
+        }
+
+        padding: 8px;
+
+        .mesage-item-container {
+            padding: 8px;
+            margin-bottom: 12px;
+        }
+    }
+
+    .messages-popup-footer {
+        button {
+            width: 100%;
+            padding: 16px;
+            text-transform: uppercase;
+            align-self: center;
+        }
+    }
+}

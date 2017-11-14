@@ -19,7 +19,7 @@
             }
 
             .dialog-name {
-                font-family: $primary;
+                font-family: $font-family;
                 font-weight: bold;
             }
         }
@@ -51,6 +51,7 @@
             margin-top: 16px;
 
             button {
+                font-family: $font-family;
                 width: 100%;
                 padding: 16px;
                 text-transform: uppercase;
@@ -58,4 +59,8 @@
             }
         }
     }
+}
+
+.mat-menu-content {
+    padding: 0 !important;
 }
