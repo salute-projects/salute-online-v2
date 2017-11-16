@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using SaluteOnline.API.DAL;
 using SaluteOnline.API.Services.Interface;
 using SaluteOnline.Domain.Conversion;
-using SaluteOnline.Domain.Domain.EF;
+using SaluteOnline.Domain.Domain;
 using SaluteOnline.Domain.DTO;
 using SaluteOnline.Domain.DTO.InnerMessage;
 
@@ -23,13 +23,14 @@ namespace SaluteOnline.API.Services.Implementation
             _logger = logger;
         }
 
-        public IEnumerable<InnerMessageDto> GetMessages(InnerMessagesFilter filter, string email)
+        public Page<InnerMessageDto> GetMessages(InnerMessagesFilter filter, string email)
         {
             try
             {
                 var currentUser = _unitOfWork.Users.Get(t => t.Email == email).FirstOrDefault();
                 if (currentUser == null)
                     throw new ArgumentException("Internal error happened. Please try a bit later");
+                List<InnerMessageDto> result;
                 switch (filter.ReceiverType)
                 {
                     case EntityType.User:
@@ -41,12 +42,18 @@ namespace SaluteOnline.API.Services.Implementation
                             .SingleOrDefault();
                         if (targetUser == null || targetUser.Id != currentUser.Id)
                             throw new ArgumentException("Operation not allowed");
-                        var forMe = targetUser.InnerMessagesReceived.Select(t => t.ToDto());
-                        if (currentUser.Role == Role.User)
-                            return forMe;
-                        return targetUser.ClubsAdministrated.Select(t => t.Club)
+
+                        result = targetUser.InnerMessagesReceived.Where(t => t.Status == filter.Status).Select(t => t.ToDto()).ToList();
+                        if (currentUser.Role != Role.User)
+                        {
+                            result = targetUser.ClubsAdministrated.Select(t => t.Club)
                                 .SelectMany(t => t.InnerMessagesReceived)
-                                .Select(t => t.ToDto()).Concat(forMe);
+                                .Where(t => t.Status == filter.Status)
+                                .Select(t => t.ToDto())
+                                .Concat(result)
+                                .ToList();
+                        }
+                        break;
                     case EntityType.Club:
                         var targetClub =
                             _unitOfWork.Clubs.GetAsQueryable(t => t.Id == filter.ReceiverId)
@@ -54,12 +61,45 @@ namespace SaluteOnline.API.Services.Implementation
                                 .ThenInclude(t => t.User).SingleOrDefault();
                         if (targetClub == null || targetClub.Administrators.All(t => t.UserId != currentUser.Id))
                             throw new ArgumentException("Operation not allowed");
-                        return targetClub.InnerMessagesReceived.Select(t => t.ToDto());
+                        result = targetClub.InnerMessagesReceived
+                            .Where(t => t.Status == filter.Status)
+                            .Select(t => t.ToDto())
+                            .ToList();
+                        break;
                     case EntityType.System:
                         throw new ArgumentException("Operation not allowed");
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+                foreach (var message in result)
+                {
+                    switch (message.SenderType)
+                    {
+                        case EntityType.User:
+                            var user = _unitOfWork.Users.GetById(id: message.SenderId);
+                            message.Avatar = user?.Avatar;
+                            message.SenderName = string.IsNullOrEmpty(user?.Nickname) ? $"{user?.FirstName} {user?.LastName}" : user.Nickname;
+                            break;
+                        case EntityType.Club:
+                            var club = _unitOfWork.Clubs.GetById(id: message.SenderId);
+                            message.Avatar = club?.Logo;
+                            message.SenderName = club?.Title;
+                            break;
+                        case EntityType.System:
+                            message.Avatar = string.Empty;
+                            message.SenderName = "Salute Online";
+                            break;
+                        default:
+                            message.Avatar = string.Empty;
+                            break;
+                    }
+                }
+                var slice =
+                    result.OrderByDescending(t => t.Created)
+                        .Skip((filter.Page - 1) * (filter.PageSize ?? 25))
+                        .Take(filter.PageSize ?? 25);
+
+                return new Page<InnerMessageDto>(filter.Page, filter.PageSize ?? 25, result.Count, slice);
             }
             catch (ArgumentException)
             {

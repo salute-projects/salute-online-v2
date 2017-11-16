@@ -2,7 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { apiSettings } from "../../configuration/constants";
 import { Observable } from 'rxjs';
-import { InnerMessagesFilter, InnerMessageDto } from "../../dto/dto";
+import { InnerMessagesFilter, InnerMessageDto, Page } from "../../dto/dto";
 
 @Injectable()
 export class InnerMessageApi {
@@ -13,7 +13,7 @@ export class InnerMessageApi {
     constructor(private readonly http: HttpClient) {
     }
 
-    getMessages(filter: InnerMessagesFilter): Observable<InnerMessageDto[]> {
-        return this.http.post<InnerMessageDto[]>(apiSettings.baseUrl + this.urls.getMessages, filter);
+    getMessages(filter: InnerMessagesFilter): Observable<Page<InnerMessageDto>> {
+        return this.http.post<Page<InnerMessageDto>>(apiSettings.baseUrl + this.urls.getMessages, filter);
     }
 }

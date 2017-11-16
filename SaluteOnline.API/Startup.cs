@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,7 +54,15 @@ namespace SaluteOnline.API
                         builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
                 });
 
-            services.AddMvc().AddJsonOptions(jsonOptions =>
+            services.AddMvc(options =>
+            {
+                options.CacheProfiles.Add(new KeyValuePair<string, CacheProfile>("CachingProfile", new CacheProfile
+                {
+                    Duration = 360,
+                    Location = ResponseCacheLocation.Any,
+                    VaryByHeader = "user-agent"
+                }));
+            }).AddJsonOptions(jsonOptions =>
             {
                 jsonOptions.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
                 jsonOptions.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;

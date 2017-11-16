@@ -20,5 +20,8 @@ namespace SaluteOnline.Domain.DTO.InnerMessage
 
         public bool SentBySystem { get; set; }
         public bool OneResponseForAll { get; set; }
+
+        public string Avatar { get; set; }
+        public string SenderName { get; set; }
     }
 }

@@ -57,5 +57,14 @@
                 }
             }
         ]
-    }
+    },
+    {
+        path: 'so-messages',
+        data: {
+            menu: {
+                title: 'Messages',
+                icon: 'message'
+            }
+        }
+    },
 ];

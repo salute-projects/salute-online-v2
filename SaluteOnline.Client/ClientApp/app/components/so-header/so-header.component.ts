@@ -6,7 +6,8 @@ import { Context } from "../../services/context/context";
 import { MatDialog, MatDialogConfig} from "@angular/material";
 import { LoginDialog } from "../so-login-dialog/so-login-dialog";
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { InnerMessagesFilter, InnerMessageDto, EntityType } from "../../dto/innerMessage";
+import { InnerMessagesFilter, InnerMessageDto, EntityType, MessageStatus } from "../../dto/innerMessage";
+import { systemAvatar } from "../../configuration/constants";
 
 @Component({
     selector: "so-header",
@@ -33,9 +34,11 @@ export class SoHeader {
         this.state.subscribe(this.state.events.global.logged, (logged: boolean) => {
             this.logged = logged;
             if (logged) {
-                const filter = new InnerMessagesFilter(EntityType.User, null);
+                const filter = new InnerMessagesFilter(EntityType.User, null, MessageStatus.Pending);
+                filter.page = 1;
+                filter.pageSize = 3;
                 this.context.innerMessageApi.getMessages(filter).subscribe(result => {
-                    this.messages = result;
+                    this.messages = result.items;
                 }, error => {
                 });
             }
@@ -74,6 +77,6 @@ export class SoHeader {
     }
 
     getAvatar(avatar: string) {
-        return this.avatar;
+        return this.sanitizer.bypassSecurityTrustResourceUrl(avatar ? `data:image/jpg;base64,${avatar}` : systemAvatar);
     }
 }

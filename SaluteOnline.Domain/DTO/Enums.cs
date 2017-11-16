@@ -64,7 +64,9 @@
     {
         None = 0,
         Pending = 1,
-        Closed = 2
+        Read = 2,
+        Closed = 3,
+        All = 4
     }
 
     public enum EntityType

@@ -30,6 +30,7 @@
     <None Remove="ClientApp\app\components\so-menu-item\so-menu-item.component.ts" />
     <None Remove="ClientApp\app\components\so-menu\so-menu.component.ts" />
     <None Remove="ClientApp\app\components\so-menu\so-menu.service.ts" />
+    <None Remove="ClientApp\app\components\so-messages\so-messages.ts" />
     <None Remove="ClientApp\app\components\so-sidebar\so-sidebar.component.ts" />
     <None Remove="ClientApp\app\components\so-user-profile\so-user-profile.component.ts" />
     <None Remove="ClientApp\app\configuration\constants.ts" />
@@ -65,6 +66,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\so-menu-item\so-menu-item.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-menu\so-menu.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-menu\so-menu.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\so-messages\so-messages.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-sidebar\so-sidebar.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-user-profile\so-user-profile.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\configuration\constants.ts" />

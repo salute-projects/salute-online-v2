@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SaluteOnline.API.Services.Interface;
 
@@ -15,7 +14,7 @@ namespace SaluteOnline.API.Controllers
             _service = service;
         }
 
-        [HttpGet("countries")]
+        [HttpGet("countries"), ResponseCache(CacheProfileName = "CachingProfile")]
         public IActionResult GetCountiesList()
         {
             try

@@ -1,0 +1,32 @@
+﻿<section class="so-messages container">
+    <div class="row">
+        <div class="col-md-12 so-messages-container">
+            <div class="filter"></div>
+            <div class="so-messages-main">
+                <mat-expansion-panel *ngFor="let message of messages.items; let i = index" >
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{message.title | trancate : 30}}
+                        </mat-panel-title>
+                        <mat-panel-description class="flex-end font-09">
+                            {{message.senderName}} at {{message.created | amCalendar}}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="mesage-item-container">
+                        <div class="col-md-2 no-gutters no-padding">
+                            <img height="64" [src]="getAvatar(message.avatar)" alt="logo" />
+                        </div>
+                        <div class="col-md-10 no-gutters no-padding">
+                            <span>{{message.body}}</span>
+                        </div>
+                        <br/>
+                    </div>
+                    <mat-action-row>
+                        <button mat-button>DELETE</button>
+                        <button mat-button>REPLY</button>
+                    </mat-action-row>
+                </mat-expansion-panel>
+            </div>
+        </div>
+    </div>
+</section>
