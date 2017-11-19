@@ -10,6 +10,7 @@ export class ClubsApi {
     urls: any = {
         createClub: 'clubs',
         getList: 'clubs/list',
+        getMyClubs: 'clubs/myList',
         getClubInfoAggregation: 'clubs',
         getClubInfo: 'clubs/',
         getClubAdministrators: 'clubs/admins',
@@ -29,6 +30,10 @@ export class ClubsApi {
 
     getList(dto: ClubFilter): Observable<Page<ClubSummaryDto>> {
         return this.http.post<Page<ClubSummaryDto>>(apiSettings.baseUrl + this.urls.getList, dto);
+    }
+
+    getMyClubs(): Observable<ClubSummaryDto[]> {
+        return this.http.get<ClubSummaryDto[]>(apiSettings.baseUrl + this.urls.getMyClubs);
     }
 
     getClubInfoAggregation(): Observable<ClubInfoAggregation> {

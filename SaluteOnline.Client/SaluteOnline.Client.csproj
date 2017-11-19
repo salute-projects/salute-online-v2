@@ -31,6 +31,7 @@
     <None Remove="ClientApp\app\components\so-menu\so-menu.component.ts" />
     <None Remove="ClientApp\app\components\so-menu\so-menu.service.ts" />
     <None Remove="ClientApp\app\components\so-messages\so-messages.ts" />
+    <None Remove="ClientApp\app\components\so-protocol\so-protocol.ts" />
     <None Remove="ClientApp\app\components\so-sidebar\so-sidebar.component.ts" />
     <None Remove="ClientApp\app\components\so-user-profile\so-user-profile.component.ts" />
     <None Remove="ClientApp\app\configuration\constants.ts" />
@@ -39,6 +40,7 @@
     <None Remove="ClientApp\app\dto\common.ts" />
     <None Remove="ClientApp\app\dto\dto.ts" />
     <None Remove="ClientApp\app\dto\innerMessage.ts" />
+    <None Remove="ClientApp\app\dto\protocol.ts" />
     <None Remove="ClientApp\app\dto\user.ts" />
     <None Remove="ClientApp\app\pipes\string-pipes.ts" />
     <None Remove="ClientApp\app\services\auth.ts" />
@@ -67,6 +69,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\so-menu\so-menu.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-menu\so-menu.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-messages\so-messages.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\so-protocol\so-protocol.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-sidebar\so-sidebar.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\so-user-profile\so-user-profile.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\configuration\constants.ts" />
@@ -75,6 +78,7 @@
     <TypeScriptCompile Include="ClientApp\app\dto\common.ts" />
     <TypeScriptCompile Include="ClientApp\app\dto\dto.ts" />
     <TypeScriptCompile Include="ClientApp\app\dto\innerMessage.ts" />
+    <TypeScriptCompile Include="ClientApp\app\dto\protocol.ts" />
     <TypeScriptCompile Include="ClientApp\app\dto\user.ts" />
     <TypeScriptCompile Include="ClientApp\app\pipes\string-pipes.ts" />
     <TypeScriptCompile Include="ClientApp\app\services\auth.ts" />

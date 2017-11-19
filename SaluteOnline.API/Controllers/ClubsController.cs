@@ -52,6 +52,24 @@ namespace SaluteOnline.API.Controllers
             }
         }
 
+        [HttpGet("myList")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        public IActionResult GetMyClubs()
+        {
+            try
+            {
+                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
+                if (string.IsNullOrEmpty(email))
+                    return BadRequest("Authorization failed.");
+                return Ok(_service.GetMyClubs(email));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
         [HttpGet]
         [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
         public IActionResult GetClubInfoAggregation()

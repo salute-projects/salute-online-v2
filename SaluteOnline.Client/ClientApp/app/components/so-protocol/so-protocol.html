@@ -1,0 +1,84 @@
+﻿<section class="so-protocol container">
+    <div class="row">
+        <div class="protocol-left-side col-md-3">
+            <mat-card>
+                <mat-form-field *ngIf="myClubs.length">
+                    <mat-select placeholder="Target club" [(value)]="selectedClub">
+                        <mat-option [value]="0">None</mat-option>
+                        <mat-option *ngFor="let club of myClubs" [value]="club.id">{{ club.title }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field>
+                            <input matInput placeholder="Game">
+                        </mat-form-field>  
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field>
+                            <input matInput placeholder="Table">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </mat-card>
+        </div>
+        <div class="col-md-7">
+            <mat-card class="protocol-main">
+                <mat-card-title>
+                    <div class="protocol-header">
+                        <div class="so-logo clearfix text-center">
+                            <span class="logo-leftside">SALUTE</span>
+                            <span class="logo-rightside-black">ONLINE</span>
+                        </div>
+                        <h2 class="protocol-name text-center">
+                            PROTOCOL
+                        </h2>
+                    </div>
+                </mat-card-title>
+                <div class="protocol-body">
+                    <table class="table table-responsive" *ngIf="protocol.players">
+                        <thead>
+                            <tr>
+                                <th class="action-td"></th>
+                                <th class="player-index">#</th>
+                                <th>NICKNAME</th>
+                                <th>ROLE</th>
+                                <th>FOULS</th>
+                                <th>BEST</th>
+                                <th>RESULT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let player of protocol.players; let i = index">
+                                <td class="text-center action-td">
+                                    
+                                </td>
+                                <td class="text-center player-index noselect">
+                                    <div class="player-index-container">{{player.index}}</div>
+                                </td>
+                                <td class="col-md-4">
+                                    
+                                </td>
+                                <td class="role-td col-md-2">
+                                    
+                                </td>
+                                <td class="text-center col-md-1">
+                                    
+                                </td>
+                                <td class="col-md-2">
+                                    
+                                </td>
+                                <td class="text-center col-md-1">
+                                   
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </mat-card>
+        </div>
+        <div class="protocol-right-side col-md-2">
+            Right
+        </div>
+    </div>
+</section>

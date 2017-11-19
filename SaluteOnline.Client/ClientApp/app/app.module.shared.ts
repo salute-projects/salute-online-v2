@@ -41,6 +41,7 @@ import { SoClubsEdit } from "./components/so-club-edit/so-club-edit";
 import { AddClubMemberDialog } from "./components/so-add-club-member/so-add-club-member";
 import { MembershipRequestDialog } from "./components/so-membership-request-dialog/so-membership-request-dialog";
 import { SoMessages } from "./components/so-messages/so-messages";
+import { SoProtocol } from "./components/so-protocol/so-protocol";
 
 // services
 
@@ -84,7 +85,8 @@ NgModule({
         MembershipRequestDialog,
         SoClubsEdit,
         SoMessages,
-        TruncatePipe
+        TruncatePipe,
+        SoProtocol
     ],
     entryComponents: [LoginDialog, CreateClubDialog, AddClubMemberDialog, MembershipRequestDialog],
     providers: [ 
@@ -136,6 +138,8 @@ NgModule({
             { path: 'so-clubs-list', component: SoClubsList },
             { path: 'so-club-edit/:id', component: SoClubsEdit },
             { path: 'so-messages', component: SoMessages },
+            { path: 'so-protocol', component: SoProtocol },
+            { path: 'so-protocol/:id', component: SoProtocol },
             { path: '**', redirectTo: 'home' }
         ])
     ]

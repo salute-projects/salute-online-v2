@@ -67,4 +67,13 @@
             }
         }
     },
+    {
+        path: 'so-protocol',
+        data: {
+            menu: {
+                title: 'Protocol',
+                icon: 'poll'
+            }
+        }
+    },
 ];

@@ -126,6 +126,31 @@ namespace SaluteOnline.API.Services.Implementation
             }
         }
 
+        public IEnumerable<ClubSummaryDto> GetMyClubs(string email)
+        {
+            try
+            {
+                var currentUser = _unitOfWork.Users.Get(t => t.Email == email).FirstOrDefault();
+                if (currentUser == null)
+                    throw new ArgumentException("Internal error happened. Please try a bit later");
+                return
+                    _unitOfWork.Users.GetAsQueryable()
+                        .Include(t => t.ClubsAdministrated)
+                        .ThenInclude(t => t.Club)
+                        .SingleOrDefault(t => t.Id == currentUser.Id)
+                        .ClubsAdministrated.Select(t => t.Club.ToSummaryDto(currentUser.Id));
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while loading clubs list. Please try a bit later");
+            }
+        }
+
         public ClubInfoAggregation GetInfoAggregation()
         {
             try

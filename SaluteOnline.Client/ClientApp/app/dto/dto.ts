@@ -12,3 +12,6 @@ export { ClubMemberSummary, ClubDto, ClubFilter, ClubInfoAggregation, ClubMember
 
 import { EntityType, InnerMessageDto, InnerMessagesFilter, MessageStatus } from "./innerMessage";
 export { EntityType, InnerMessageDto, InnerMessagesFilter, MessageStatus };
+
+import { Role, Roles, Teams, BestPlayer, BestPlayers, PlayerEntry, ServiceProps, Protocol } from "./protocol";
+export { Role, Roles, Teams, BestPlayer, BestPlayers, PlayerEntry, ServiceProps, Protocol };
