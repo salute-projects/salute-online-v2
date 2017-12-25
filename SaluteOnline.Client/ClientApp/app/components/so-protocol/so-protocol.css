@@ -1,0 +1,41 @@
+﻿.so-protocol {
+  top: 66px;
+  position: relative;
+  margin-top: 16px; }
+  .so-protocol .protocol-main {
+    padding: 8px; }
+    .so-protocol .protocol-main .protocol-header {
+      display: flex;
+      padding: 8px;
+      justify-content: center;
+      flex-direction: column;
+      align-content: center; }
+      .so-protocol .protocol-main .protocol-header .so-logo {
+        line-height: 24px; }
+      .so-protocol .protocol-main .protocol-header span {
+        align-self: center; }
+      .so-protocol .protocol-main .protocol-header .protocol-name {
+        font-family: "Ubuntu Condensed", sans-serif;
+        font-weight: bold; }
+    .so-protocol .protocol-main .protocol-body table th {
+      font-weight: normal;
+      font-size: 0.9em;
+      font-family: "Ubuntu Condensed", sans-serif; }
+  .so-protocol .nickname-autocomplete, .so-protocol .role-select, .so-protocol .foul-input {
+    width: 100%; }
+    .so-protocol .nickname-autocomplete .mat-form-field-placeholder-wrapper, .so-protocol .role-select .mat-form-field-placeholder-wrapper, .so-protocol .foul-input .mat-form-field-placeholder-wrapper {
+      padding-top: 0; }
+    .so-protocol .nickname-autocomplete .mat-form-field-wrapper, .so-protocol .role-select .mat-form-field-wrapper, .so-protocol .foul-input .mat-form-field-wrapper {
+      padding-bottom: 0; }
+    .so-protocol .nickname-autocomplete .mat-form-field-underline, .so-protocol .role-select .mat-form-field-underline, .so-protocol .foul-input .mat-form-field-underline {
+      bottom: 0; }
+    .so-protocol .nickname-autocomplete .mat-form-field-infix, .so-protocol .role-select .mat-form-field-infix, .so-protocol .foul-input .mat-form-field-infix {
+      border-top: 0; }
+    .so-protocol .nickname-autocomplete .mat-form-field-underline, .so-protocol .role-select .mat-form-field-underline, .so-protocol .foul-input .mat-form-field-underline {
+      background-color: rgba(0, 0, 0, 0.22);
+      display: none; }
+  .so-protocol .player-index {
+    vertical-align: middle; }
+  .so-protocol .role-td .mat-form-field {
+    display: inline; }
+

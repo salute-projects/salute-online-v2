@@ -18,5 +18,9 @@
   {
     "outputFile": "ClientApp/app/components/so-header/so-header.component.css",
     "inputFile": "ClientApp/app/components/so-header/so-header.component.scss"
+  },
+  {
+    "outputFile": "ClientApp/app/components/so-protocol/so-protocol.css",
+    "inputFile": "ClientApp/app/components/so-protocol/so-protocol.scss"
   }
 ]

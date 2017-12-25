@@ -1,5 +1,5 @@
-﻿@import "../app/style/theme";
-@import "../app/style/mixins";
+﻿@import "../app/style/theme.scss";
+@import "../app/style/mixins.scss";
 
 .so-protocol {
     top: $header-height;
@@ -38,6 +38,41 @@
                     font-family: $font-family;
                 }
             }
+        }
+    }
+
+    .nickname-autocomplete, .role-select, .foul-input {
+        width: 100%;
+
+        .mat-form-field-placeholder-wrapper {
+            padding-top: 0;
+        }
+
+        .mat-form-field-wrapper {
+            padding-bottom: 0;
+        }
+
+        .mat-form-field-underline {
+            bottom: 0;
+        }
+
+        .mat-form-field-infix {
+            border-top: 0;
+        }
+
+        .mat-form-field-underline {
+            background-color: rgba(0,0,0,.22);
+            display: none;
+        }
+    }
+
+    .player-index {
+        vertical-align: middle;
+    }
+
+    .role-td {
+        .mat-form-field {
+            display: inline;
         }
     }
 }

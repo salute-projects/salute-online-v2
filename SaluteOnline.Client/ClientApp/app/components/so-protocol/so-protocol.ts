@@ -5,6 +5,7 @@ import { ClubSummaryDto, ServiceProps, Protocol, PlayerEntry, Roles, Role } from
 import { ActivatedRoute } from "@angular/router";
 import { DataSource } from '@angular/cdk/collections';
 import { CustomDataSource } from "../../services/datatable.service";
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'so-protocol',
@@ -18,6 +19,8 @@ export class SoProtocol {
     selectedClub: number;
     settings: ServiceProps;
     protocol: Protocol;
+    filteredNicknames: Observable<string[]>;
+    allNicknames: string[];
 
     constructor(private readonly context: Context, private readonly snackService: SoSnackService, private readonly route: ActivatedRoute) {
         this.route.params.subscribe(params => {
@@ -29,6 +32,7 @@ export class SoProtocol {
                 } else {
                     this.selectedClub = 0;
                 }
+                this.allNicknames = ['don', 'me', 'test'];
             }, error => {
                 this.snackService.showError(error.error, 'OK');
             });
@@ -41,5 +45,17 @@ export class SoProtocol {
         for (let i = 0; i < 10; i++) {
             this.protocol.players.push(new PlayerEntry(i));
         }
+    }
+
+    nicknameSelected(player: PlayerEntry) {
+        debugger;
+    }
+
+    nicknameOnChange(player: PlayerEntry) {
+        this.filteredNicknames = Observable.of(player.nickname ? this.filterNicknames(player.nickname) : this.allNicknames.slice());
+    }
+
+    private filterNicknames(search: string) {
+        return this.allNicknames.filter(nickname => nickname.toLowerCase().indexOf(search.toLowerCase()) === 0);
     }
 }

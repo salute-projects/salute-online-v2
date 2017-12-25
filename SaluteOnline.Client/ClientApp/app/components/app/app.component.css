@@ -56,6 +56,11 @@
     line-height: 0;
     font-size: 10px; }
 
+.mat-icon-button.small-icon-button {
+  width: 24px;
+  height: 24px;
+  line-height: 24px; }
+
 .custom-tree.ui-tree {
   width: auto;
   border: none;
@@ -140,6 +145,9 @@ a.disabled {
 
 .flex-end {
   justify-content: flex-end; }
+
+.center-vertical {
+  vertical-align: middle; }
 
 html, body {
   background-color: #f6f6f6; }
