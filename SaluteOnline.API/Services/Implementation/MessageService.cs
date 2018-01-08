@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SaluteOnline.API.DAL;
+using SaluteOnline.API.Hub;
 using SaluteOnline.API.Services.Interface;
 using SaluteOnline.Domain.Conversion;
 using SaluteOnline.Domain.Domain;
@@ -16,11 +18,13 @@ namespace SaluteOnline.API.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
+        private readonly IHubContext<SoMessageHub> _messageHub;
 
-        public MessageService(IUnitOfWork unitOfWork, ILogger<ClubsService> logger)
+        public MessageService(IUnitOfWork unitOfWork, ILogger<ClubsService> logger, IHubContext<SoMessageHub> messageHub)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _messageHub = messageHub;
         }
 
         public Page<InnerMessageDto> GetMessages(InnerMessagesFilter filter, string email)
@@ -108,8 +112,74 @@ namespace SaluteOnline.API.Services.Implementation
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-                throw new Exception("Error while adding new club. Please try a bit later");
+                throw new Exception("Error while loading messages. Please try a bit later");
             }
+        }
+
+        public IEnumerable<InnerMessageSenderSummary> GetSendersForUser(InnerMessageSenderFilter filter, string email)
+        {
+            try
+            {
+                var currentUser = _unitOfWork.Users.Get(t => t.Email == email).FirstOrDefault();
+                if (currentUser == null)
+                    throw new ArgumentException("Internal error happened. Please try a bit later");
+                var targetUser = _unitOfWork.Users.GetAsQueryable(t => t.Id == currentUser.Id)
+                            .Include(t => t.InnerMessagesReceived)
+                            .Include(t => t.ClubsAdministrated)
+                            .ThenInclude(t => t.Club)
+                            .ThenInclude(t => t.InnerMessagesReceived)
+                            .SingleOrDefault();
+                if (targetUser == null || targetUser.Id != currentUser.Id)
+                    throw new ArgumentException("Operation not allowed");
+                var result = targetUser.InnerMessagesReceived.Where(t => t.Status == filter.Status).Select(t => t.ToSenderSummaryDto()).ToList();
+                if (currentUser.Role != Role.User)
+                {
+                    result = targetUser.ClubsAdministrated.Select(t => t.Club)
+                        .SelectMany(t => t.InnerMessagesReceived)
+                        .Where(t => t.Status == filter.Status)
+                        .Select(t => t.ToSenderSummaryDto())
+                        .Concat(result)
+                        .ToList();
+                }
+                foreach (var message in result)
+                {
+                    switch (message.SenderType)
+                    {
+                        case EntityType.User:
+                            var user = _unitOfWork.Users.GetById(id: message.SenderId);
+                            message.Avatar = user?.Avatar;
+                            message.Title = string.IsNullOrEmpty(user?.Nickname) ? $"{user?.FirstName} {user?.LastName}" : user.Nickname;
+                            break;
+                        case EntityType.Club:
+                            var club = _unitOfWork.Clubs.GetById(id: message.SenderId);
+                            message.Avatar = club?.Logo;
+                            message.Title = club?.Title;
+                            break;
+                        case EntityType.System:
+                            message.Avatar = string.Empty;
+                            message.Title = "Salute Online";
+                            break;
+                        default:
+                            message.Avatar = string.Empty;
+                            break;
+                    }
+                }
+                return result;
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("Error while loading messages. Please try a bit later");
+            }
+        }
+
+        public void SendToAllViaHub(string message)
+        {
+            _messageHub.Clients.All.InvokeAsync("newMessage", new { message, sent = DateTimeOffset.UtcNow });
         }
     }
 }

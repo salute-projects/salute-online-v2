@@ -12,6 +12,7 @@ namespace SaluteOnline.API.DAL
         GenericRepository<Country> Countries { get; }
         GenericRepository<Player> Players { get;  }
         GenericRepository<InnerMessage> InnerMessages { get; }
+        GenericRepository<ConnectedUser> ConnectedUsers { get; }
         void Save();
         Task<int> SaveAsync();
     }

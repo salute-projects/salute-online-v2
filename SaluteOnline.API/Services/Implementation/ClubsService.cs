@@ -489,6 +489,7 @@ namespace SaluteOnline.API.Services.Implementation
                         user.PlayersAccounts.Add(newPlayer);
                     }
                 }
+                
                 _unitOfWork.Save();
             }
             catch (ArgumentException)

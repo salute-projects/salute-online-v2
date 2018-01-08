@@ -41,6 +41,10 @@ namespace SaluteOnline.API.DAL
         public GenericRepository<InnerMessage> InnerMessages
             => _innerMessages ?? (_innerMessages = new GenericRepository<InnerMessage>(_context, _configuration));
 
+        private GenericRepository<ConnectedUser> _connectedUsers;
+        public GenericRepository<ConnectedUser> ConnectedUsers
+            => _connectedUsers ?? (_connectedUsers = new GenericRepository<ConnectedUser>(_context, _configuration));
+
         public void Save()
         {
             _context.SaveChanges();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SaluteOnline.API.Services.Interface;
 using SaluteOnline.Domain.DTO.User;
@@ -56,6 +57,7 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpGet("refreshToken/{refreshToken}")]
+        [AllowAnonymous]
         public async Task<IActionResult> RefreshToken(string refreshToken)
         {
             try

@@ -27,12 +27,23 @@ namespace SaluteOnline.API.Security
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
+            string token;
             // ReSharper disable once CollectionNeverUpdated.Local
             if (!Request.Headers.TryGetValue(HeaderNames.Authorization, out var authorization))
             {
-                return Task.FromResult(AuthenticateResult.Fail("Missing or malformed Authorization header."));
+                if (Request.Path.HasValue && !Request.Path.Value.Contains("soMessageHub"))
+                {
+                    return Task.FromResult(AuthenticateResult.Fail("Missing or malformed Authorization header."));
+                }
+                var found = Request.Query.TryGetValue("Bearer", out var bearer);
+                if (!found)
+                    return Task.FromResult(AuthenticateResult.Fail("Missing or malformed Authorization header."));
+                token = bearer;
             }
-            var token = authorization.First();
+            else
+            {
+                token = authorization.First();
+            }
             var user = GetUser(token, true);
             if (!user.EmailVerified.HasValue || !user.EmailVerified.Value)
                 return Task.FromResult(AuthenticateResult.Fail("Users email is not verified."));

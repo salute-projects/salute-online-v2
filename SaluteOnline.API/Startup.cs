@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SaluteOnline.API.DAL;
+using SaluteOnline.API.Hub;
 using SaluteOnline.API.Providers.Implementation;
 using SaluteOnline.API.Providers.Interface;
 using SaluteOnline.API.Security;
@@ -15,6 +16,7 @@ using SaluteOnline.API.Services.Implementation;
 using SaluteOnline.API.Services.Interface;
 using SaluteOnline.Domain.DTO;
 using SaluteOnline.Domain.Extensions;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace SaluteOnline.API
 {
@@ -54,6 +56,27 @@ namespace SaluteOnline.API
                         builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
                 });
 
+            services.AddSignalR();
+
+            services.AddSwaggerGen(t =>
+            {
+                t.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "Salute Online API"
+                });
+            });
+            services.ConfigureSwaggerGen(t =>
+            {
+                t.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    In = "header",
+                    Description = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IlJqY3hPVFF6TXpJd01EUkZNVU13TkVaQk5qTkZSa0pHTVRnNFFVTkdSRVExTXpoRE1UTkVNZyJ9.eyJpc3MiOiJodHRwczovL3NhbHV0ZW9ubGluZS5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NTllOTllYzcyM2MyZTUyNGZmNzU1ZTBiIiwiYXVkIjoiaHR0cHM6Ly9zYWx1dGVvbmxpbmUuZXUuYXV0aDAuY29tL2FwaS92Mi8iLCJpYXQiOjE1MTUzNDA2NzksImV4cCI6MTUxNTQyNzA3OSwiYXpwIjoiM3MtTURveWJlOWI2akRiTXE2anZaQWhNc1JGaEhURTciLCJzY29wZSI6InJlYWQ6Y3VycmVudF91c2VyIHVwZGF0ZTpjdXJyZW50X3VzZXJfbWV0YWRhdGEgZGVsZXRlOmN1cnJlbnRfdXNlcl9tZXRhZGF0YSBjcmVhdGU6Y3VycmVudF91c2VyX21ldGFkYXRhIGNyZWF0ZTpjdXJyZW50X3VzZXJfZGV2aWNlX2NyZWRlbnRpYWxzIGRlbGV0ZTpjdXJyZW50X3VzZXJfZGV2aWNlX2NyZWRlbnRpYWxzIHVwZGF0ZTpjdXJyZW50X3VzZXJfaWRlbnRpdGllcyBvZmZsaW5lX2FjY2VzcyIsImd0eSI6InBhc3N3b3JkIn0.soPA-T4NZnLrKrAU2zFIsHnN1wnkOvNxU3V2Y6c_jMC-mWI89bRigVyV0TYOnK8WYjWC2yvmi5oyUejl3T-1-cASRK03Bw1yFfGJVERBmmwP3MUU4hEOvrp_dtLmVVhIuxam7R0r8WrAcnxNrlv6wh2QcRdnCNsRQHdihIphKnNpI6lhb7JSApvourAGU0-e2qdV8T2zoV_jsuvN83i7CPSa7iLQvcGyTUlbOR7UytbrwTGSpN4HJ2Qf3oED55DWFj31c6tJQn0esbgsRfsPcqHgI6Fj_5vn94Ghkx6CQ5gG3UUBmktySG3vlSfvZcOEG3M06L-iAbkfcKXHk5R07A",
+                    Name = "Authorization",
+                    Type = "apiKey"
+                });
+            });
+
             services.AddMvc(options =>
             {
                 options.CacheProfiles.Add(new KeyValuePair<string, CacheProfile>("CachingProfile", new CacheProfile
@@ -85,6 +108,15 @@ namespace SaluteOnline.API
             }
             app.UseAuthentication();
             app.UseCors("CorsPolicy");
+            app.UseSwagger();
+            app.UseSwaggerUI(t =>
+            {
+                t.SwaggerEndpoint("/swagger/v1/swagger.json", "Salute Online API");
+            });
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<SoMessageHub>("soMessageHub");
+            });
             app.UseMvc();
         }
 

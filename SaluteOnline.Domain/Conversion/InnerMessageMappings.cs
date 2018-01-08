@@ -23,5 +23,14 @@ namespace SaluteOnline.Domain.Conversion
                 SenderId = message.SenderId
             };
         }
+
+        public static InnerMessageSenderSummary ToSenderSummaryDto(this InnerMessage message)
+        {
+            return new InnerMessageSenderSummary
+            {
+                SenderId = message.SenderId,
+                SenderType = message.SenderType
+            };
+        }
     }
 }
