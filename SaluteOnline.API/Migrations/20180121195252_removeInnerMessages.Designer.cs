@@ -12,9 +12,10 @@ using System;
 namespace SaluteOnline.API.Migrations
 {
     [DbContext(typeof(SaluteOnlineDbContext))]
-    partial class SaluteOnlineDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180121195252_removeInnerMessages")]
+    partial class removeInnerMessages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

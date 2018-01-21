@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 using SaluteOnline.Domain.Common;
 using SaluteOnline.Domain.Domain.EF.LinkEntities;
@@ -20,6 +21,10 @@ namespace SaluteOnline.Domain.Domain.EF
         public string FirstName { get; set; }
         [StringLength(50)]
         public string LastName { get; set; }
+
+        [NotMapped]
+        public string DisplayName => string.IsNullOrEmpty(Nickname) ? $"{FirstName} {LastName}" : Nickname;
+
         [StringLength(50)]
         public string Email { get; set; }
         [StringLength(50)]
@@ -60,12 +65,6 @@ namespace SaluteOnline.Domain.Domain.EF
 
         [JsonIgnore]
         public ICollection<Player> PlayersAccounts { get; set; } = new List<Player>();
-
-        [JsonIgnore]
-        public ICollection<InnerMessage> InnerMessagesSend { get; set; } = new List<InnerMessage>();
-
-        [JsonIgnore]
-        public ICollection<InnerMessage> InnerMessagesReceived { get; set; } = new List<InnerMessage>();
         
     }
 }

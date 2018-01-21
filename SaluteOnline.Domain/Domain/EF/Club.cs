@@ -44,11 +44,5 @@ namespace SaluteOnline.Domain.Domain.EF
 
         [JsonIgnore]
         public ICollection<MembershipRequest> MembershipRequests { get; set; } = new List<MembershipRequest>();
-
-        [JsonIgnore]
-        public ICollection<InnerMessage> InnerMessagesSend { get; set; } = new List<InnerMessage>();
-
-        [JsonIgnore]
-        public ICollection<InnerMessage> InnerMessagesReceived { get; set; } = new List<InnerMessage>();
     }
 }

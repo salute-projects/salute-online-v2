@@ -137,7 +137,7 @@ namespace SaluteOnline.API.Services.Implementation
                     _unitOfWork.Users.GetAsQueryable()
                         .Include(t => t.ClubsAdministrated)
                         .ThenInclude(t => t.Club)
-                        .SingleOrDefault(t => t.Id == currentUser.Id)
+                        .SingleOrDefault(t => t.Id == currentUser.Id)?
                         .ClubsAdministrated.Select(t => t.Club.ToSummaryDto(currentUser.Id));
             }
             catch (ArgumentException)
@@ -369,24 +369,6 @@ namespace SaluteOnline.API.Services.Implementation
                     Status = MembershipRequestStatus.Pending
                 };
                 club.MembershipRequests.Add(newRequest);
-                var messageGuid = Guid.NewGuid();
-                foreach (var administrator in club.Administrators)
-                {
-                    administrator.User.InnerMessagesReceived.Add(new InnerMessage
-                    {
-                        Status = MessageStatus.Pending,
-                        Body = $"You have a new membership request in club {club.Title} from user with nickname {request.Nickname}",
-                        Created = DateTimeOffset.UtcNow,
-                        Guid = messageGuid,
-                        OneResponseForAll = true,
-                        LastActivity = DateTimeOffset.UtcNow,
-                        SentBySystem = true,
-                        Title = "New Membership Request",
-                        SenderType = EntityType.System,
-                        ReceiverType = EntityType.User,
-                        ReceiverId = administrator.UserId
-                    });
-                }
                 _unitOfWork.Save();
                 return newRequest.Id;
             }

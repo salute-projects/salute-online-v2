@@ -255,7 +255,7 @@ namespace SaluteOnline.API.DAL
             if (typeof(IMongoEntity).IsAssignableFrom(typeof(TEntity)))
                 return
                     Convert.ToInt32(_mongoDb.GetCollection<TEntity>(typeof(TEntity).ToMongoCollectionName())
-                        .Count(filter));
+                        .Count(filter ?? Builders<TEntity>.Filter.Empty));
             var query = GetGeneric(filter, includeProperties);
             return query.Count();
         }
