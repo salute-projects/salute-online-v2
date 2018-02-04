@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  saluteonline.logservice:
+    image: saluteonline.logservice
+    build:
+      context: .
+      dockerfile: SaluteOnline.LogService/Dockerfile

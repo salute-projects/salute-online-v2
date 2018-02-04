@@ -36,7 +36,7 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPost("list")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        //[Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
         public IActionResult GetClubsList([FromBody] ClubFilter filter)
         {
             try

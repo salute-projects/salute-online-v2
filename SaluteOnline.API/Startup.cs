@@ -7,6 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using RawRabbit.Configuration;
+using RawRabbit.DependencyInjection.ServiceCollection;
+using RawRabbit.Instantiation;
 using SaluteOnline.API.DAL;
 using SaluteOnline.API.Hub;
 using SaluteOnline.API.Providers.Implementation;
@@ -93,6 +96,8 @@ namespace SaluteOnline.API
                 jsonOptions.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
 
+            services.AddRawRabbit(GetRabbitConfiguration);
+
             InitializeSettings(services);
             InitializeProviders(services);
             InitializeServices(services);
@@ -123,10 +128,10 @@ namespace SaluteOnline.API
         private static void InitializeServices(IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IActivityService, ActivityService>();
             services.AddScoped<ICommonService, CommonService>();
             services.AddScoped<IClubsService, ClubsService>();
             services.AddScoped<IChatService, ChatService>();
+            services.AddSingleton<IBusService, BusService>();
         }
 
         private static void InitializeProviders(IServiceCollection services)
@@ -148,10 +153,22 @@ namespace SaluteOnline.API
                 options.AddPolicy(Policies.ClubAdmin.ToString(),
                     policyUser => policyUser.RequireClaim("role", Roles.ClubAdmin.ToLowerString(), Roles.GlobalAdmin.ToLowerString(), Roles.SilentDon.ToLowerString()));
                 options.AddPolicy(Policies.GlobalAdmin.ToString(),
-                    policyUser => policyUser.RequireClaim("role", Roles.ClubAdmin.ToLowerString(), Roles.GlobalAdmin.ToLowerString(), Roles.SilentDon.ToLowerString()));
+                    policyUser => policyUser.RequireClaim("role", Roles.GlobalAdmin.ToLowerString(), Roles.SilentDon.ToLowerString()));
                 options.AddPolicy(Policies.SilendDon.ToString(),
                     policyUser => policyUser.RequireClaim("role", Roles.SilentDon.ToLowerString()));
             });
         }
+
+        private static RawRabbitOptions GetRabbitConfiguration => new RawRabbitOptions
+        {
+            ClientConfiguration = new RawRabbitConfiguration
+            {
+                Username = "guest",
+                Password = "guest",
+                VirtualHost = "/",
+                Port = 32775,
+                Hostnames = new List<string> { "127.0.0.1" }
+            }
+        };
     }
 }

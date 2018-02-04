@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace SaluteOnline.API
+namespace SaluteOnline.ChatService
 {
     public class Program
     {
@@ -13,7 +13,7 @@ namespace SaluteOnline.API
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseUrls("http://localhost:9001")
+                .UseUrls("http://localhost:9002")
                 .Build();
     }
 }

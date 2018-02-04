@@ -31,7 +31,8 @@
         User = 1,
         ClubAdmin = 2,
         GlobalAdmin = 3,
-        SilentDon = 4
+        SilentDon = 4,
+        Guest = 5
     }
 
     public enum Policies

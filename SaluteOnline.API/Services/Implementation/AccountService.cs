@@ -10,8 +10,8 @@ using SaluteOnline.API.Providers.Interface;
 using SaluteOnline.API.Services.Interface;
 using SaluteOnline.Domain.Conversion;
 using SaluteOnline.Domain.Domain.EF;
-using SaluteOnline.Domain.Domain.Mongo;
 using SaluteOnline.Domain.DTO;
+using SaluteOnline.Domain.DTO.Activity;
 using SaluteOnline.Domain.DTO.User;
 
 namespace SaluteOnline.API.Services.Implementation
@@ -21,14 +21,14 @@ namespace SaluteOnline.API.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AccountService> _logger;
         private readonly IAuthZeroProvider _authZeroProvider;
-        private readonly IActivityService _activityService;
+        private readonly IBusService _busService;
 
-        public AccountService(IUnitOfWork unitOfWork, ILogger<AccountService> logger, IAuthZeroProvider authZeroProvider, IActivityService activityService)
+        public AccountService(IUnitOfWork unitOfWork, ILogger<AccountService> logger, IAuthZeroProvider authZeroProvider, IBusService busService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _authZeroProvider = authZeroProvider;
-            _activityService = activityService;
+            _busService = busService;
         }
 
         public async Task<SignUpResultDto> SignUp(UserEssential user)
@@ -55,7 +55,7 @@ namespace SaluteOnline.API.Services.Implementation
                 var loginResult = await _authZeroProvider.GetToken(user);
                 if (loginResult == null)
                     throw new ArgumentException("Auth0 login process failed");
-                _activityService.LogActivity(new Activity
+                _busService.Publish(new ActivitySet
                 {
                     UserId = newUser.Id,
                     Importance = ActivityImportance.Critical,
@@ -105,7 +105,7 @@ namespace SaluteOnline.API.Services.Implementation
                 var loginResult = await _authZeroProvider.GetToken(user);
                 if (loginResult == null)
                     throw new ArgumentException("Auth0 login process failed");
-                _activityService.LogActivity(new Activity
+                _busService.Publish(new ActivitySet
                 {
                     UserId = existing.Id,
                     Importance = ActivityImportance.Medium,
@@ -165,7 +165,7 @@ namespace SaluteOnline.API.Services.Implementation
                 if (existing == null)
                     throw new ArgumentException("User with that email doesn't exists");
                 var changePasswordResult = await _authZeroProvider.RunForgotPasswordFlow(email);
-                _activityService.LogActivity(new Activity
+                _busService.Publish(new ActivitySet
                 {
                     UserId = existing.Id,
                     Importance = ActivityImportance.High,
@@ -214,7 +214,7 @@ namespace SaluteOnline.API.Services.Implementation
                 if (existing.Email != email)
                     throw new ArgumentException("Operation not allowed");
                 user.UpdateEntity(existing);
-                _activityService.LogActivity(new Activity
+                _busService.Publish(new ActivitySet
                 {
                     UserId = existing.Id,
                     Importance = ActivityImportance.Medium,
@@ -245,7 +245,7 @@ namespace SaluteOnline.API.Services.Implementation
                 if (existing.Email != email)
                     throw new ArgumentException("Operation not allowed");
                 user.UpdateEntity(existing);
-                _activityService.LogActivity(new Activity
+                _busService.Publish(new ActivitySet
                 {
                     UserId = existing.Id,
                     Importance = ActivityImportance.Medium,
@@ -276,7 +276,7 @@ namespace SaluteOnline.API.Services.Implementation
                 if (existing.Email != email)
                     throw new ArgumentException("Operation not allowed");
                 user.UpdateEntity(existing);
-                _activityService.LogActivity(new Activity
+                _busService.Publish(new ActivitySet
                 {
                     UserId = existing.Id,
                     Importance = ActivityImportance.Medium,
@@ -312,7 +312,7 @@ namespace SaluteOnline.API.Services.Implementation
                     existing.Avatar = Convert.ToBase64String(stream.ToArray());
                     existing.LastActivity = DateTimeOffset.UtcNow;
                     _unitOfWork.Save();
-                    _activityService.LogActivity(new Activity
+                    _busService.Publish(new ActivitySet
                     {
                         UserId = existing.Id,
                         Importance = ActivityImportance.Medium,

@@ -11,8 +11,8 @@ using SaluteOnline.Domain.Conversion;
 using SaluteOnline.Domain.Domain;
 using SaluteOnline.Domain.Domain.EF;
 using SaluteOnline.Domain.Domain.EF.LinkEntities;
-using SaluteOnline.Domain.Domain.Mongo;
 using SaluteOnline.Domain.DTO;
+using SaluteOnline.Domain.DTO.Activity;
 using SaluteOnline.Domain.DTO.Club;
 
 namespace SaluteOnline.API.Services.Implementation
@@ -21,13 +21,13 @@ namespace SaluteOnline.API.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
-        private readonly IActivityService _activityService;
+        private readonly IBusService _busService;
 
-        public ClubsService(IUnitOfWork unitOfWork, ILogger<ClubsService> logger, IActivityService activityService)
+        public ClubsService(IUnitOfWork unitOfWork, ILogger<ClubsService> logger, IBusService busService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _activityService = activityService;
+            _busService = busService;
         }
 
         public async Task<int> CreateClub(CreateClubDto club, string email)
@@ -59,7 +59,7 @@ namespace SaluteOnline.API.Services.Implementation
                 newClub.Administrators.Add(relation);
                 user.ClubsAdministrated.Add(relation);
                 _unitOfWork.Save();
-                _activityService.LogActivity(new Activity
+                _busService.Publish(new ActivitySet
                 {
                     UserId = user.Id,
                     Importance = ActivityImportance.High,
@@ -191,10 +191,10 @@ namespace SaluteOnline.API.Services.Implementation
                 var currentUser = _unitOfWork.Users.Get(t => t.Email == email).FirstOrDefault();
                 if (currentUser == null)
                     throw new ArgumentException("Internal error happened. Please try a bit later");
-                var club = _unitOfWork.Clubs.GetById(id: id);
+                var club = _unitOfWork.Clubs.GetAsQueryable().Include(t => t.Administrators).SingleOrDefault(t => t.Id == id);
                 if (club == null)
                     throw new ArgumentException("Error while getting club info. Please try a bit later");
-                if (currentUser.Role == Role.User && club.Administrators.All(t => t.UserId != id))
+                if (currentUser.Role == Role.User && club.Administrators.All(t => t.UserId != currentUser.Id))
                     throw new ArgumentException("Operation not allowed");
                 return club.ToDto(id);
             }
