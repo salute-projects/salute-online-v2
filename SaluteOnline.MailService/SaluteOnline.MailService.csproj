@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <UserSecretsId>b1cc1b60-d988-4500-9d94-42d6f33a2226</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,11 +10,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.6.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="RawRabbit" Version="2.0.0-rc3" />
     <PackageReference Include="RawRabbit.DependencyInjection.ServiceCollection" Version="2.0.0-rc3" />
     <PackageReference Include="RawRabbit.Operations.Subscribe" Version="2.0.0-rc3" />
+    <PackageReference Include="Sendgrid" Version="9.9.0" />
   </ItemGroup>
 
   <ItemGroup>

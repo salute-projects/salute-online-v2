@@ -31,7 +31,7 @@ namespace SaluteOnline.MailService
         {
             services.AddSingleton<ISesHandler, SesHandler>();
             services.AddRawRabbit(GetRabbitConfiguration);
-            services.Configure<AwsSettings>(Configuration.GetSection("AwsSettings"));
+            services.Configure<MainSettings>(Configuration.GetSection("MainSettings"));
             InitializeRabbit(services);
         }
 

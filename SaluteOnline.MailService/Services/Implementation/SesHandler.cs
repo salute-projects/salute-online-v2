@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Amazon;
-using Amazon.Runtime;
-using Amazon.SimpleEmail;
-using Amazon.SimpleEmail.Model;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -13,19 +10,21 @@ using SaluteOnline.Domain.DTO.Activity;
 using SaluteOnline.Domain.Events;
 using SaluteOnline.MailService.Model;
 using SaluteOnline.MailService.Services.Declaration;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace SaluteOnline.MailService.Services.Implementation
 {
     public class SesHandler : ISesHandler
     {
-        private readonly AmazonSimpleEmailServiceClient _client;
+        private readonly SendGridClient _client;
         private readonly ILogger<SesHandler> _logger;
-        private readonly AwsSettings _settings;
+        private readonly MainSettings _settings;
 
-        public SesHandler(IOptions<AwsSettings> awsSettings, ILogger<SesHandler> logger)
+        public SesHandler(IOptions<MainSettings> awsSettings, ILogger<SesHandler> logger, IConfiguration configuration)
         {
             _settings = awsSettings.Value;
-            _client = new AmazonSimpleEmailServiceClient(new BasicAWSCredentials(_settings.AccessKey, _settings.SecretKey), RegionEndpoint.EUWest2);
+            _client = new SendGridClient(configuration.GetValue<string>("SendGridKey"));
             _logger = logger;
         }
 
@@ -33,23 +32,19 @@ namespace SaluteOnline.MailService.Services.Implementation
         {
             try
             {
-                if (email == null || !IsEmailValid(email))
-                    throw new Exception("Wrong input model");
-                var to = new Destination
+                var from = new EmailAddress(string.IsNullOrEmpty(email.From) ? _settings.FromAddress : email.From, "");
+                var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from,
+                    email.To.Select(t => new EmailAddress(t)).ToList(), email.Subject, email.TextBody, email.HtmlBody,
+                    false);
+                if (email.Bcc.Any())
                 {
-                    ToAddresses = email.To,
-                    //BccAddresses = email.Bcc,
-                    //CcAddresses = email.Cc
-                };
-                var subject = new Content(email.Subject);
-                var body = new Body
+                    msg.AddBccs(email.Bcc.Select(t => new EmailAddress(t)).ToList());
+                }
+                if (email.Cc.Any())
                 {
-                    //Text = new Content(email.TextBody),
-                    Html = new Content(email.HtmlBody)
-                };
-                var message = new Message(subject, body);
-                var request = new SendEmailRequest(string.IsNullOrEmpty(email.From) ? _settings.FromAddress : email.From, to, message);
-                var result = await _client.SendEmailAsync(request);
+                    msg.AddCcs(email.Cc.Select(t => new EmailAddress(t)).ToList());
+                }
+                var response = await _client.SendEmailAsync(msg);
                 return true;
             }
             catch (Exception e)
