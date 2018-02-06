@@ -1,0 +1,45 @@
+﻿@model SaluteOnline.IdentityServer.ViewModels.LoggedOutViewModel
+
+<div class="dialog">
+    <div class="dialog-header login-dialog-header">
+        <div class="text-center">
+            <img src="~/assets/so-logo.png" alt="ASP.NET" class="img-responsive" height="128" />
+        </div>
+        <div class="so-logo clearfix text-center">
+            <span class="logo-leftside">SALUTE</span>
+            <span class="logo-rightside-black">ONLINE</span>
+        </div>
+    </div>
+    <section class="dialog-body">
+        <div class="half-divider"></div>
+        <div class="text-center">
+            <h3>You are logged out now</h3>
+        </div>
+        <div class="half-divider"></div>
+        @if (!string.IsNullOrEmpty(Model.PostLogoutRedirectUri))
+        {
+            <div class="dialog-footer text-center">
+                <a class="so-anchor" href="@Model.PostLogoutRedirectUri">Click here to return to the application</a>
+            </div>
+        }
+        else
+        {
+            <div class="dialog-footer text-center">
+                <a class="so-anchor" asp-action="Login">Log in back ></a>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.SignoutIframeUrl))
+        {
+            <iframe width="0" height="0" class="signout" style="display: none;" src="@Model.SignoutIframeUrl"></iframe>
+        }
+    </section>
+</div>
+
+@section scripts
+    {
+    @if (Model.AutomaticRedirectAfterSignOut)
+    {
+        <script src="~/js/signout-redirect.js"></script>
+    }
+}

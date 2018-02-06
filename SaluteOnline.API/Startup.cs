@@ -166,7 +166,7 @@ namespace SaluteOnline.API
                 Username = "guest",
                 Password = "guest",
                 VirtualHost = "/",
-                Port = 32775,
+                Port = 32770,
                 Hostnames = new List<string> { "127.0.0.1" }
             }
         };

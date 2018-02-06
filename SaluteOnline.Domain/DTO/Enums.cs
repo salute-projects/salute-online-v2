@@ -10,11 +10,16 @@
 
     public enum ActivityType
     {
-        SignUp = 0,
+        Register = 0,
         Login = 1,
         ForgotPassword = 2,
         UserUpdate = 3,
-        NewClubAdded = 4
+        NewClubAdded = 4,
+        ExternalLogin = 5,
+        Logout = 6,
+        EmailConfirmed = 7,
+        PasswordChanged = 8,
+        RoleChanged = 9
     }
 
     public enum ActivityImportance
@@ -23,6 +28,14 @@
         Medium = 1,
         High = 2,
         Critical = 3
+    }
+
+    public enum ActivityStatus
+    {
+        Unknown = 0,
+        Success = 1,
+        Fail = 2,
+        Pending = 3
     }
 
     public enum Roles

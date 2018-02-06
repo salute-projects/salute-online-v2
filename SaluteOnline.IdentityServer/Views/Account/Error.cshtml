@@ -1,0 +1,25 @@
+﻿@model SaluteOnline.IdentityServer.ViewModels.ErrorViewModel
+
+<div class="dialog">
+    <div class="dialog-header login-dialog-header">
+        <div class="text-center">
+            <img src="~/assets/so-logo.png" alt="ASP.NET" class="img-responsive" height="128" />
+        </div>
+        <div class="so-logo clearfix text-center">
+            <span class="logo-leftside">SALUTE</span>
+            <span class="logo-rightside-black">ONLINE</span>
+        </div>
+    </div>
+    <hr />
+    <section class="dialog-body">
+        <div class="error-message-block text-center">
+            <div>
+                <i class="material-icons">error</i>
+            </div>
+            <p>@Model.Message</p>
+        </div>
+        <div class="dialog-footer text-center">
+            <a class="so-anchor" asp-action="ContactSupport" asp-route-type="@Model.Type">Contact to support</a>
+        </div>
+    </section>
+</div>

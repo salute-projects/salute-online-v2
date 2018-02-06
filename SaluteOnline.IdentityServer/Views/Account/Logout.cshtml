@@ -1,0 +1,30 @@
+﻿@model SaluteOnline.IdentityServer.ViewModels.LogoutViewModel
+
+<div class="dialog">
+    <div class="dialog-header login-dialog-header">
+        <div class="text-center">
+            <img src="~/assets/so-logo.png" alt="ASP.NET" class="img-responsive" height="128" />
+        </div>
+        <div class="so-logo clearfix text-center">
+            <span class="logo-leftside">SALUTE</span>
+            <span class="logo-rightside-black">ONLINE</span>
+        </div>
+    </div>
+    <section class="dialog-body">
+        <div class="half-divider"></div>
+        <form asp-route="ForgotPassword" method="post">
+            <input type="hidden" asp-for="LogoutId" />
+            <div class="error-message-block text-center">
+                <div>
+                    <i class="material-icons">error</i>
+                </div>
+            </div>
+            <div class="text-center">
+                <p>Do you really want to log out from application?</p>
+            </div>
+            <div class="dialog-footer">
+                <button class="main-action-button" name="button" value="login">Log Out ></button>
+            </div>
+        </form>
+    </section>
+</div>

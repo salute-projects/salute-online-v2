@@ -1,0 +1,61 @@
+﻿@model SaluteOnline.IdentityServer.ViewModels.ContactSupportViewModel
+
+<div class="dialog">
+    <div class="dialog-header login-dialog-header">
+        <div class="text-center">
+            <img src="~/assets/so-logo.png" alt="ASP.NET" class="img-responsive" height="128" />
+        </div>
+        <div class="so-logo clearfix text-center">
+            <span class="logo-leftside">SALUTE</span>
+            <span class="logo-rightside-black">ONLINE</span>
+        </div>
+    </div>
+    <hr />
+    <section class="dialog-body">
+        <form asp-route="ContactSupport" method="post">
+            <input type="hidden" asp-for="Type" />
+
+            <div class="tab-pane--content">
+                <div class="so-input-control">
+                    <input class="so-input" id="email" type="text" placeholder="yours@example.com" asp-for="Email" />
+                    <label for="email">Email</label>
+                    <span class="border"></span>
+                </div>
+                <div class="double-divider"></div>
+                <div class="so-input-control">
+                    <textarea class="so-input" id="nickname" placeholder="yours@example.com" asp-for="Content"></textarea>
+                    <label for="nickname">Message</label>
+                </div>
+            </div>
+            <div class="validation-footer">
+                <div asp-validation-summary="All" class="validation-container"></div>
+            </div>
+            <div class="dialog-footer">
+                <button class="main-action-button" name="button" value="login">Send ></button>
+            </div>
+        </form>
+    </section>
+</div>
+
+@section scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.so-input-control .so-input').each(function() {
+                if ($(this).val() !== '') {
+                    $(this).addClass('so-input--focused');
+                }
+            });
+        });
+
+        $('.so-input-control .so-input').on('focus', function () {
+            if (!$(this).hasClass('so-input--focused')) {
+                $(this).addClass('so-input--focused');
+            }
+        }).on('blur', function () {
+            if ($(this).val() === '' && $(this).hasClass('so-input--focused')) {
+                $(this).removeClass('so-input--focused');
+            }
+        })
+    </script>
+}

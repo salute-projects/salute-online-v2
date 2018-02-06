@@ -59,7 +59,7 @@ namespace SaluteOnline.API.Services.Implementation
                 {
                     UserId = newUser.Id,
                     Importance = ActivityImportance.Critical,
-                    Type = ActivityType.SignUp,
+                    Type = ActivityType.Register,
                     Data = JsonConvert.SerializeObject(newUser)
                 });
                 return new SignUpResultDto
@@ -109,7 +109,7 @@ namespace SaluteOnline.API.Services.Implementation
                 {
                     UserId = existing.Id,
                     Importance = ActivityImportance.Medium,
-                    Type = ActivityType.SignUp
+                    Type = ActivityType.Register
                 });
                 return new LoginResultDto
                 {
@@ -169,7 +169,7 @@ namespace SaluteOnline.API.Services.Implementation
                 {
                     UserId = existing.Id,
                     Importance = ActivityImportance.High,
-                    Type = ActivityType.SignUp
+                    Type = ActivityType.Register
                 });
                 return changePasswordResult;
             }

@@ -1,7 +1,7 @@
 ﻿using RawRabbit;
-using SaluteOnline.API.Services.Interface;
+using SaluteOnline.IdentityServer.Service.Declaration;
 
-namespace SaluteOnline.API.Services.Implementation
+namespace SaluteOnline.IdentityServer.Service.Implementation
 {
     public class BusService : IBusService
     {

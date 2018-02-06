@@ -1,0 +1,94 @@
+﻿@model SaluteOnline.IdentityServer.ViewModels.LoginViewModel
+
+@if (Model.EnableLocalLogin)
+{
+    <div class="dialog">
+        <div class="dialog-header login-dialog-header">
+            <div class="text-center">
+                <img src="~/assets/so-logo.png" alt="ASP.NET" class="img-responsive" height="128" />
+            </div>
+            <div class="so-logo clearfix text-center">
+                <span class="logo-leftside">SALUTE</span>
+                <span class="logo-rightside-black">ONLINE</span>
+            </div>
+        </div>
+        <section class="dialog-body">
+            <div class="half-divider"></div>
+            <ul class="nav nav-pills nav-justified dialog-nav-labels">
+                <li class="active">
+                    <a href="#login" data-toggle="tab">LOG IN</a>
+                </li>
+                <li>
+                    <a asp-action="Register" asp-route-returnUrl="@Model.ReturnUrl">SIGN UP</a>
+                </li>
+            </ul>
+            <div class="tab-content clearfix">
+                <div class="tab-pane active" id="login">
+                    <form asp-route="Login" method="post">
+                        <input type="hidden" asp-for="ReturnUrl" />
+
+                        <div class="tab-pane--content">
+                            <div class="so-input-control">
+                                <input class="so-input" id="email" type="text" placeholder="yours@example.com" asp-for="Username" />
+                                <label for="email">Email or nickname</label>
+                                <span class="border"></span>
+                            </div>
+                            <div class="double-divider"></div>
+                            <div class="so-input-control">
+                                <input class="so-input" id="password" type="password" placeholder="Your password" asp-for="Password" />
+                                <label for="password">Password</label>
+                                <span class="border"></span>
+                            </div>
+                            <div class="double-divider"></div>
+                            <div class="double-divider"></div>
+                            <div class="text-center">
+                                <a class="mt-16 so-anchor" asp-action="ForgotPassword" asp-route-redirectUrl="@Model.ReturnUrl">Forgot your password?</a>
+                            </div>
+                            @if (Model.AllowRememberLogin)
+                            {
+                                <div class="form-group so-custom-checkbox-container text-center mt-16">
+                                    <label asp-for="RememberLogin">
+                                        <input asp-for="RememberLogin" class="so-custom-checkbox" type="checkbox">
+                                        <span class="checkbox-material">
+                                            <span class="check"></span>
+                                        </span>
+                                        Remember Me
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="validation-footer">
+                            <div asp-validation-summary="All" class="validation-container"></div>
+                        </div>
+                        <div class="dialog-footer">
+                            <button class="main-action-button" name="button" value="login">Log in ></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+}
+
+@section scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.so-input-control input').each(function() {
+                if ($(this).val() !== '') {
+                    $(this).addClass('so-input--focused');
+                }
+            });
+        });
+
+        $('.so-input-control input').on('focus', function () {
+            if (!$(this).hasClass('so-input--focused')) {
+                $(this).addClass('so-input--focused');
+            }
+        }).on('blur', function () {
+            if ($(this).val() === '' && $(this).hasClass('so-input--focused')) {
+                $(this).removeClass('so-input--focused');
+            }
+        })
+    </script>
+}
