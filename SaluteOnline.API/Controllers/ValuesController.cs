@@ -33,13 +33,7 @@ namespace SaluteOnline.API.Controllers
         [HttpPost]
         public void Post([FromBody]string value)
         {
-            _busService.Publish(new SendEmailEvent
-            {
-                To = new List<string> { "melomaniac.taras@gmail.com" },
-                TextBody = "Hi there",
-                HtmlBody = "<div style=\"color: red\">Hi there</div>",
-                Subject = "Test"
-            });
+            
         }
 
         // PUT api/values/5

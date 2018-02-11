@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace SaluteOnline.API
@@ -7,6 +8,10 @@ namespace SaluteOnline.API
     {
         public static void Main(string[] args)
         {
+            if (Debugger.IsAttached)
+            {
+                Process.Start(@"D:\Projects\startMongo.bat");
+            }
             BuildWebHost(args).Run();
         }
 

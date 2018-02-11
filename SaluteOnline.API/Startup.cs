@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -7,18 +8,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using RawRabbit;
 using RawRabbit.Configuration;
 using RawRabbit.DependencyInjection.ServiceCollection;
 using RawRabbit.Instantiation;
 using SaluteOnline.API.DAL;
+using SaluteOnline.API.Handlers.Declaration;
+using SaluteOnline.API.Handlers.Implementation;
 using SaluteOnline.API.Hub;
-using SaluteOnline.API.Providers.Implementation;
-using SaluteOnline.API.Providers.Interface;
 using SaluteOnline.API.Security;
 using SaluteOnline.API.Services.Implementation;
 using SaluteOnline.API.Services.Interface;
 using SaluteOnline.Domain.DTO;
-using SaluteOnline.Domain.Extensions;
+using SaluteOnline.Domain.DTO.Activity;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace SaluteOnline.API
@@ -34,7 +36,6 @@ namespace SaluteOnline.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<Auth0Settings>(Configuration.GetSection("Auth0"));
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = "Auth";
@@ -44,7 +45,7 @@ namespace SaluteOnline.API
             {
                 options.AddPolicy("Auth", policy =>
                 {
-                    policy.RequireClaim("id_token");
+                    policy.RequireClaim("subjectId");
                 });
             });
             var connectionString = Configuration.GetConnectionString("SoConnection");
@@ -74,7 +75,7 @@ namespace SaluteOnline.API
                 t.AddSecurityDefinition("Bearer", new ApiKeyScheme
                 {
                     In = "header",
-                    Description = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IlJqY3hPVFF6TXpJd01EUkZNVU13TkVaQk5qTkZSa0pHTVRnNFFVTkdSRVExTXpoRE1UTkVNZyJ9.eyJpc3MiOiJodHRwczovL3NhbHV0ZW9ubGluZS5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NTllOTllYzcyM2MyZTUyNGZmNzU1ZTBiIiwiYXVkIjoiaHR0cHM6Ly9zYWx1dGVvbmxpbmUuZXUuYXV0aDAuY29tL2FwaS92Mi8iLCJpYXQiOjE1MTUzNDA2NzksImV4cCI6MTUxNTQyNzA3OSwiYXpwIjoiM3MtTURveWJlOWI2akRiTXE2anZaQWhNc1JGaEhURTciLCJzY29wZSI6InJlYWQ6Y3VycmVudF91c2VyIHVwZGF0ZTpjdXJyZW50X3VzZXJfbWV0YWRhdGEgZGVsZXRlOmN1cnJlbnRfdXNlcl9tZXRhZGF0YSBjcmVhdGU6Y3VycmVudF91c2VyX21ldGFkYXRhIGNyZWF0ZTpjdXJyZW50X3VzZXJfZGV2aWNlX2NyZWRlbnRpYWxzIGRlbGV0ZTpjdXJyZW50X3VzZXJfZGV2aWNlX2NyZWRlbnRpYWxzIHVwZGF0ZTpjdXJyZW50X3VzZXJfaWRlbnRpdGllcyBvZmZsaW5lX2FjY2VzcyIsImd0eSI6InBhc3N3b3JkIn0.soPA-T4NZnLrKrAU2zFIsHnN1wnkOvNxU3V2Y6c_jMC-mWI89bRigVyV0TYOnK8WYjWC2yvmi5oyUejl3T-1-cASRK03Bw1yFfGJVERBmmwP3MUU4hEOvrp_dtLmVVhIuxam7R0r8WrAcnxNrlv6wh2QcRdnCNsRQHdihIphKnNpI6lhb7JSApvourAGU0-e2qdV8T2zoV_jsuvN83i7CPSa7iLQvcGyTUlbOR7UytbrwTGSpN4HJ2Qf3oED55DWFj31c6tJQn0esbgsRfsPcqHgI6Fj_5vn94Ghkx6CQ5gG3UUBmktySG3vlSfvZcOEG3M06L-iAbkfcKXHk5R07A",
+                    Description = "Bearer",
                     Name = "Authorization",
                     Type = "apiKey"
                 });
@@ -99,10 +100,11 @@ namespace SaluteOnline.API
             services.AddRawRabbit(GetRabbitConfiguration);
 
             InitializeSettings(services);
-            InitializeProviders(services);
             InitializeServices(services);
 
             SetPolicies(services);
+
+            SubsribeToRabbit(services);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -132,16 +134,12 @@ namespace SaluteOnline.API
             services.AddScoped<IClubsService, ClubsService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddSingleton<IBusService, BusService>();
-        }
-
-        private static void InitializeProviders(IServiceCollection services)
-        {
-            services.AddScoped<IAuthZeroProvider, AuthZeroProvider>();
+            services.AddScoped<IUserHandler, UserHandler>();
         }
 
         private void InitializeSettings(IServiceCollection services)
         {
-            services.Configure<Auth0Settings>(Configuration.GetSection("Auth0"));
+            services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
         }
 
         private static void SetPolicies(IServiceCollection services)
@@ -149,13 +147,13 @@ namespace SaluteOnline.API
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(Policies.User.ToString(),
-                    policyUser => policyUser.RequireClaim("role", Roles.User.ToLowerString(), Roles.ClubAdmin.ToLowerString(), Roles.GlobalAdmin.ToLowerString(), Roles.SilentDon.ToLowerString()));
+                    policyUser => policyUser.RequireClaim("role", Roles.User.ToString(), Roles.ClubAdmin.ToString(), Roles.GlobalAdmin.ToString(), Roles.SilentDon.ToString()));
                 options.AddPolicy(Policies.ClubAdmin.ToString(),
-                    policyUser => policyUser.RequireClaim("role", Roles.ClubAdmin.ToLowerString(), Roles.GlobalAdmin.ToLowerString(), Roles.SilentDon.ToLowerString()));
+                    policyUser => policyUser.RequireClaim("role", Roles.ClubAdmin.ToString(), Roles.GlobalAdmin.ToString(), Roles.SilentDon.ToString()));
                 options.AddPolicy(Policies.GlobalAdmin.ToString(),
-                    policyUser => policyUser.RequireClaim("role", Roles.GlobalAdmin.ToLowerString(), Roles.SilentDon.ToLowerString()));
+                    policyUser => policyUser.RequireClaim("role", Roles.GlobalAdmin.ToString(), Roles.SilentDon.ToString()));
                 options.AddPolicy(Policies.SilendDon.ToString(),
-                    policyUser => policyUser.RequireClaim("role", Roles.SilentDon.ToLowerString()));
+                    policyUser => policyUser.RequireClaim("role", Roles.SilentDon.ToString()));
             });
         }
 
@@ -170,5 +168,12 @@ namespace SaluteOnline.API
                 Hostnames = new List<string> { "127.0.0.1" }
             }
         };
+
+        private static async void SubsribeToRabbit(IServiceCollection services)
+        {
+            var bus = RawRabbitFactory.CreateSingleton(GetRabbitConfiguration);
+            var handler = services.BuildServiceProvider().GetService<IUserHandler>();
+            await bus.SubscribeAsync<UserRegisteredEvent>(msg => Task.FromResult(handler.HandleNewUser(msg)));
+        }
     }
 }

@@ -2,16 +2,12 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using SaluteOnline.API.DAL;
-using SaluteOnline.API.Providers.Interface;
 using SaluteOnline.API.Services.Interface;
 using SaluteOnline.Domain.Conversion;
-using SaluteOnline.Domain.Domain.EF;
-using SaluteOnline.Domain.DTO;
-using SaluteOnline.Domain.DTO.Activity;
 using SaluteOnline.Domain.DTO.User;
 
 namespace SaluteOnline.API.Services.Implementation
@@ -20,73 +16,20 @@ namespace SaluteOnline.API.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AccountService> _logger;
-        private readonly IAuthZeroProvider _authZeroProvider;
         private readonly IBusService _busService;
 
-        public AccountService(IUnitOfWork unitOfWork, ILogger<AccountService> logger, IAuthZeroProvider authZeroProvider, IBusService busService)
+        public AccountService(IUnitOfWork unitOfWork, ILogger<AccountService> logger, IBusService busService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _authZeroProvider = authZeroProvider;
             _busService = busService;
         }
 
-        public async Task<SignUpResultDto> SignUp(UserEssential user)
+        public bool UserExists(string subjectId)
         {
             try
             {
-                var existing = _unitOfWork.Users.Count(t => t.Email == user.Email);
-                if (existing != 0)
-                    throw new ArgumentException("User already exists");
-                var signUpResult = await _authZeroProvider.SignUp(user);
-                if (signUpResult == null)
-                    throw new ArgumentException("Auth0 signup process failed");
-                var newUser = new User
-                {
-                    Email = user.Email,
-                    Guid = Guid.NewGuid(),
-                    Registered = DateTimeOffset.UtcNow,
-                    LastActivity = DateTimeOffset.UtcNow,
-                    Auth0Id = signUpResult.Id,
-                    Role = Role.User
-                };
-                _unitOfWork.Users.Insert(newUser);
-                await _unitOfWork.SaveAsync();
-                var loginResult = await _authZeroProvider.GetToken(user);
-                if (loginResult == null)
-                    throw new ArgumentException("Auth0 login process failed");
-                _busService.Publish(new ActivitySet
-                {
-                    UserId = newUser.Id,
-                    Importance = ActivityImportance.Critical,
-                    Type = ActivityType.Register,
-                    Data = JsonConvert.SerializeObject(newUser)
-                });
-                return new SignUpResultDto
-                {
-                    Id = newUser.Id,
-                    ExpiresIn = loginResult.ExpiresIn,
-                    Token = loginResult.AccessToken,
-                    RefreshToken = loginResult.RefreshToken
-                };
-            }
-            catch (ArgumentException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-        }
-
-        public bool UserExists(string email)
-        {
-            try
-            {
-                var exists = _unitOfWork.Users.Count(t => string.Equals(t.Email, email, StringComparison.OrdinalIgnoreCase));
-                return exists != 0;
+                return _unitOfWork.Users.Count(t => string.Equals(t.SubjectId, subjectId, StringComparison.OrdinalIgnoreCase)) != 0;
             }
             catch (Exception ex)
             {
@@ -95,103 +38,14 @@ namespace SaluteOnline.API.Services.Implementation
             }
         }
 
-        public async Task<LoginResultDto> Login(UserEssential user)
+        public UserDto GetUserInfo(string subjectId)
         {
             try
             {
-                var existing = _unitOfWork.Users.Get(t => t.Email == user.Email).FirstOrDefault();
-                if (existing == null)
-                    throw new ArgumentException("User doesn't exists");
-                var loginResult = await _authZeroProvider.GetToken(user);
-                if (loginResult == null)
-                    throw new ArgumentException("Auth0 login process failed");
-                _busService.Publish(new ActivitySet
-                {
-                    UserId = existing.Id,
-                    Importance = ActivityImportance.Medium,
-                    Type = ActivityType.Register
-                });
-                return new LoginResultDto
-                {
-                    ExpiresIn = loginResult.ExpiresIn,
-                    Token = loginResult.AccessToken,
-                    RefreshToken = loginResult.RefreshToken,
-                    Avatar = existing.Avatar
-                };
-            }
-            catch (ArgumentException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-        }
-
-        public async Task<LoginResultDto> RefreshToken(string refreshToken)
-        {
-            try
-            {
-                var loginResult = await _authZeroProvider.RefreshToken(refreshToken);
-                if (loginResult == null)
-                    throw new ArgumentException("Auth0 login process failed");
-                return new LoginResultDto
-                {
-                    ExpiresIn = loginResult.ExpiresIn,
-                    Token = loginResult.AccessToken,
-                    RefreshToken = loginResult.RefreshToken
-                };
-            }
-            catch (ArgumentException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-        }
-
-        public async Task<string> RunForgotPasswordFlow(string email)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(email))
-                    throw new ArgumentException("Argument omitted");
-                var existing = _unitOfWork.Users.Get(t => string.Equals(t.Email, email, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
-                if (existing == null)
-                    throw new ArgumentException("User with that email doesn't exists");
-                var changePasswordResult = await _authZeroProvider.RunForgotPasswordFlow(email);
-                _busService.Publish(new ActivitySet
-                {
-                    UserId = existing.Id,
-                    Importance = ActivityImportance.High,
-                    Type = ActivityType.Register
-                });
-                return changePasswordResult;
-            }
-            catch (ArgumentException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-        }
-
-        public UserDto GetUserInfo(string email)
-        {
-            try
-            {
-                var user = _unitOfWork.Users.Get(t => t.Email.ToLower() == email).FirstOrDefault();
+                var user = _unitOfWork.Users.Get(t => t.SubjectId == subjectId).FirstOrDefault();
                 if (user == null)
                     throw new ArgumentException("User not found");
-                return user.ToDto();
+                return user.Adapt<UserDto>();
             }
             catch (ArgumentException)
             {
@@ -204,23 +58,16 @@ namespace SaluteOnline.API.Services.Implementation
             }
         }
 
-        public void UpdateUserInfo(UserDto user, string email)
+        public void UpdateUserInfo(UserDto user, string subjectId)
         {
             try
             {
                 var existing = _unitOfWork.Users.GetById(id: user.Id);
                 if (existing == null)
                     throw new ArgumentException("User does not exists");
-                if (existing.Email != email)
+                if (existing.SubjectId != subjectId)
                     throw new ArgumentException("Operation not allowed");
                 user.UpdateEntity(existing);
-                _busService.Publish(new ActivitySet
-                {
-                    UserId = existing.Id,
-                    Importance = ActivityImportance.Medium,
-                    Type = ActivityType.UserUpdate,
-                    Data = JsonConvert.SerializeObject(existing)
-                });
                 _unitOfWork.Users.Update(existing);
                 _unitOfWork.Save();
             }
@@ -235,23 +82,16 @@ namespace SaluteOnline.API.Services.Implementation
             }
         }
 
-        public void UpdateMainUserInfo(UserMainInfoDto user, string email)
+        public void UpdateMainUserInfo(UserMainInfoDto user, string subjectId)
         {
             try
             {
                 var existing = _unitOfWork.Users.GetById(id: user.Id);
                 if (existing == null)
                     throw new ArgumentException("User does not exists");
-                if (existing.Email != email)
+                if (existing.SubjectId != subjectId)
                     throw new ArgumentException("Operation not allowed");
                 user.UpdateEntity(existing);
-                _busService.Publish(new ActivitySet
-                {
-                    UserId = existing.Id,
-                    Importance = ActivityImportance.Medium,
-                    Type = ActivityType.UserUpdate,
-                    Data = JsonConvert.SerializeObject(existing)
-                });
                 _unitOfWork.Users.Update(existing);
                 _unitOfWork.Save();
             }
@@ -266,23 +106,16 @@ namespace SaluteOnline.API.Services.Implementation
             }
         }
 
-        public void UpdatePersonalUserInfo(UserPersonalInfoDto user, string email)
+        public void UpdatePersonalUserInfo(UserPersonalInfoDto user, string subjectId)
         {
             try
             {
                 var existing = _unitOfWork.Users.GetById(id: user.Id);
                 if (existing == null)
                     throw new ArgumentException("User does not exists");
-                if (existing.Email != email)
+                if (existing.SubjectId != subjectId)
                     throw new ArgumentException("Operation not allowed");
                 user.UpdateEntity(existing);
-                _busService.Publish(new ActivitySet
-                {
-                    UserId = existing.Id,
-                    Importance = ActivityImportance.Medium,
-                    Type = ActivityType.UserUpdate,
-                    Data = JsonConvert.SerializeObject(existing)
-                });
                 _unitOfWork.Users.Update(existing);
                 _unitOfWork.Save();
             }
@@ -297,13 +130,13 @@ namespace SaluteOnline.API.Services.Implementation
             }
         }
 
-        public async Task<string> UpdateUserAvatar(IFormFile avatar, string email)
+        public async Task<string> UpdateUserAvatar(IFormFile avatar, string subjectId)
         {
             try
             {
-                if (avatar == null || avatar.Length == 0 || string.IsNullOrEmpty(email))
+                if (avatar == null || avatar.Length == 0 || string.IsNullOrEmpty(subjectId))
                     throw new ArgumentException("File wasn't uploaded");
-                var existing = _unitOfWork.Users.Get(t => t.Email == email).SingleOrDefault();
+                var existing = _unitOfWork.Users.Get(t => t.SubjectId == subjectId).SingleOrDefault();
                 if (existing == null)
                     throw new ArgumentException("Could not found user");
                 using (var stream = new MemoryStream())
@@ -312,13 +145,6 @@ namespace SaluteOnline.API.Services.Implementation
                     existing.Avatar = Convert.ToBase64String(stream.ToArray());
                     existing.LastActivity = DateTimeOffset.UtcNow;
                     _unitOfWork.Save();
-                    _busService.Publish(new ActivitySet
-                    {
-                        UserId = existing.Id,
-                        Importance = ActivityImportance.Medium,
-                        Type = ActivityType.UserUpdate,
-                        Data = JsonConvert.SerializeObject(existing)
-                    });
                     return existing.Avatar;
                 }
             }

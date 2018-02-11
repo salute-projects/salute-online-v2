@@ -29,7 +29,7 @@ namespace SaluteOnline.IdentityServer.Service.Implementation
             var claims = principal.Claims.Where(t => context.RequestedClaimTypes.Contains(t.Type)).ToList();
             claims.Add(new Claim(JwtClaimTypes.Role, user.Role.ToString()));
             claims.Add(new Claim(JwtClaimTypes.Picture, user.AvatarUrl ?? string.Empty));
-            claims.Add(new Claim("UserId", user.UserId.ToString()));
+            claims.Add(new Claim("userId", user.UserId.ToString()));
             context.IssuedClaims = claims;
         }
 

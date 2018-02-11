@@ -1,16 +1,16 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SaluteOnline.API.Services.Interface;
 using SaluteOnline.Domain.DTO;
 using SaluteOnline.Domain.DTO.Club;
+using SaluteOnline.Domain.Exceptions;
 
 namespace SaluteOnline.API.Controllers
 {
     [Route("api/[controller]")]
-    public class ClubsController : Controller
+    public class ClubsController : BaseController
     {
         private readonly IClubsService _service;
         public ClubsController(IClubsService service)
@@ -24,31 +24,31 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var id = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(id))
                     return BadRequest("Authorization failed.");
-                return Ok(await _service.CreateClub(club, email));
+                return Ok(await _service.CreateClub(club, id));
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
         [HttpPost("list")]
-        //[Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
         public IActionResult GetClubsList([FromBody] ClubFilter filter)
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var id = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(id))
                     return BadRequest("Authorization failed.");
-                return Ok(_service.GetClubs(filter, email));
+                return Ok(_service.GetClubs(filter, id));
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -58,15 +58,14 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var id = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(id))
                     return BadRequest("Authorization failed.");
-                return Ok(_service.GetMyClubs(email));
+                return Ok(_service.GetMyClubs(id));
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                Console.WriteLine(e);
-                throw;
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -76,14 +75,11 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
-                    return BadRequest("Authorization failed.");
                 return Ok(_service.GetInfoAggregation());
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -93,14 +89,14 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
-                return Ok(_service.GetClub(id, email));
+                return Ok(_service.GetClub(id, subjectId));
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -110,14 +106,11 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
-                    return BadRequest("Authorization failed.");
                 return Ok(_service.GetClubAdministrators(filter));
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -127,14 +120,11 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
-                    return BadRequest("Authorization failed.");
                 return Ok(_service.GetClubMembers(filter));
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -144,14 +134,14 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
-                return Ok(_service.AddClubMember(dto, email));
+                return Ok(_service.AddClubMember(dto, subjectId));
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -161,14 +151,14 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
-                return Ok(_service.AddMembershipRequest(dto, email));
+                return Ok(_service.AddMembershipRequest(dto, subjectId));
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -178,14 +168,14 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
-                return Ok(_service.GetClubMembershipRequests(filter, email));
+                return Ok(_service.GetClubMembershipRequests(filter, subjectId));
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -195,15 +185,15 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
-                _service.HandleMembershipRequest(dto, email);
+                _service.HandleMembershipRequest(dto, subjectId);
                 return Ok();
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
     }

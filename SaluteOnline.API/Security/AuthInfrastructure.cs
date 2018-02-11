@@ -6,8 +6,6 @@ namespace SaluteOnline.API.Security
 {
     public class AuthInfrastructure
     {
-        private const string AuthPrefix = "auth0|";
-
         public static AuthPayload Decode(string authorization, string issuerUrl)
         {
             var token = ClearToken(authorization);
@@ -45,7 +43,7 @@ namespace SaluteOnline.API.Security
         private static bool IsTokenValid(AuthPayload payload, string issuerUrl)
         {
             return !string.IsNullOrEmpty(payload?.Subject) && !string.IsNullOrEmpty(payload.Issuer) &&
-                   payload.Issuer.Contains(issuerUrl) && payload.Subject.StartsWith(AuthPrefix);
+                   payload.Issuer.Contains(issuerUrl) && !string.IsNullOrEmpty(payload.Role);
         }
     }
 }

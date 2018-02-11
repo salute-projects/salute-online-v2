@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,12 +7,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using RawRabbit;
 using RawRabbit.Configuration;
 using RawRabbit.DependencyInjection.ServiceCollection;
 using RawRabbit.Instantiation;
+using SaluteOnline.Domain.DTO.Activity;
 using SaluteOnline.IdentityServer.Constants;
 using SaluteOnline.IdentityServer.DAL;
 using SaluteOnline.IdentityServer.Domain;
+using SaluteOnline.IdentityServer.Handlers.Declaration;
+using SaluteOnline.IdentityServer.Handlers.Implementation;
 using SaluteOnline.IdentityServer.Service.Declaration;
 using SaluteOnline.IdentityServer.Service.Implementation;
 
@@ -48,6 +53,7 @@ namespace SaluteOnline.IdentityServer
 
             services.AddSingleton((IConfigurationRoot) Configuration);
             services.AddTransient<IProfileService, SoProfileService>();
+            services.AddSingleton<IUserHandler, UserHandler>();
             services.AddSingleton<IBusService, BusService>();
 
             services.Configure<WebApplicationClientSettings>(Configuration.GetSection("WebApplicationClientSettings"));
@@ -70,6 +76,8 @@ namespace SaluteOnline.IdentityServer
                 .AddProfileService<SoProfileService>();
 
             services.AddRawRabbit(GetRabbitConfiguration);
+
+            SubscribeToRabbit(services);
 
             services.AddMvc();
         }
@@ -94,9 +102,16 @@ namespace SaluteOnline.IdentityServer
                 Username = "guest",
                 Password = "guest",
                 VirtualHost = "/",
-                Port = 32775,
+                Port = 32770,
                 Hostnames = new List<string> { "127.0.0.1" }
             }
         };
+
+        private static async void SubscribeToRabbit(IServiceCollection services)
+        {
+            var bus = RawRabbitFactory.CreateSingleton(GetRabbitConfiguration);
+            var handler = services.BuildServiceProvider().GetService<IUserHandler>();
+            await bus.SubscribeAsync<UserCreatedEvent>(msg => Task.FromResult(handler.HandleUserCreated(msg)));
+        }
     }
 }

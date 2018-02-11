@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security.Claims;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
@@ -7,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using SaluteOnline.Domain.DTO;
+using SaluteOnline.Domain.Extensions;
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 namespace SaluteOnline.Gateway
@@ -16,7 +20,9 @@ namespace SaluteOnline.Gateway
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder();
-            builder.SetBasePath(env.ContentRootPath).AddJsonFile("ocelot_configuration.json", false, true)
+            builder.SetBasePath(env.ContentRootPath)
+                .AddJsonFile("ocelot_configuration.json", false, true)
+                .AddJsonFile("appsettings.json", false, true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -25,14 +31,13 @@ namespace SaluteOnline.Gateway
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
+            services.AddAuthentication().AddIdentityServerAuthentication("safeKey", options =>
             {
-                options.DefaultAuthenticateScheme = "Auth";
-                options.DefaultChallengeScheme = "Auth";
-            }).AddJwtBearer("authKey", options =>
-            {
-                options.Audience = "https://saluteonline.eu.auth0.com/api/v2/";
-                options.Authority = "https://saluteonline.eu.auth0.com/";
+                options.Authority = Configuration.GetSection("IdentityServerSettings").GetValue<string>("Authority");
+                options.RequireHttpsMetadata =
+                    Configuration.GetSection("IdentityServerSettings").GetValue<bool>("RequireHttpsMetadata");
+                options.ApiName = Configuration.GetSection("IdentityServerSettings").GetValue<string>("ApiName");
+                options.SupportedTokens = SupportedTokens.Both;
             });
 
             services.AddCors(
@@ -51,16 +56,39 @@ namespace SaluteOnline.Gateway
             {
                 PreAuthorisationMiddleware = async (context, func) =>
                 {
-                    var scopes = context.User.Claims.ToList().FirstOrDefault(t => t.Type == "scope");
-                    if (scopes != null && scopes.Value.Contains("silentdon"))
+                    var role = context.User.Claims.ToList().FirstOrDefault(t => t.Type.ToLower() == "role");
+                    if (!string.IsNullOrEmpty(role?.Value))
                     {
+                        var transformedRole = TransformRoleClaim(role.Value);
+                        if (transformedRole == "corrupted")
+                            return;
                         var newIdentity = new ClaimsIdentity("Auth");
-                        newIdentity.AddClaim(new Claim("role", "silentdon"));
-                        context.User.AddIdentity(newIdentity);
+                        newIdentity.AddClaim(new Claim("role", transformedRole));
+                        context.User = new ClaimsPrincipal(newIdentity);
                         await func.Invoke();
                     }
                 }
             });
+        }
+
+        private static string TransformRoleClaim(string role)
+        {
+            Enum.TryParse<Roles>(role, out var roleValue);
+            switch (roleValue)
+            {
+                case Roles.SilentDon:
+                    return "sd";
+                case Roles.GlobalAdmin:
+                    return "sd_ga";
+                case Roles.ClubAdmin:
+                    return "sd_ga_ca";
+                case Roles.User:
+                    return "sd_ga_ca_user";
+                case Roles.Guest:
+                    return "all";
+                default:
+                    return "corrupted";
+            };
         }
     }
 }

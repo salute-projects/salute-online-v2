@@ -25,6 +25,7 @@ using IdentityModel.Client;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SaluteOnline.Domain.DTO.Activity;
+using SaluteOnline.Domain.Events;
 using SaluteOnline.IdentityServer.Service.Declaration;
 
 namespace SaluteOnline.IdentityServer.Controllers
@@ -357,6 +358,12 @@ namespace SaluteOnline.IdentityServer.Controllers
                     code = registerCode,
                     returnUrl
                 });
+                _busService.Publish(new SendEmailEvent
+                {
+                    To = new List<string> { model.Email },
+                    HtmlBody = $"<div>click to {callbackUrl}</div>",
+                    Subject = "registration"
+                });
                 return View("RegisterConfirmation");
             }
             catch (Exception e)
@@ -364,12 +371,6 @@ namespace SaluteOnline.IdentityServer.Controllers
                 _logger.LogError(e.Message);
                 return RedirectToAction("Error", "Account", new { message = "Registration error. Please try a bit later", type = ErrorType.RegisterFail });
             }
-        }
-
-        [HttpGet]
-        public IActionResult Test()
-        {
-            return View("ContactSupportConfirmation");
         }
 
         [HttpGet]
@@ -401,7 +402,12 @@ namespace SaluteOnline.IdentityServer.Controllers
                     Status = ActivityStatus.Success,
                     Data = JsonConvert.SerializeObject(new { userId, code, returnUrl })
                 });
-
+                _busService.Publish(new UserRegisteredEvent
+                {
+                    SubjectId = user.Id,
+                    Email = user.Email,
+                    Username = user.UserName
+                });
                 if (_interactionService.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl))
                     return Redirect(returnUrl);
 
@@ -542,7 +548,12 @@ namespace SaluteOnline.IdentityServer.Controllers
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackUrl = Url.Action("ResetPassword", "Account",
                     new {userId = user.Id, code, redirectUrl = model.ReturnUrl}, HttpContext.Request.Scheme);
-                // send email
+                _busService.Publish(new SendEmailEvent
+                {
+                    To = new List<string> { model.Email },
+                    Subject = "Reset password",
+                    HtmlBody = $"<div>{callbackUrl}</div>"
+                });
                 return View("ForgotPasswordConfirmation");
             }
             catch (Exception e)
@@ -613,7 +624,12 @@ namespace SaluteOnline.IdentityServer.Controllers
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var link = Url.Action("ConfirmEmail", "Account", new {userId = user.Id, code},
                     HttpContext.Request.Scheme);
-                // send by email
+                _busService.Publish(new SendEmailEvent
+                {
+                    To = new List<string> { model.Email },
+                    Subject = "Register",
+                    HtmlBody = $"<div>{link}</div>"
+                });
 
                 _busService.Publish(new ActivitySet
                 {
@@ -648,7 +664,12 @@ namespace SaluteOnline.IdentityServer.Controllers
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var link = Url.Action("ResetPassword", "Account",
                     new {userId = user.Id, code, redirectUrl = model.ReturnUrl}, HttpContext.Request.Scheme);
-                // send by email
+                _busService.Publish(new SendEmailEvent
+                {
+                    To = new List<string> { model.Email },
+                    Subject = "Reset Password",
+                    HtmlBody = $"<div>{link}</div>"
+                });
                 return Ok();
 
             }

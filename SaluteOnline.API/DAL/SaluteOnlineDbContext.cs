@@ -15,7 +15,7 @@ namespace SaluteOnline.API.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<User>().ToTable("User").HasIndex(t => t.SubjectId).IsUnique();
             modelBuilder.Entity<Club>().ToTable("Club");
 
             modelBuilder.Entity<ClubUserAdministrator>().HasKey(t => new {t.ClubId, t.UserId});

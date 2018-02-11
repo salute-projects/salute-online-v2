@@ -1,6 +1,5 @@
 ﻿using System;
 using SaluteOnline.Domain.Domain.EF;
-using SaluteOnline.Domain.DTO.Club;
 using SaluteOnline.Domain.DTO.User;
 
 namespace SaluteOnline.Domain.Conversion
@@ -12,6 +11,7 @@ namespace SaluteOnline.Domain.Conversion
             return new UserDto
             {
                 Email = user.Email,
+                SubjectId = user.SubjectId,
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,

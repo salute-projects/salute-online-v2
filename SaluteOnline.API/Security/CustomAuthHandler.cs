@@ -6,23 +6,21 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
-using Auth0.Core;
 using Microsoft.Extensions.Caching.Memory;
-using SaluteOnline.API.Providers.Interface;
 
 namespace SaluteOnline.API.Security
 {
     public class CustomAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         private readonly IMemoryCache _memoryCache;
-        private readonly IAuthZeroProvider _authZeroProvider;
+        private readonly AuthSettings _authSettings;
 
         public CustomAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger,
-            System.Text.Encodings.Web.UrlEncoder encoder, ISystemClock clock, IMemoryCache memoryCache, IAuthZeroProvider authZeroProvider) :
+            System.Text.Encodings.Web.UrlEncoder encoder, ISystemClock clock, IMemoryCache memoryCache, IOptions<AuthSettings> settings) :
             base(options, logger, encoder, clock)
         {
             _memoryCache = memoryCache;
-            _authZeroProvider = authZeroProvider;
+            _authSettings = settings.Value;
         }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -44,43 +42,36 @@ namespace SaluteOnline.API.Security
             {
                 token = authorization.First();
             }
-            var user = GetUser(token, true);
-            if (!user.EmailVerified.HasValue || !user.EmailVerified.Value)
-                return Task.FromResult(AuthenticateResult.Fail("Users email is not verified."));
-            var identity = new ClaimsIdentity("Auth");
-            var metadata = user.AppMetadata;
-            if (metadata != null)
-            {
-                var role = user.AppMetadata["role"]?.ToString();
-                if (string.IsNullOrEmpty(role))
-                    return Task.FromResult(AuthenticateResult.Fail("Missing user role."));
-                identity.AddClaim(new Claim("role", role));
-            }
-            else
+            var payload = GetUser(token, true);
+            if (string.IsNullOrEmpty(payload.Role))
             {
                 _memoryCache.Remove(token);
+                return Task.FromResult(AuthenticateResult.Fail("Missing user role."));
             }
-            identity.AddClaim(new Claim("authUserId", user.UserId));
-            identity.AddClaim(new Claim("email", user.Email));
-            identity.AddClaim(new Claim("token", token));
-            identity.AddClaim(new Claim("avatar", user.Picture));
+            var identity = new ClaimsIdentity("Auth");
+            identity.AddClaim(new Claim("role", payload.Role));
+            identity.AddClaim(new Claim("subjectId", payload.Subject));
+            identity.AddClaim(new Claim("email", payload.Email));
+            identity.AddClaim(new Claim("avatar", payload.Picture));
+            identity.AddClaim(new Claim("userId", payload.UserId));
+            identity.AddClaim(new Claim("userName", payload.UserName));
             var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), null, "Auth");
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
 
-        private User GetUser(string token, bool tryReadFromCache)
+        private AuthPayload GetUser(string token, bool tryReadFromCache)
         {
-            User user = null;
+            AuthPayload payload = null;
             var cacheExists = false;
             if (tryReadFromCache)
             {
-                cacheExists = _memoryCache.TryGetValue(token, out user);
+                cacheExists = _memoryCache.TryGetValue(token, out payload);
             }
             if (cacheExists)
-                return user;
-            user = _authZeroProvider.GetUserByToken(token).Result;
-            _memoryCache.Set(token, user, new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(5)});
-            return user;
+                return payload;
+            payload = AuthInfrastructure.Decode(token, _authSettings.Domain);
+            _memoryCache.Set(token, payload, new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(5)});
+            return payload;
         }
     }
 }

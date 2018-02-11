@@ -16,8 +16,10 @@ namespace SaluteOnline.Domain.Domain.EF
 
         [StringLength(50)]
         public string Title { get; set; }
+
         [StringLength(50)]
         public string Country { get; set; }
+
         [StringLength(50)]
         public string City { get; set; }
         public string Description { get; set; }

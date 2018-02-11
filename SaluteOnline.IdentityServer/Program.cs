@@ -12,7 +12,6 @@ namespace SaluteOnline.IdentityServer
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-                logger.Debug("IS started");
                 BuildWebHost(args).Run();
             }
             catch (Exception e)

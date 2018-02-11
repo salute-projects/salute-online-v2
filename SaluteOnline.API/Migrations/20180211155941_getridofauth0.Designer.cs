@@ -3,15 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using SaluteOnline.API.DAL;
+using SaluteOnline.Domain.DTO;
 using System;
 
 namespace SaluteOnline.API.Migrations
 {
     [DbContext(typeof(SaluteOnlineDbContext))]
-    partial class SaluteOnlineDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180211155941_getridofauth0")]
+    partial class getridofauth0
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,7 +194,7 @@ namespace SaluteOnline.API.Migrations
                         .HasMaxLength(50);
 
                     b.Property<string>("SubjectId")
-                        .HasMaxLength(450);
+                        .HasMaxLength(25);
 
                     b.Property<string>("Twitter")
                         .HasMaxLength(50);
@@ -199,10 +203,6 @@ namespace SaluteOnline.API.Migrations
                         .HasMaxLength(50);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SubjectId")
-                        .IsUnique()
-                        .HasFilter("[SubjectId] IS NOT NULL");
 
                     b.ToTable("User");
                 });

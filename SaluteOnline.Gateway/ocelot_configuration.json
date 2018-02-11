@@ -8,32 +8,12 @@
       "UpstreamPathTemplate": "/{url}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "authKey",
-        "AllowedScopes": []
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/clubs/list",
-      "DownstreamScheme": "http",
-      "DownstreamHost": "localhost",
-      "DownstreamPort": 9001,
-      "UpstreamPathTemplate": "/api/clubs/list",
-      "UpstreamHttpMethod": [ "Post" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "authKey",
+        "AuthenticationProviderKey": "safeKey",
         "AllowedScopes": []
       },
       "RouteClaimsRequirement": {
-        "role": "silentdon"
-      } 
-    },
-    {
-      "DownstreamPathTemplate": "/api/account",
-      "DownstreamScheme": "http",
-      "DownstreamHost": "localhost",
-      "DownstreamPort": 9001,
-      "UpstreamPathTemplate": "/api/account",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
+        "role": "sd_ga_ca_user"
+      }
     }
   ],
   "GlobalConfiguration": {

@@ -26,11 +26,11 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
-                var user = _accountService.GetUserInfo(email);
+                var user = _accountService.GetUserInfo(subjectId);
                 return Ok(user);
             }
             catch (Exception e)
@@ -45,10 +45,10 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
-                _accountService.UpdateUserInfo(userDto, email);
+                _accountService.UpdateUserInfo(userDto, subjectId);
                 return Ok();
             }
             catch (Exception e)
@@ -63,10 +63,10 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
-                _accountService.UpdateMainUserInfo(userDto, email);
+                _accountService.UpdateMainUserInfo(userDto, subjectId);
                 return Ok();
             }
             catch (Exception e)
@@ -81,10 +81,10 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
-                _accountService.UpdatePersonalUserInfo(userDto, email);
+                _accountService.UpdatePersonalUserInfo(userDto, subjectId);
                 return Ok();
             }
             catch (Exception e)
@@ -98,10 +98,10 @@ namespace SaluteOnline.API.Controllers
         {
             try
             {
-                var email = User.Claims.SingleOrDefault(c => c.Type == "email")?.Value;
-                if (string.IsNullOrEmpty(email))
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
-                return Ok(await _accountService.UpdateUserAvatar(avatar, email));
+                return Ok(await _accountService.UpdateUserAvatar(avatar, subjectId));
             }
             catch (Exception e)
             {
