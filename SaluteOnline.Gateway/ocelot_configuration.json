@@ -14,6 +14,66 @@
       "RouteClaimsRequirement": {
         "role": "sd_ga_ca_user"
       }
+    },
+    {
+      "DownstreamPathTemplate": "/api/chat",
+      "DownstreamScheme": "http",
+      "DownstreamHost": "localhost",
+      "DownstreamPort": 9002,
+      "UpstreamPathTemplate": "/api/chat",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "safeKey",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "role": "sd_ga_ca_user"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/chat/{anything}",
+      "DownstreamScheme": "http",
+      "DownstreamHost": "localhost",
+      "DownstreamPort": 9002,
+      "UpstreamPathTemplate": "/api/chat/{anything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "safeKey",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "role": "sd_ga_ca_user"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/chat/{anything}/{anything}",
+      "DownstreamScheme": "http",
+      "DownstreamHost": "localhost",
+      "DownstreamPort": 9002,
+      "UpstreamPathTemplate": "/api/chat/{anything}/{anything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "safeKey",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "role": "sd_ga_ca_user"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/chat/{anything}/{anything}/{anything}",
+      "DownstreamScheme": "http",
+      "DownstreamHost": "localhost",
+      "DownstreamPort": 9002,
+      "UpstreamPathTemplate": "/api/chat/{anything}/{anything}/{anything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "safeKey",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "role": "sd_ga_ca_user"
+      }
     }
   ],
   "GlobalConfiguration": {

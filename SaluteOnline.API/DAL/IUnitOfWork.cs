@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using SaluteOnline.Domain.Domain.EF;
 using SaluteOnline.Domain.Domain.Mongo;
-using SaluteOnline.Domain.Domain.Mongo.Chat;
 
 namespace SaluteOnline.API.DAL
 {
@@ -13,7 +12,6 @@ namespace SaluteOnline.API.DAL
         GenericRepository<Country> Countries { get; }
         GenericRepository<Player> Players { get;  }
         GenericRepository<ConnectedUser> ConnectedUsers { get; }
-        GenericRepository<Chat> Chats { get; }
         void Save();
         Task<int> SaveAsync();
     }

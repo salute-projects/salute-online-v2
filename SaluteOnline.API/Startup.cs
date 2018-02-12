@@ -132,7 +132,6 @@ namespace SaluteOnline.API
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICommonService, CommonService>();
             services.AddScoped<IClubsService, ClubsService>();
-            services.AddScoped<IChatService, ChatService>();
             services.AddSingleton<IBusService, BusService>();
             services.AddScoped<IUserHandler, UserHandler>();
         }

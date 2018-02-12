@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using SaluteOnline.Domain.Domain.EF;
 using SaluteOnline.Domain.Domain.Mongo;
-using SaluteOnline.Domain.Domain.Mongo.Chat;
 
 namespace SaluteOnline.API.DAL
 {
@@ -41,10 +40,6 @@ namespace SaluteOnline.API.DAL
         private GenericRepository<ConnectedUser> _connectedUsers;
         public GenericRepository<ConnectedUser> ConnectedUsers
             => _connectedUsers ?? (_connectedUsers = new GenericRepository<ConnectedUser>(_context, _configuration));
-
-        private GenericRepository<Chat> _chats;
-        public GenericRepository<Chat> Chats
-            => _chats ?? (_chats = new GenericRepository<Chat>(_context, _configuration));
 
         public void Save()
         {
