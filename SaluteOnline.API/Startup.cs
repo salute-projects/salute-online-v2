@@ -15,7 +15,6 @@ using RawRabbit.Instantiation;
 using SaluteOnline.API.DAL;
 using SaluteOnline.API.Handlers.Declaration;
 using SaluteOnline.API.Handlers.Implementation;
-using SaluteOnline.API.Hub;
 using SaluteOnline.API.Security;
 using SaluteOnline.API.Services.Implementation;
 using SaluteOnline.API.Services.Interface;
@@ -59,8 +58,6 @@ namespace SaluteOnline.API
                     options.AddPolicy("CorsPolicy",
                         builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
                 });
-
-            services.AddSignalR();
 
             services.AddSwaggerGen(t =>
             {
@@ -119,10 +116,6 @@ namespace SaluteOnline.API
             app.UseSwaggerUI(t =>
             {
                 t.SwaggerEndpoint("/swagger/v1/swagger.json", "Salute Online API");
-            });
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<SoMessageHub>("soMessageHub");
             });
             app.UseMvc();
         }

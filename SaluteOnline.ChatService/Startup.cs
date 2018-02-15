@@ -86,7 +86,11 @@ namespace SaluteOnline.ChatService
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseSwagger();
+            app.UseSwaggerUI(t =>
+            {
+                t.SwaggerEndpoint("/swagger/v1/swagger.json", "Salute Chat API");
+            });
             app.UseMvc();
         }
 

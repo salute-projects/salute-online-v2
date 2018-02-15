@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaluteOnline.IdentityServer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaluteOnline.MailService", "SaluteOnline.MailService\SaluteOnline.MailService.csproj", "{D482F420-B6B7-4DAD-BDCC-1106D534CB97}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaluteOnline.HubService", "SaluteOnline.HubService\SaluteOnline.HubService.csproj", "{DAD1DB48-D9BE-4BF4-8A44-CDBA1EFA2485}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{D482F420-B6B7-4DAD-BDCC-1106D534CB97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D482F420-B6B7-4DAD-BDCC-1106D534CB97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D482F420-B6B7-4DAD-BDCC-1106D534CB97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAD1DB48-D9BE-4BF4-8A44-CDBA1EFA2485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAD1DB48-D9BE-4BF4-8A44-CDBA1EFA2485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAD1DB48-D9BE-4BF4-8A44-CDBA1EFA2485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAD1DB48-D9BE-4BF4-8A44-CDBA1EFA2485}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
