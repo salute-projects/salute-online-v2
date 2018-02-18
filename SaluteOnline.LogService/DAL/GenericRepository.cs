@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
-using SaluteOnline.Domain.Common;
-using SaluteOnline.Domain.Extensions;
+using SaluteOnline.Shared.Common;
+using SaluteOnline.Shared.Extensions;
 
 namespace SaluteOnline.LogService.DAL
 {

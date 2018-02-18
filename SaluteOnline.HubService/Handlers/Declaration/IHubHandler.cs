@@ -1,4 +1,4 @@
-﻿using SaluteOnline.Domain.Events;
+﻿using SaluteOnline.Shared.Events;
 
 namespace SaluteOnline.HubService.Handlers.Declaration
 {

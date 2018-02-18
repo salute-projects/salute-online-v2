@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SaluteOnline2.0\SaluteOnline.Domain\SaluteOnline.Domain.csproj" />
+    <ProjectReference Include="..\SaluteOnline.Shared\SaluteOnline.Shared.csproj" />
   </ItemGroup>
 
 </Project>

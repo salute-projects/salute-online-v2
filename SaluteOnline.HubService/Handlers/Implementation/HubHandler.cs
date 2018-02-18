@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using SaluteOnline.Domain.Events;
 using SaluteOnline.HubService.Handlers.Declaration;
 using SaluteOnline.HubService.Hubs;
+using SaluteOnline.Shared.Events;
 
 namespace SaluteOnline.HubService.Handlers.Implementation
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using SaluteOnline.Domain.DTO;
+using SaluteOnline.Shared.Common;
 
 namespace SaluteOnline.ChatService.Domain.DTO
 {

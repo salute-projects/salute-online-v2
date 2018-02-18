@@ -1,6 +1,6 @@
 ﻿namespace SaluteOnline.LogService.DAL
 {
-    public interface IGenericRepository<TEntity>
+    public interface IGenericRepository<in TEntity>
     {
         void Insert(TEntity entity);
     }

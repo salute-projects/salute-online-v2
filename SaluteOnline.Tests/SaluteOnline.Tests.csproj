@@ -13,9 +13,4 @@
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SaluteOnline.API\SaluteOnline.API.csproj" />
-    <ProjectReference Include="..\SaluteOnline.Domain\SaluteOnline.Domain.csproj" />
-  </ItemGroup>
-
 </Project>

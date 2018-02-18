@@ -6,10 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using SaluteOnline.Domain.DTO.Activity;
-using SaluteOnline.Domain.Events;
 using SaluteOnline.MailService.Model;
 using SaluteOnline.MailService.Services.Declaration;
+using SaluteOnline.Shared.Events;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -78,14 +77,6 @@ namespace SaluteOnline.MailService.Services.Implementation
                 _logger.LogError(e, JsonConvert.SerializeObject(supportEvent));
                 return false;
             }
-        }
-
-        private static bool IsEmailValid(SendEmailEvent email)
-        {
-            if (string.IsNullOrEmpty(email.Subject) ||
-                string.IsNullOrEmpty(email.HtmlBody) && string.IsNullOrEmpty(email.TextBody))
-                return false;
-            return email.To != null && !email.To.All(string.IsNullOrEmpty);
         }
     }
 }

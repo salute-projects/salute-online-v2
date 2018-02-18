@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -8,18 +10,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using RabbitMQ.Client;
 using RawRabbit;
 using RawRabbit.Configuration;
 using RawRabbit.DependencyInjection.ServiceCollection;
 using RawRabbit.Instantiation;
 using SaluteOnline.API.DAL;
+using SaluteOnline.API.Domain.LinkEntities;
+using SaluteOnline.API.DTO.Club;
 using SaluteOnline.API.Handlers.Declaration;
 using SaluteOnline.API.Handlers.Implementation;
 using SaluteOnline.API.Security;
 using SaluteOnline.API.Services.Implementation;
 using SaluteOnline.API.Services.Interface;
-using SaluteOnline.Domain.DTO;
-using SaluteOnline.Domain.DTO.Activity;
+using SaluteOnline.Shared.Common;
+using SaluteOnline.Shared.Events;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace SaluteOnline.API
@@ -40,6 +45,7 @@ namespace SaluteOnline.API
                 options.DefaultAuthenticateScheme = "Auth";
                 options.DefaultChallengeScheme = "Auth";
             }).AddCustomAuth(options => {});
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Auth", policy =>
@@ -47,6 +53,7 @@ namespace SaluteOnline.API
                     policy.RequireClaim("subjectId");
                 });
             });
+
             var connectionString = Configuration.GetConnectionString("SoConnection");
             services.AddDbContext<SaluteOnlineDbContext>(options => options.UseSqlServer(connectionString));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -95,13 +102,10 @@ namespace SaluteOnline.API
             });
 
             services.AddRawRabbit(GetRabbitConfiguration);
-
-            InitializeSettings(services);
             InitializeServices(services);
-
             SetPolicies(services);
-
             SubsribeToRabbit(services);
+            SetMapProfiles();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -120,17 +124,12 @@ namespace SaluteOnline.API
             app.UseMvc();
         }
 
-        private static void InitializeServices(IServiceCollection services)
+        private void InitializeServices(IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<ICommonService, CommonService>();
             services.AddScoped<IClubsService, ClubsService>();
-            services.AddSingleton<IBusService, BusService>();
             services.AddScoped<IUserHandler, UserHandler>();
-        }
-
-        private void InitializeSettings(IServiceCollection services)
-        {
+            services.AddScoped<IBusService, BusService>();
             services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
         }
 
@@ -149,23 +148,45 @@ namespace SaluteOnline.API
             });
         }
 
-        private static RawRabbitOptions GetRabbitConfiguration => new RawRabbitOptions
+        private const string RabbitSectionName = "RabbitSettings";
+        private RawRabbitOptions GetRabbitConfiguration => new RawRabbitOptions
         {
             ClientConfiguration = new RawRabbitConfiguration
             {
-                Username = "guest",
-                Password = "guest",
-                VirtualHost = "/",
-                Port = 32770,
-                Hostnames = new List<string> { "127.0.0.1" }
+                Username = Configuration.GetSection(RabbitSectionName).GetValue<string>(nameof(RawRabbitConfiguration.Username)),
+                Password = Configuration.GetSection(RabbitSectionName).GetValue<string>(nameof(RawRabbitConfiguration.Password)),
+                VirtualHost = Configuration.GetSection(RabbitSectionName).GetValue<string>(nameof(RawRabbitConfiguration.VirtualHost)),
+                Port = Configuration.GetSection(RabbitSectionName).GetValue<int>(nameof(RawRabbitConfiguration.Port)),
+                Hostnames = Configuration.GetSection(RabbitSectionName).GetSection(nameof(RawRabbitConfiguration.Hostnames)).Get<List<string>>(),
+                Ssl = new SslOption
+                {
+                    Enabled = Configuration.GetSection(RabbitSectionName).GetValue<bool>("SslEnabled")
+                },
+                AutomaticRecovery = Configuration.GetSection(RabbitSectionName).GetValue<bool>(nameof(RawRabbitConfiguration.AutomaticRecovery)),
+                RecoveryInterval = TimeSpan.FromSeconds(Configuration.GetSection(RabbitSectionName).GetValue<int>(nameof(RawRabbitConfiguration.RecoveryInterval)))
             }
         };
 
-        private static async void SubsribeToRabbit(IServiceCollection services)
+        private async void SubsribeToRabbit(IServiceCollection services)
         {
             var bus = RawRabbitFactory.CreateSingleton(GetRabbitConfiguration);
             var handler = services.BuildServiceProvider().GetService<IUserHandler>();
             await bus.SubscribeAsync<UserRegisteredEvent>(msg => Task.FromResult(handler.HandleNewUser(msg)));
+        }
+
+        private static void SetMapProfiles()
+        {
+            TypeAdapterConfig<ClubUserAdministrator, ClubMemberSummary>.NewConfig()
+                .Map(t => t.UserId, t => t.UserId)
+                .Map(t => t.Avatar, t => t.User.Avatar)
+                .Map(t => t.City, t => t.User.City)
+                .Map(t => t.Country, t => t.User.Country)
+                .Map(t => t.Email, t => t.User.Email)
+                .Map(t => t.FirstName, t => t.User.FirstName)
+                .Map(t => t.IsActive, t => t.User.IsActive)
+                .Map(t => t.LastName, t => t.User.LastName)
+                .Map(t => t.Nickname, t => t.User.Nickname)
+                .Map(t => t.Registered, t => t.Registered);
         }
     }
 }

@@ -9,8 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
-using SaluteOnline.Domain.DTO;
-using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
+using SaluteOnline.Shared.Common;
 
 namespace SaluteOnline.Gateway
 {

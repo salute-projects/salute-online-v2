@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SaluteOnline.Domain.DTO.Activity;
+using SaluteOnline.Shared.Events;
 
 namespace SaluteOnline.IdentityServer.Handlers.Declaration
 {

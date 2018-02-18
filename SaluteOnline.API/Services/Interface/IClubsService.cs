@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SaluteOnline.Domain.Domain;
-using SaluteOnline.Domain.DTO.Club;
+using SaluteOnline.API.DTO.Club;
+using SaluteOnline.Shared.Common;
 
 namespace SaluteOnline.API.Services.Interface
 {

@@ -8,9 +8,8 @@ using SaluteOnline.ChatService.DAL;
 using SaluteOnline.ChatService.Domain;
 using SaluteOnline.ChatService.Domain.DTO;
 using SaluteOnline.ChatService.Service.Abstraction;
-using SaluteOnline.Domain.Domain;
-using SaluteOnline.Domain.DTO;
-using SaluteOnline.Domain.Exceptions;
+using SaluteOnline.Shared.Common;
+using SaluteOnline.Shared.Exceptions;
 
 namespace SaluteOnline.ChatService.Service.Implementation
 {
@@ -33,6 +32,7 @@ namespace SaluteOnline.ChatService.Service.Implementation
             {
                 if (!Guid.TryParse(subjectId, out Guid myGuid))
                     throw new SoException("Wrong identifier", HttpStatusCode.BadRequest);
+
                 var result = new List<ChatDto>();
                 var me = _chatMemberRepository.GetAsQueryable(t => t.Guid == myGuid)?.FirstOrDefault();
                 if (me == null)
@@ -72,12 +72,10 @@ namespace SaluteOnline.ChatService.Service.Implementation
                 }
                 return result;
             }
-            catch (SoException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while loading list of chats", HttpStatusCode.InternalServerError);
             }
@@ -89,6 +87,7 @@ namespace SaluteOnline.ChatService.Service.Implementation
             {
                 if (string.IsNullOrEmpty(dto?.Message))
                     throw new SoException("Empty message not allowed", HttpStatusCode.BadRequest);
+
                 if (string.IsNullOrEmpty(dto.SenderGuid) || string.IsNullOrEmpty(dto.ReceiverGuid) 
                     || !Guid.TryParse(dto.SenderGuid, out Guid senderGuid) || !Guid.TryParse(dto.ReceiverGuid, out Guid receivedGuid))
                     throw new SoException("Wrong input model", HttpStatusCode.BadRequest);
@@ -149,12 +148,10 @@ namespace SaluteOnline.ChatService.Service.Implementation
                     _chatRepository.Update(existingChat);
                 }
             }
-            catch (SoException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while loading list of chats", HttpStatusCode.InternalServerError);
             }
@@ -194,12 +191,10 @@ namespace SaluteOnline.ChatService.Service.Implementation
                 }
                 return result;
             }
-            catch (SoException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while loading messages", HttpStatusCode.InternalServerError);
             }
@@ -211,8 +206,10 @@ namespace SaluteOnline.ChatService.Service.Implementation
             {
                 if (chatGuid == default(Guid))
                     throw new SoException("Wrong chat identifier", HttpStatusCode.BadRequest);
+
                 if (!Guid.TryParse(subjectId, out var myGuid))
                     throw new SoException("Wrong user identifier", HttpStatusCode.BadRequest);
+
                 if (filter == null)
                     throw new SoException("Arguments omitted", HttpStatusCode.BadRequest);
 
@@ -238,12 +235,10 @@ namespace SaluteOnline.ChatService.Service.Implementation
                 }
                 return new Page<ChatMessageDto>(filter.Page, filter.PageSize ?? 5, chat.Messages.Count, result); 
             }
-            catch (SoException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while loading messages", HttpStatusCode.InternalServerError);
             }

@@ -27,6 +27,7 @@ namespace SaluteOnline.IdentityServer.Service.Implementation
             var user = await _userManager.FindByIdAsync(sub);
             var principal = await _claimsFactory.CreateAsync(user);
             var claims = principal.Claims.Where(t => context.RequestedClaimTypes.Contains(t.Type)).ToList();
+            //claims.Add(new Claim(JwtClaimTypes.Email, user.Email));
             claims.Add(new Claim(JwtClaimTypes.Role, user.Role.ToString()));
             claims.Add(new Claim(JwtClaimTypes.Picture, user.AvatarUrl ?? string.Empty));
             claims.Add(new Claim("userId", user.UserId.ToString()));

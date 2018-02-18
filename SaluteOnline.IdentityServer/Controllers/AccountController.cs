@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using SaluteOnline.Domain.DTO;
 using SaluteOnline.IdentityServer.Constants;
 using SaluteOnline.IdentityServer.Domain;
 using SaluteOnline.IdentityServer.Service.Implementation;
@@ -24,9 +23,9 @@ using SaluteOnline.IdentityServer.ViewModels;
 using IdentityModel.Client;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SaluteOnline.Domain.DTO.Activity;
-using SaluteOnline.Domain.Events;
 using SaluteOnline.IdentityServer.Service.Declaration;
+using SaluteOnline.Shared.Common;
+using SaluteOnline.Shared.Events;
 
 namespace SaluteOnline.IdentityServer.Controllers
 {

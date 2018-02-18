@@ -10,7 +10,7 @@ using SaluteOnline.ChatService.Domain;
 using SaluteOnline.ChatService.Domain.DTO;
 using SaluteOnline.ChatService.Security;
 using SaluteOnline.ChatService.Service.Abstraction;
-using SaluteOnline.Domain.DTO;
+using SaluteOnline.Shared.Common;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace SaluteOnline.ChatService

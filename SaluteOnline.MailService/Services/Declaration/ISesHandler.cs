@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SaluteOnline.Domain.DTO.Activity;
-using SaluteOnline.Domain.Events;
+using SaluteOnline.Shared.Events;
 
 namespace SaluteOnline.MailService.Services.Declaration
 {

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SaluteOnline.ChatService.Domain.DTO;
-using SaluteOnline.Domain.Domain;
-using SaluteOnline.Domain.DTO;
+using SaluteOnline.Shared.Common;
 
 namespace SaluteOnline.ChatService.Service.Abstraction
 {

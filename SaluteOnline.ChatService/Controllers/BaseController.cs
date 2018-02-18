@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using SaluteOnline.Domain.Exceptions;
+using SaluteOnline.Shared.Exceptions;
 
 namespace SaluteOnline.ChatService.Controllers
 {

@@ -1,4 +1,4 @@
-﻿using SaluteOnline.Domain.DTO;
+﻿using SaluteOnline.Shared.Common;
 
 namespace SaluteOnline.IdentityServer.ViewModels
 {

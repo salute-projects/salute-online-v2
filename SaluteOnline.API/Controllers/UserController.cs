@@ -1,17 +1,17 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SaluteOnline.API.DTO.User;
 using SaluteOnline.API.Services.Interface;
-using SaluteOnline.Domain.DTO;
-using SaluteOnline.Domain.DTO.User;
+using SaluteOnline.Shared.Common;
+using SaluteOnline.Shared.Exceptions;
 
 namespace SaluteOnline.API.Controllers
 {
     [Route("api/[controller]")]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IAccountService _accountService;
 
@@ -33,9 +33,9 @@ namespace SaluteOnline.API.Controllers
                 var user = _accountService.GetUserInfo(subjectId);
                 return Ok(user);
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -48,12 +48,13 @@ namespace SaluteOnline.API.Controllers
                 var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
+
                 _accountService.UpdateUserInfo(userDto, subjectId);
                 return Ok();
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -66,12 +67,13 @@ namespace SaluteOnline.API.Controllers
                 var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
+
                 _accountService.UpdateMainUserInfo(userDto, subjectId);
                 return Ok();
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -84,12 +86,13 @@ namespace SaluteOnline.API.Controllers
                 var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
+
                 _accountService.UpdatePersonalUserInfo(userDto, subjectId);
                 return Ok();
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
 
@@ -101,11 +104,12 @@ namespace SaluteOnline.API.Controllers
                 var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
+
                 return Ok(await _accountService.UpdateUserAvatar(avatar, subjectId));
             }
-            catch (Exception e)
+            catch (SoException e)
             {
-                return BadRequest(e.Message);
+                return ProcessExceptionResult(e);
             }
         }
     }

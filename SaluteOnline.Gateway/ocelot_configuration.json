@@ -16,11 +16,11 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/chat",
+      "DownstreamPathTemplate": "/api/chat/",
       "DownstreamScheme": "http",
       "DownstreamHost": "localhost",
       "DownstreamPort": 9002,
-      "UpstreamPathTemplate": "/api/chat",
+      "UpstreamPathTemplate": "/api/chat/",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "safeKey",
@@ -66,6 +66,36 @@
       "DownstreamHost": "localhost",
       "DownstreamPort": 9002,
       "UpstreamPathTemplate": "/api/chat/{anything}/{anything}/{anything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "safeKey",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "role": "sd_ga_ca_user"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/common",
+      "DownstreamScheme": "http",
+      "DownstreamHost": "localhost",
+      "DownstreamPort": 9007,
+      "UpstreamPathTemplate": "/api/common",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "safeKey",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "role": "sd_ga_ca_user"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/common/{anything}",
+      "DownstreamScheme": "http",
+      "DownstreamHost": "localhost",
+      "DownstreamPort": 9007,
+      "UpstreamPathTemplate": "/api/common/{anything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "safeKey",

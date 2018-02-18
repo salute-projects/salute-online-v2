@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using SaluteOnline.API.DAL;
 using System;
 
@@ -18,7 +17,7 @@ namespace SaluteOnline.API.Migrations
                 .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.Club", b =>
+            modelBuilder.Entity("SaluteOnline.API.Domain.Club", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -36,8 +35,6 @@ namespace SaluteOnline.API.Migrations
                     b.Property<Guid>("Guid");
 
                     b.Property<bool>("IsActive");
-
-                    b.Property<bool>("IsFiim");
 
                     b.Property<DateTimeOffset>("LastUpdate");
 
@@ -57,7 +54,7 @@ namespace SaluteOnline.API.Migrations
                     b.ToTable("Club");
                 });
 
-            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.LinkEntities.ClubUserAdministrator", b =>
+            modelBuilder.Entity("SaluteOnline.API.Domain.LinkEntities.ClubUserAdministrator", b =>
                 {
                     b.Property<int>("ClubId");
 
@@ -74,7 +71,7 @@ namespace SaluteOnline.API.Migrations
                     b.ToTable("ClubUserAdministrator");
                 });
 
-            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.MembershipRequest", b =>
+            modelBuilder.Entity("SaluteOnline.API.Domain.MembershipRequest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -104,7 +101,7 @@ namespace SaluteOnline.API.Migrations
                     b.ToTable("MembershipRequest");
                 });
 
-            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.Player", b =>
+            modelBuilder.Entity("SaluteOnline.API.Domain.Player", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -134,7 +131,7 @@ namespace SaluteOnline.API.Migrations
                     b.ToTable("Players");
                 });
 
-            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.User", b =>
+            modelBuilder.Entity("SaluteOnline.API.Domain.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -189,9 +186,6 @@ namespace SaluteOnline.API.Migrations
                     b.Property<string>("Skype")
                         .HasMaxLength(50);
 
-                    b.Property<string>("SubjectId")
-                        .HasMaxLength(450);
-
                     b.Property<string>("Twitter")
                         .HasMaxLength(50);
 
@@ -200,54 +194,53 @@ namespace SaluteOnline.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubjectId")
-                        .IsUnique()
-                        .HasFilter("[SubjectId] IS NOT NULL");
+                    b.HasIndex("Guid")
+                        .IsUnique();
 
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.Club", b =>
+            modelBuilder.Entity("SaluteOnline.API.Domain.Club", b =>
                 {
-                    b.HasOne("SaluteOnline.Domain.Domain.EF.User", "Creator")
+                    b.HasOne("SaluteOnline.API.Domain.User", "Creator")
                         .WithMany()
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.LinkEntities.ClubUserAdministrator", b =>
+            modelBuilder.Entity("SaluteOnline.API.Domain.LinkEntities.ClubUserAdministrator", b =>
                 {
-                    b.HasOne("SaluteOnline.Domain.Domain.EF.Club", "Club")
+                    b.HasOne("SaluteOnline.API.Domain.Club", "Club")
                         .WithMany("Administrators")
                         .HasForeignKey("ClubId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("SaluteOnline.Domain.Domain.EF.User", "User")
+                    b.HasOne("SaluteOnline.API.Domain.User", "User")
                         .WithMany("ClubsAdministrated")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.MembershipRequest", b =>
+            modelBuilder.Entity("SaluteOnline.API.Domain.MembershipRequest", b =>
                 {
-                    b.HasOne("SaluteOnline.Domain.Domain.EF.Club", "Club")
+                    b.HasOne("SaluteOnline.API.Domain.Club", "Club")
                         .WithMany("MembershipRequests")
                         .HasForeignKey("ClubId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("SaluteOnline.Domain.Domain.EF.User", "User")
+                    b.HasOne("SaluteOnline.API.Domain.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("SaluteOnline.Domain.Domain.EF.Player", b =>
+            modelBuilder.Entity("SaluteOnline.API.Domain.Player", b =>
                 {
-                    b.HasOne("SaluteOnline.Domain.Domain.EF.Club", "Club")
+                    b.HasOne("SaluteOnline.API.Domain.Club", "Club")
                         .WithMany("Players")
                         .HasForeignKey("ClubId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("SaluteOnline.Domain.Domain.EF.User", "User")
+                    b.HasOne("SaluteOnline.API.Domain.User", "User")
                         .WithMany("PlayersAccounts")
                         .HasForeignKey("UserId");
                 });

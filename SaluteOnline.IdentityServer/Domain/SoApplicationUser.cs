@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using SaluteOnline.Domain.DTO;
+using SaluteOnline.Shared.Common;
 
 namespace SaluteOnline.IdentityServer.Domain
 {

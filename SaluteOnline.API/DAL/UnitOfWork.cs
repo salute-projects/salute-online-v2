@@ -1,45 +1,30 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using SaluteOnline.Domain.Domain.EF;
-using SaluteOnline.Domain.Domain.Mongo;
+using SaluteOnline.API.Domain;
 
 namespace SaluteOnline.API.DAL
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly SaluteOnlineDbContext _context;
-        private readonly IConfiguration _configuration;
 
-        public UnitOfWork(SaluteOnlineDbContext context, IConfiguration configuration)
+        public UnitOfWork(SaluteOnlineDbContext context)
         {
             _context = context;
-            _configuration = configuration;
         }
 
         private GenericRepository<User> _users;
         public GenericRepository<User> Users
-            => _users ?? (_users = new GenericRepository<User>(_context, _configuration));
+            => _users ?? (_users = new GenericRepository<User>(_context));
 
         private GenericRepository<Club> _clubs;
         public GenericRepository<Club> Clubs
-            => _clubs ?? (_clubs = new GenericRepository<Club>(_context, _configuration));
+            => _clubs ?? (_clubs = new GenericRepository<Club>(_context));
 
-        private GenericRepository<Activity> _activities;
-        public GenericRepository<Activity> Activities
-            => _activities ?? (_activities = new GenericRepository<Activity>(_context, _configuration));
-
-        private GenericRepository<Country> _countries;
-        public GenericRepository<Country> Countries
-            => _countries ?? (_countries = new GenericRepository<Country>(_context, _configuration));
 
         private GenericRepository<Player> _players;
         public GenericRepository<Player> Players
-            => _players ?? (_players = new GenericRepository<Player>(_context, _configuration));
-
-        private GenericRepository<ConnectedUser> _connectedUsers;
-        public GenericRepository<ConnectedUser> ConnectedUsers
-            => _connectedUsers ?? (_connectedUsers = new GenericRepository<ConnectedUser>(_context, _configuration));
+            => _players ?? (_players = new GenericRepository<Player>(_context));
 
         public void Save()
         {

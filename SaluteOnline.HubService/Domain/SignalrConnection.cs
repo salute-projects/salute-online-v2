@@ -1,7 +1,7 @@
 ﻿using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using SaluteOnline.Domain.Common;
+using SaluteOnline.Shared.Common;
 
 namespace SaluteOnline.HubService.Domain
 {

@@ -5,9 +5,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
-using SaluteOnline.Domain.Common;
-using SaluteOnline.Domain.Domain;
-using SaluteOnline.Domain.Extensions;
+using SaluteOnline.Shared.Common;
+using SaluteOnline.Shared.Extensions;
 
 namespace SaluteOnline.HubService.DAL
 {

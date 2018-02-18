@@ -1,14 +1,15 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SaluteOnline.API.DAL;
+using SaluteOnline.API.Domain.Mapping;
+using SaluteOnline.API.DTO.User;
 using SaluteOnline.API.Services.Interface;
-using SaluteOnline.Domain.Conversion;
-using SaluteOnline.Domain.DTO.User;
+using SaluteOnline.Shared.Exceptions;
 
 namespace SaluteOnline.API.Services.Implementation
 {
@@ -16,45 +17,32 @@ namespace SaluteOnline.API.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AccountService> _logger;
-        private readonly IBusService _busService;
 
-        public AccountService(IUnitOfWork unitOfWork, ILogger<AccountService> logger, IBusService busService)
+        public AccountService(IUnitOfWork unitOfWork, ILogger<AccountService> logger)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _busService = busService;
-        }
-
-        public bool UserExists(string subjectId)
-        {
-            try
-            {
-                return _unitOfWork.Users.Count(t => string.Equals(t.SubjectId, subjectId, StringComparison.OrdinalIgnoreCase)) != 0;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw new Exception("Error while getting user. Please try a bit later");
-            }
         }
 
         public UserDto GetUserInfo(string subjectId)
         {
             try
             {
-                var user = _unitOfWork.Users.Get(t => t.SubjectId == subjectId).FirstOrDefault();
+                if (!Guid.TryParse(subjectId, out var userGuid)) 
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+
+                var user = _unitOfWork.Users.GetById(userGuid);
                 if (user == null)
-                    throw new ArgumentException("User not found");
+                    throw new SoException("User not found", HttpStatusCode.BadRequest);
+
                 return user.Adapt<UserDto>();
-            }
-            catch (ArgumentException)
-            {
-                throw;
             }
             catch (Exception ex)
             {
+                if (ex is SoException)
+                    throw;
                 _logger.LogError(ex.Message);
-                throw new Exception("Error while getting user info. Please try a bit later");
+                throw new SoException("Error while getting user info. Please try a bit later", HttpStatusCode.InternalServerError);
             }
         }
 
@@ -62,23 +50,23 @@ namespace SaluteOnline.API.Services.Implementation
         {
             try
             {
-                var existing = _unitOfWork.Users.GetById(id: user.Id);
+                if (!Guid.TryParse(subjectId, out var userGuid)) 
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+
+                var existing = _unitOfWork.Users.GetById(userGuid);
                 if (existing == null)
-                    throw new ArgumentException("User does not exists");
-                if (existing.SubjectId != subjectId)
-                    throw new ArgumentException("Operation not allowed");
+                    throw new SoException("User does not exists", HttpStatusCode.BadRequest);
+
                 user.UpdateEntity(existing);
                 _unitOfWork.Users.Update(existing);
                 _unitOfWork.Save();
             }
-            catch (ArgumentException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
-                throw new Exception("Error while updating user info. Please try a bit later");
+                throw new SoException("Error while updating user info. Please try a bit later", HttpStatusCode.InternalServerError);
             }
         }
 
@@ -86,23 +74,23 @@ namespace SaluteOnline.API.Services.Implementation
         {
             try
             {
-                var existing = _unitOfWork.Users.GetById(id: user.Id);
+                if (!Guid.TryParse(subjectId, out var userGuid))
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+
+                var existing = _unitOfWork.Users.GetById(userGuid);
                 if (existing == null)
-                    throw new ArgumentException("User does not exists");
-                if (existing.SubjectId != subjectId)
-                    throw new ArgumentException("Operation not allowed");
+                    throw new SoException("User does not exists", HttpStatusCode.BadRequest);
+
                 user.UpdateEntity(existing);
                 _unitOfWork.Users.Update(existing);
                 _unitOfWork.Save();
             }
-            catch (ArgumentException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
-                throw new Exception("Error while updating user info. Please try a bit later");
+                throw new SoException("Error while updating user info. Please try a bit later", HttpStatusCode.InternalServerError);
             }
         }
 
@@ -110,23 +98,23 @@ namespace SaluteOnline.API.Services.Implementation
         {
             try
             {
-                var existing = _unitOfWork.Users.GetById(id: user.Id);
+                if (!Guid.TryParse(subjectId, out var userGuid))
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+
+                var existing = _unitOfWork.Users.GetById(userGuid);
                 if (existing == null)
-                    throw new ArgumentException("User does not exists");
-                if (existing.SubjectId != subjectId)
-                    throw new ArgumentException("Operation not allowed");
+                    throw new SoException("User does not exists", HttpStatusCode.BadRequest);
+
                 user.UpdateEntity(existing);
                 _unitOfWork.Users.Update(existing);
                 _unitOfWork.Save();
             }
-            catch (ArgumentException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
-                throw new Exception("Error while updating user info. Please try a bit later");
+                throw new SoException("Error while updating user info. Please try a bit later", HttpStatusCode.InternalServerError);
             }
         }
 
@@ -135,10 +123,15 @@ namespace SaluteOnline.API.Services.Implementation
             try
             {
                 if (avatar == null || avatar.Length == 0 || string.IsNullOrEmpty(subjectId))
-                    throw new ArgumentException("File wasn't uploaded");
-                var existing = _unitOfWork.Users.Get(t => t.SubjectId == subjectId).SingleOrDefault();
+                    throw new SoException("File wasn't uploaded", HttpStatusCode.BadRequest);
+
+                if (!Guid.TryParse(subjectId, out var userGuid))
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+
+                var existing = _unitOfWork.Users.GetById(userGuid);
                 if (existing == null)
-                    throw new ArgumentException("Could not found user");
+                    throw new SoException("Could not found user", HttpStatusCode.BadRequest);
+
                 using (var stream = new MemoryStream())
                 {
                     await avatar.CopyToAsync(stream);
@@ -148,14 +141,12 @@ namespace SaluteOnline.API.Services.Implementation
                     return existing.Avatar;
                 }
             }
-            catch (ArgumentException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
-                throw new Exception("Error while getting user info. Please try a bit later");
+                throw new SoException("Error while getting user info. Please try a bit later", HttpStatusCode.InternalServerError);
             }
         }
     }

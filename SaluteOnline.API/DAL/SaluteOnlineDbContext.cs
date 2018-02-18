@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SaluteOnline.Domain.Domain.EF;
-using SaluteOnline.Domain.Domain.EF.LinkEntities;
+using SaluteOnline.API.Domain;
+using SaluteOnline.API.Domain.LinkEntities;
 
 namespace SaluteOnline.API.DAL
 {
@@ -15,7 +15,7 @@ namespace SaluteOnline.API.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().ToTable("User").HasIndex(t => t.SubjectId).IsUnique();
+            modelBuilder.Entity<User>().ToTable("User").HasIndex(t => t.Guid).IsUnique();
             modelBuilder.Entity<Club>().ToTable("Club");
 
             modelBuilder.Entity<ClubUserAdministrator>().HasKey(t => new {t.ClubId, t.UserId});

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using SaluteOnline.Domain.DTO.Activity;
 using SaluteOnline.IdentityServer.Domain;
 using SaluteOnline.IdentityServer.Handlers.Declaration;
+using SaluteOnline.Shared.Events;
 
 namespace SaluteOnline.IdentityServer.Handlers.Implementation
 {

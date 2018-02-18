@@ -10,11 +10,11 @@ using RawRabbit;
 using RawRabbit.Configuration;
 using RawRabbit.DependencyInjection.ServiceCollection;
 using RawRabbit.Instantiation;
-using SaluteOnline.Domain.Domain.Mongo;
-using SaluteOnline.Domain.DTO.Activity;
 using SaluteOnline.LogService.DAL;
-using SaluteOnline.LogService.Handlers;
+using SaluteOnline.LogService.Domain;
 using SaluteOnline.LogService.Handlers.Abstraction;
+using SaluteOnline.LogService.Handlers.Implementation;
+using SaluteOnline.Shared.Events;
 
 namespace SaluteOnline.LogService
 {
@@ -46,25 +46,26 @@ namespace SaluteOnline.LogService
             app.UseMvc();
         }
 
-        private static RawRabbitOptions GetRabbitConfiguration => new RawRabbitOptions
+        private const string RabbitSectionName = "RabbitSettings";
+        private RawRabbitOptions GetRabbitConfiguration => new RawRabbitOptions
         {
             ClientConfiguration = new RawRabbitConfiguration
             {
-                Username = "guest",
-                Password = "guest",
-                VirtualHost = "/",
-                Port = 32770,
-                Hostnames = new List<string> { "127.0.0.1" },
+                Username = Configuration.GetSection(RabbitSectionName).GetValue<string>(nameof(RawRabbitConfiguration.Username)),
+                Password = Configuration.GetSection(RabbitSectionName).GetValue<string>(nameof(RawRabbitConfiguration.Password)),
+                VirtualHost = Configuration.GetSection(RabbitSectionName).GetValue<string>(nameof(RawRabbitConfiguration.VirtualHost)),
+                Port = Configuration.GetSection(RabbitSectionName).GetValue<int>(nameof(RawRabbitConfiguration.Port)),
+                Hostnames = Configuration.GetSection(RabbitSectionName).GetSection(nameof(RawRabbitConfiguration.Hostnames)).Get<List<string>>(),
                 Ssl = new SslOption
                 {
-                    Enabled = false
+                    Enabled = Configuration.GetSection(RabbitSectionName).GetValue<bool>("SslEnabled")
                 },
-                AutomaticRecovery = true,
-                RecoveryInterval = TimeSpan.FromSeconds(5)
-            },
+                AutomaticRecovery = Configuration.GetSection(RabbitSectionName).GetValue<bool>(nameof(RawRabbitConfiguration.AutomaticRecovery)),
+                RecoveryInterval = TimeSpan.FromSeconds(Configuration.GetSection(RabbitSectionName).GetValue<int>(nameof(RawRabbitConfiguration.RecoveryInterval)))
+            }
         };
 
-        private static async void InitializeRabbit(IServiceCollection services)
+        private async void InitializeRabbit(IServiceCollection services)
         {
             var bus = RawRabbitFactory.CreateSingleton(GetRabbitConfiguration);
             var handler = services.BuildServiceProvider().GetService<IHandler<Activity>>();

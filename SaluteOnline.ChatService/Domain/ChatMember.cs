@@ -1,8 +1,7 @@
 ﻿using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using SaluteOnline.Domain.Common;
-using SaluteOnline.Domain.DTO;
+using SaluteOnline.Shared.Common;
 
 namespace SaluteOnline.ChatService.Domain
 {

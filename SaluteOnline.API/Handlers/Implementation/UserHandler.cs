@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Extensions.Logging;
 using RawRabbit;
 using SaluteOnline.API.DAL;
+using SaluteOnline.API.Domain;
 using SaluteOnline.API.Handlers.Declaration;
-using SaluteOnline.Domain.Domain.EF;
-using SaluteOnline.Domain.DTO;
-using SaluteOnline.Domain.DTO.Activity;
+using SaluteOnline.Shared.Common;
+using SaluteOnline.Shared.Events;
 
 namespace SaluteOnline.API.Handlers.Implementation
 {
@@ -27,14 +26,16 @@ namespace SaluteOnline.API.Handlers.Implementation
         {
             try
             {
-                if (_unitOfWork.Users.GetAsQueryable(t => t.SubjectId == data.SubjectId).FirstOrDefault() != null)
+                if (!Guid.TryParse(data.SubjectId, out var userGuid))
                     return false;
+                if (_unitOfWork.Users.GetById(userGuid) != null)
+                    return false;
+
                 var newUser = new User
                 {
-                    SubjectId = data.SubjectId,
                     Email = data.Email,
                     Nickname = data.Username,
-                    Guid = Guid.NewGuid(),
+                    Guid = userGuid,
                     LastActivity = DateTimeOffset.UtcNow,
                     IsActive = true,
                     Registered = DateTimeOffset.UtcNow,

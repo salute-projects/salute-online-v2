@@ -5,10 +5,10 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using SaluteOnline.Domain.DTO;
-using SaluteOnline.Domain.Exceptions;
 using SaluteOnline.HubService.DAL;
 using SaluteOnline.HubService.Domain;
+using SaluteOnline.Shared.Common;
+using SaluteOnline.Shared.Exceptions;
 
 namespace SaluteOnline.HubService.Hubs
 {
@@ -27,6 +27,9 @@ namespace SaluteOnline.HubService.Hubs
             var userId = Context.User.Claims.FirstOrDefault(t => t.Type == "subjectId")?.Value;
             if (!Guid.TryParse(userId, out var userGuid))
                 throw new SoException("Malformed authorization token", HttpStatusCode.Unauthorized);
+
+            var email = Context.User.Claims.FirstOrDefault(t => t.Type == "email")?.Value;
+
             var connectionId = Context.ConnectionId;
             var existingUser = _usersRepository.GetAsQueryable(t => t.Guid == userGuid)?.FirstOrDefault();
             if (existingUser == null)
@@ -35,6 +38,7 @@ namespace SaluteOnline.HubService.Hubs
                 {
                     Connected = DateTimeOffset.UtcNow,
                     Guid = userGuid,
+                    Email = email,
                     Connections = new List<SignalrConnection>
                     {
                         new SignalrConnection
@@ -68,6 +72,7 @@ namespace SaluteOnline.HubService.Hubs
             var userId = Context.User.Claims.FirstOrDefault(t => t.Type == "subjectId")?.Value;
             if (!Guid.TryParse(userId, out var userGuid))
                 throw new SoException("Malformed authorization token", HttpStatusCode.Unauthorized);
+
             var connectionId = Context.ConnectionId;
             var existingUser = _usersRepository.GetAsQueryable(t => t.Guid == userGuid)?.FirstOrDefault();
             if (existingUser == null)

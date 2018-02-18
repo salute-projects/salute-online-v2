@@ -1,18 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RabbitMQ.Client;
 using RawRabbit;
 using RawRabbit.Configuration;
 using RawRabbit.DependencyInjection.ServiceCollection;
 using RawRabbit.Instantiation;
-using SaluteOnline.Domain.Events;
 using SaluteOnline.HubService.DAL;
 using SaluteOnline.HubService.Handlers.Declaration;
 using SaluteOnline.HubService.Hubs;
 using SaluteOnline.HubService.Security;
+using SaluteOnline.Shared.Events;
 
 namespace SaluteOnline.HubService
 {
@@ -27,6 +29,27 @@ namespace SaluteOnline.HubService
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "Auth";
+                options.DefaultChallengeScheme = "Auth";
+            }).AddCustomAuth(options => { });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Auth", policy =>
+                {
+                    policy.RequireClaim("subjectId");
+                });
+            });
+
+            services.AddCors(
+               options =>
+               {
+                   options.AddPolicy("CorsPolicy",
+                       builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+               });
+
             services.AddSignalR();
             services.AddMvc();
             services.AddRawRabbit(GetRabbitConfiguration);
@@ -41,6 +64,8 @@ namespace SaluteOnline.HubService
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseAuthentication();
+            app.UseCors("CorsPolicy");
             app.UseSignalR(routes =>
             {
                 routes.MapHub<SoMessageHub>("soMessageHub");
@@ -48,19 +73,26 @@ namespace SaluteOnline.HubService
             app.UseMvc();
         }
 
-        private static RawRabbitOptions GetRabbitConfiguration => new RawRabbitOptions
+        private const string RabbitSectionName = "RabbitSettings";
+        private RawRabbitOptions GetRabbitConfiguration => new RawRabbitOptions
         {
             ClientConfiguration = new RawRabbitConfiguration
             {
-                Username = "guest",
-                Password = "guest",
-                VirtualHost = "/",
-                Port = 32770,
-                Hostnames = new List<string> { "127.0.0.1" }
+                Username = Configuration.GetSection(RabbitSectionName).GetValue<string>(nameof(RawRabbitConfiguration.Username)),
+                Password = Configuration.GetSection(RabbitSectionName).GetValue<string>(nameof(RawRabbitConfiguration.Password)),
+                VirtualHost = Configuration.GetSection(RabbitSectionName).GetValue<string>(nameof(RawRabbitConfiguration.VirtualHost)),
+                Port = Configuration.GetSection(RabbitSectionName).GetValue<int>(nameof(RawRabbitConfiguration.Port)),
+                Hostnames = Configuration.GetSection(RabbitSectionName).GetSection(nameof(RawRabbitConfiguration.Hostnames)).Get<List<string>>(),
+                Ssl = new SslOption
+                {
+                    Enabled = Configuration.GetSection(RabbitSectionName).GetValue<bool>("SslEnabled")
+                },
+                AutomaticRecovery = Configuration.GetSection(RabbitSectionName).GetValue<bool>(nameof(RawRabbitConfiguration.AutomaticRecovery)),
+                RecoveryInterval = TimeSpan.FromSeconds(Configuration.GetSection(RabbitSectionName).GetValue<int>(nameof(RawRabbitConfiguration.RecoveryInterval)))
             }
         };
 
-        private static async void SubsribeToRabbit(IServiceCollection services)
+        private async void SubsribeToRabbit(IServiceCollection services)
         {
             var bus = RawRabbitFactory.CreateSingleton(GetRabbitConfiguration);
             var handler = services.BuildServiceProvider().GetService<IHubHandler>();

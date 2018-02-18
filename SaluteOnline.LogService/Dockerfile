@@ -6,6 +6,7 @@ FROM microsoft/aspnetcore-build:2.0 AS build
 WORKDIR /src
 COPY *.sln ./
 COPY SaluteOnline.LogService/SaluteOnline.LogService.csproj SaluteOnline.LogService/
+COPY SaluteOnline.Domain/SaluteOnline.Domain.csproj SaluteOnline.Domain/
 RUN dotnet restore
 COPY . .
 WORKDIR /src/SaluteOnline.LogService

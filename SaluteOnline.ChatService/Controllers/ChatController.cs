@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SaluteOnline.ChatService.Domain.DTO;
 using SaluteOnline.ChatService.Service.Abstraction;
-using SaluteOnline.Domain.DTO;
-using SaluteOnline.Domain.Exceptions;
+using SaluteOnline.Shared.Common;
+using SaluteOnline.Shared.Exceptions;
 
 namespace SaluteOnline.ChatService.Controllers
 {

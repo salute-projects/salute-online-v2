@@ -8,15 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SaluteOnline.API.DAL;
+using SaluteOnline.API.Domain;
+using SaluteOnline.API.Domain.LinkEntities;
+using SaluteOnline.API.Domain.Mapping;
+using SaluteOnline.API.DTO.Club;
 using SaluteOnline.API.Services.Interface;
-using SaluteOnline.Domain.Conversion;
-using SaluteOnline.Domain.Domain;
-using SaluteOnline.Domain.Domain.EF;
-using SaluteOnline.Domain.Domain.EF.LinkEntities;
-using SaluteOnline.Domain.DTO;
-using SaluteOnline.Domain.DTO.Activity;
-using SaluteOnline.Domain.DTO.Club;
-using SaluteOnline.Domain.Exceptions;
+using SaluteOnline.Shared.Common;
+using SaluteOnline.Shared.Events;
+using SaluteOnline.Shared.Exceptions;
 
 namespace SaluteOnline.API.Services.Implementation
 {
@@ -37,7 +36,10 @@ namespace SaluteOnline.API.Services.Implementation
         {
             try
             {
-                var user = (await _unitOfWork.Users.GetAsync(t => t.SubjectId == subjectId)).SingleOrDefault();
+                if (!Guid.TryParse(subjectId, out var userGuid))
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+
+                var user = await _unitOfWork.Users.GetByIdAsync(userGuid);
                 if (user == null)
                     throw new SoException("User not found", HttpStatusCode.Unauthorized);
 
@@ -54,7 +56,7 @@ namespace SaluteOnline.API.Services.Implementation
                     Registered = DateTimeOffset.UtcNow,
                     LastUpdate = DateTimeOffset.UtcNow
                 };
-                await _unitOfWork.Clubs.InsertAsync(newClub);
+                _unitOfWork.Clubs.Insert(newClub);
 
                 var relation = new ClubUserAdministrator
                 {
@@ -77,12 +79,10 @@ namespace SaluteOnline.API.Services.Implementation
                 });
                 return newClub.Id;
             }
-            catch (SoException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while adding new club. Please try a bit later", HttpStatusCode.InternalServerError);
             }
@@ -90,10 +90,12 @@ namespace SaluteOnline.API.Services.Implementation
 
         public Page<ClubSummaryDto> GetClubs(ClubFilter filter, string subjectId)
         {
+            if (!Guid.TryParse(subjectId, out var userGuid))
+                throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
             Func<Club, bool> searchCriteria;
             try
             {
-                var currentUser = _unitOfWork.Users.Get(t => t.SubjectId == subjectId).FirstOrDefault();
+                var currentUser = _unitOfWork.Users.GetById(userGuid);
                 if (currentUser == null)
                     throw new SoException("Internal error happened. Please try a bit later", HttpStatusCode.Unauthorized);
 
@@ -121,12 +123,10 @@ namespace SaluteOnline.API.Services.Implementation
                 var page = new Page<ClubSummaryDto>(filter.Page, filter.PageSize ?? 25, allCount, slice.Select(t => t.ToSummaryDto(currentUser.Id)));
                 return page;
             }
-            catch (SoException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while fetching list of clubs. Please try a bit later", HttpStatusCode.InternalServerError);
             }
@@ -136,9 +136,13 @@ namespace SaluteOnline.API.Services.Implementation
         {
             try
             {
-                var currentUser = _unitOfWork.Users.Get(t => t.SubjectId == subjectId).FirstOrDefault();
+                if (!Guid.TryParse(subjectId, out var userGuid))
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+
+                var currentUser = _unitOfWork.Users.GetById(userGuid);
                 if (currentUser == null)
                     throw new SoException("Internal error happened. Please try a bit later", HttpStatusCode.Unauthorized);
+
                 return
                     _unitOfWork.Users.GetAsQueryable()
                         .Include(t => t.ClubsAdministrated)
@@ -146,12 +150,10 @@ namespace SaluteOnline.API.Services.Implementation
                         .SingleOrDefault(t => t.Id == currentUser.Id)?
                         .ClubsAdministrated.Select(t => t.Club.ToSummaryDto(currentUser.Id));
             }
-            catch (SoException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while loading clubs list. Please try a bit later", HttpStatusCode.InternalServerError);
             }
@@ -174,8 +176,7 @@ namespace SaluteOnline.API.Services.Implementation
                 var result = new ClubInfoAggregation
                 {
                     Count = allClubs.Count(),
-                    IsFiim = allClubs.Count(t => t.IsFiim),
-                    ByStatus = byStatus,
+                    ByStatus = byStatus, 
                     Geography = geography
                 };
                 return result;
@@ -191,22 +192,26 @@ namespace SaluteOnline.API.Services.Implementation
         {
             try
             {
-                var currentUser = _unitOfWork.Users.Get(t => t.SubjectId == subjectId).FirstOrDefault();
+                if (!Guid.TryParse(subjectId, out var userGuid))
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+
+                var currentUser = _unitOfWork.Users.GetById(userGuid);
                 if (currentUser == null)
                     throw new SoException("Internal error happened. Please try a bit later", HttpStatusCode.Unauthorized);
+
                 var club = _unitOfWork.Clubs.GetAsQueryable().Include(t => t.Administrators).SingleOrDefault(t => t.Id == id);
                 if (club == null)
                     throw new SoException("Error while getting club info. Please try a bit later", HttpStatusCode.BadRequest);
+
                 if (currentUser.Role == Role.User && club.Administrators.All(t => t.UserId != currentUser.Id))
                     throw new SoException("Operation not allowed", HttpStatusCode.BadRequest);
+
                 return club.Adapt<ClubDto>();
-            }
-            catch (SoException)
-            {
-                throw;
             }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while loading club info. Please try a bit later", HttpStatusCode.InternalServerError);
             }
@@ -233,12 +238,10 @@ namespace SaluteOnline.API.Services.Implementation
                 var slice = all.Skip((filter.Page - 1) * filter.PageSize ?? 25).Take(filter.PageSize ?? 25);
                 return new Page<ClubMemberSummary>(filter.Page, filter.PageSize ?? 25, all.Count, slice);
             }
-            catch (SoException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while loading club administrators list. Please try a bit later", HttpStatusCode.InternalServerError);
             }
@@ -279,12 +282,10 @@ namespace SaluteOnline.API.Services.Implementation
                 var slice = all.Skip((filter.Page - 1) * filter.PageSize ?? 25).Take(filter.PageSize ?? 25);
                 return new Page<ClubMemberSummary>(filter.Page, filter.PageSize ?? 25, all.Count, slice);
             }
-            catch (SoException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while loading club members list. Please try a bit later", HttpStatusCode.InternalServerError);
             }
@@ -294,6 +295,9 @@ namespace SaluteOnline.API.Services.Implementation
         {
             try
             {
+                if (!Guid.TryParse(subjectId, out var userGuid))
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+
                 if (string.IsNullOrEmpty(member.Nickname))
                     throw new SoException("Nickname cannot be empty", HttpStatusCode.BadRequest);
 
@@ -301,7 +305,7 @@ namespace SaluteOnline.API.Services.Implementation
                 if (club == null)
                     throw new SoException("Club not found", HttpStatusCode.BadRequest);
 
-                var currentMember = _unitOfWork.Users.Get(t => t.SubjectId == subjectId).FirstOrDefault();
+                var currentMember = _unitOfWork.Users.GetById(userGuid);
                 if (currentMember == null)
                     throw new SoException("Error while authorization", HttpStatusCode.Unauthorized);
 
@@ -330,12 +334,10 @@ namespace SaluteOnline.API.Services.Implementation
                     PlayerId = newPlayer.Id
                 };
             }
-            catch (SoException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while adding club members. Please try a bit later", HttpStatusCode.InternalServerError);
             }
@@ -345,10 +347,13 @@ namespace SaluteOnline.API.Services.Implementation
         {
             try
             {
+                if (!Guid.TryParse(subjectId, out var userGuid))
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+
                 if (string.IsNullOrEmpty(request.Nickname))
                     throw new SoException("Nickname cannot be empty", HttpStatusCode.BadRequest);
 
-                var existingMember = _unitOfWork.Users.Get(t => t.SubjectId == subjectId).FirstOrDefault();
+                var existingMember = _unitOfWork.Users.GetById(userGuid);
                 if (existingMember == null)
                     throw new SoException("User not found", HttpStatusCode.BadRequest);
 
@@ -375,12 +380,10 @@ namespace SaluteOnline.API.Services.Implementation
                 _unitOfWork.Save();
                 return newRequest.Id;
             }
-            catch (SoException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while adding membership request. Please try a bit later", HttpStatusCode.InternalServerError);
             }
@@ -390,7 +393,10 @@ namespace SaluteOnline.API.Services.Implementation
         {
             try
             {
-                var existingMember = _unitOfWork.Users.Get(t => t.SubjectId == subjectId).FirstOrDefault();
+                if (!Guid.TryParse(subjectId, out var userGuid))
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+
+                var existingMember = _unitOfWork.Users.GetById(userGuid);
                 if (existingMember == null)
                     throw new SoException("User not found", HttpStatusCode.BadRequest);
 
@@ -414,12 +420,10 @@ namespace SaluteOnline.API.Services.Implementation
                 return page;
 
             }
-            catch (SoException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while fetching club membership requests. Please try a bit later", HttpStatusCode.InternalServerError);
             }
@@ -429,7 +433,10 @@ namespace SaluteOnline.API.Services.Implementation
         {
             try
             {
-                var existingMember = _unitOfWork.Users.Get(t => t.SubjectId == subjectId).SingleOrDefault();
+                if (!Guid.TryParse(subjectId, out var userGuid))
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+
+                var existingMember = _unitOfWork.Users.GetById(userGuid);
                 if (existingMember == null)
                     throw new SoException("User not found", HttpStatusCode.Unauthorized);
 
@@ -439,6 +446,7 @@ namespace SaluteOnline.API.Services.Implementation
                         .Include(t => t.MembershipRequests).ThenInclude(t => t.User)
                         .Include(t => t.Administrators)
                         .FirstOrDefault();
+
                 if (club == null)
                     throw new SoException("Club not found", HttpStatusCode.BadRequest);
 
@@ -483,12 +491,10 @@ namespace SaluteOnline.API.Services.Implementation
                 
                 _unitOfWork.Save();
             }
-            catch (ArgumentException)
-            {
-                throw;
-            }
             catch (Exception e)
             {
+                if (e is SoException)
+                    throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while fetching club membership requests. Please try a bit later", HttpStatusCode.InternalServerError);
             }

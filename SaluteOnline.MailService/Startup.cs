@@ -10,10 +10,10 @@ using RawRabbit;
 using RawRabbit.Configuration;
 using RawRabbit.DependencyInjection.ServiceCollection;
 using RawRabbit.Instantiation;
-using SaluteOnline.Domain.Events;
 using SaluteOnline.MailService.Model;
 using SaluteOnline.MailService.Services.Declaration;
 using SaluteOnline.MailService.Services.Implementation;
+using SaluteOnline.Shared.Events;
 
 namespace SaluteOnline.MailService
 {
