@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -203,5 +204,56 @@ namespace SaluteOnline.API.Controllers
                 return ProcessExceptionResult(e);
             }
         }
+
+        [HttpGet("canRegisterClub")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        public IActionResult CanRegisterClub()
+        {
+            try
+            {
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                if (string.IsNullOrEmpty(subjectId))
+                    return BadRequest("Authorization failed.");
+
+                return Ok(_service.CanRegisterClub(subjectId));
+            }
+            catch (SoException e)
+            {
+                return ProcessExceptionResult(e);
+            }
+        }
+
+        #region Admin
+
+        [HttpGet("admin")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.GlobalAdmin))]
+        public IActionResult GetClubsForAdmin([FromQuery] ClubFilter filter)
+        {
+            try
+            {
+                return Ok(_service.GetClubsForAdministration(filter));
+            }
+            catch (SoException e)
+            {
+                return ProcessExceptionResult(e);
+            }
+        }
+
+        [HttpPut("admin/changeStatus")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.GlobalAdmin))]
+        public IActionResult ChangeClubStatus([FromBody] ClubChangeStatusRequest request)
+        {
+            try
+            {
+                _service.ChangeClubStatus(request);
+                return Ok("");
+            }
+            catch (SoException e)
+            {
+                return ProcessExceptionResult(e);
+            }
+        }
+
+        #endregion
     }
 }

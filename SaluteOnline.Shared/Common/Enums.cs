@@ -63,7 +63,8 @@
         PendingActivation = 2,
         Blocked = 3,
         Deleted = 4,
-        ActiveAndPending = 5
+        ActiveAndPending = 5,
+        All = 6
     }
 
     public enum MembershipRequestStatus

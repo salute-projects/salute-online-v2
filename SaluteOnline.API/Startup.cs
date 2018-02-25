@@ -16,6 +16,7 @@ using RawRabbit.Configuration;
 using RawRabbit.DependencyInjection.ServiceCollection;
 using RawRabbit.Instantiation;
 using SaluteOnline.API.DAL;
+using SaluteOnline.API.Domain;
 using SaluteOnline.API.Domain.LinkEntities;
 using SaluteOnline.API.DTO.Club;
 using SaluteOnline.API.Handlers.Declaration;
@@ -177,16 +178,10 @@ namespace SaluteOnline.API
         private static void SetMapProfiles()
         {
             TypeAdapterConfig<ClubUserAdministrator, ClubMemberSummary>.NewConfig()
-                .Map(t => t.UserId, t => t.UserId)
-                .Map(t => t.Avatar, t => t.User.Avatar)
-                .Map(t => t.City, t => t.User.City)
-                .Map(t => t.Country, t => t.User.Country)
-                .Map(t => t.Email, t => t.User.Email)
-                .Map(t => t.FirstName, t => t.User.FirstName)
-                .Map(t => t.IsActive, t => t.User.IsActive)
-                .Map(t => t.LastName, t => t.User.LastName)
-                .Map(t => t.Nickname, t => t.User.Nickname)
-                .Map(t => t.Registered, t => t.Registered);
+                .Map(t => t.Avatar, t => t.User.Avatar);
+
+            TypeAdapterConfig<Club, ClubAdministrationSummaryDto>.NewConfig()
+                .Map(t => t.CreatorUsername, t => t.Creator.DisplayName);
         }
     }
 }

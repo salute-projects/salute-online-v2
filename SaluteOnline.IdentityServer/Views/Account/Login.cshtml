@@ -73,22 +73,24 @@
 @section scripts
     {
     <script type="text/javascript">
-        $(document).ready(function() {
-            $('.so-input-control input').each(function() {
-                if ($(this).val() !== '') {
+        $(document).ready(function () {
+            $('.so-input-control input').each(function () {
+                if ($(this).val() !== '' || $(this).is(':-webkit-autofill')) {
                     $(this).addClass('so-input--focused');
                 }
             });
-        });
 
-        $('.so-input-control input').on('focus', function () {
-            if (!$(this).hasClass('so-input--focused')) {
-                $(this).addClass('so-input--focused');
-            }
-        }).on('blur', function () {
-            if ($(this).val() === '' && $(this).hasClass('so-input--focused')) {
-                $(this).removeClass('so-input--focused');
-            }
-        })
+            $('.so-input-control input').on('focus blur',
+                function() {
+                    if (!$(this).hasClass('so-input--focused')) {
+                        $(this).addClass('so-input--focused');
+                    }
+                }).on('blur',
+                function() {
+                    if ($(this).val() === '' && $(this).hasClass('so-input--focused')) {
+                        $(this).removeClass('so-input--focused');
+                    }
+                });
+        });
     </script>
 }

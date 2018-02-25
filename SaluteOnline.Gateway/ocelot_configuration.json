@@ -3,8 +3,12 @@
     {
       "DownstreamPathTemplate": "/{url}",
       "DownstreamScheme": "http",
-      "DownstreamHost": "localhost",
-      "DownstreamPort": 9001,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9001
+        }
+      ],
       "UpstreamPathTemplate": "/{url}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "AuthenticationOptions": {
@@ -12,14 +16,18 @@
         "AllowedScopes": []
       },
       "RouteClaimsRequirement": {
-        "role": "sd_ga_ca_user"
+        "role": "userAndHigher"
       }
     },
     {
       "DownstreamPathTemplate": "/api/chat/",
       "DownstreamScheme": "http",
-      "DownstreamHost": "localhost",
-      "DownstreamPort": 9002,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9002
+        }
+      ],
       "UpstreamPathTemplate": "/api/chat/",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "AuthenticationOptions": {
@@ -27,14 +35,18 @@
         "AllowedScopes": []
       },
       "RouteClaimsRequirement": {
-        "role": "sd_ga_ca_user"
+        "role": "userAndHigher"
       }
     },
     {
       "DownstreamPathTemplate": "/api/chat/{anything}",
       "DownstreamScheme": "http",
-      "DownstreamHost": "localhost",
-      "DownstreamPort": 9002,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9002
+        }
+      ],
       "UpstreamPathTemplate": "/api/chat/{anything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "AuthenticationOptions": {
@@ -42,14 +54,18 @@
         "AllowedScopes": []
       },
       "RouteClaimsRequirement": {
-        "role": "sd_ga_ca_user"
+        "role": "userAndHigher"
       }
     },
     {
       "DownstreamPathTemplate": "/api/chat/{anything}/{anything}",
       "DownstreamScheme": "http",
-      "DownstreamHost": "localhost",
-      "DownstreamPort": 9002,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9002
+        }
+      ],
       "UpstreamPathTemplate": "/api/chat/{anything}/{anything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "AuthenticationOptions": {
@@ -57,14 +73,18 @@
         "AllowedScopes": []
       },
       "RouteClaimsRequirement": {
-        "role": "sd_ga_ca_user"
+        "role": "userAndHigher"
       }
     },
     {
       "DownstreamPathTemplate": "/api/chat/{anything}/{anything}/{anything}",
       "DownstreamScheme": "http",
-      "DownstreamHost": "localhost",
-      "DownstreamPort": 9002,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9002
+        }
+      ],
       "UpstreamPathTemplate": "/api/chat/{anything}/{anything}/{anything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "AuthenticationOptions": {
@@ -72,14 +92,18 @@
         "AllowedScopes": []
       },
       "RouteClaimsRequirement": {
-        "role": "sd_ga_ca_user"
+        "role": "userAndHigher"
       }
     },
     {
       "DownstreamPathTemplate": "/api/common",
       "DownstreamScheme": "http",
-      "DownstreamHost": "localhost",
-      "DownstreamPort": 9007,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9007
+        }
+      ],
       "UpstreamPathTemplate": "/api/common",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "AuthenticationOptions": {
@@ -87,14 +111,18 @@
         "AllowedScopes": []
       },
       "RouteClaimsRequirement": {
-        "role": "sd_ga_ca_user"
+        "role": "userAndHigher"
       }
     },
     {
       "DownstreamPathTemplate": "/api/common/{anything}",
       "DownstreamScheme": "http",
-      "DownstreamHost": "localhost",
-      "DownstreamPort": 9007,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9007
+        }
+      ],
       "UpstreamPathTemplate": "/api/common/{anything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "AuthenticationOptions": {
@@ -102,7 +130,7 @@
         "AllowedScopes": []
       },
       "RouteClaimsRequirement": {
-        "role": "sd_ga_ca_user"
+        "role": "userAndHigher"
       }
     }
   ],

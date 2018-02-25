@@ -7,16 +7,24 @@ namespace SaluteOnline.API.Services.Interface
 {
     public interface IClubsService
     {
-        Task<int> CreateClub(CreateClubDto club, string email);
-        Page<ClubSummaryDto> GetClubs(ClubFilter filter, string email);
-        IEnumerable<ClubSummaryDto> GetMyClubs(string email);
-        ClubDto GetClub(int id, string email);
+        Task<int> CreateClub(CreateClubDto club, string subjectId);
+        Page<ClubSummaryDto> GetClubs(ClubFilter filter, string subjectId);
+        IEnumerable<ClubSummaryDto> GetMyClubs(string subjectId);
+        ClubDto GetClub(int id, string subjectId);
         ClubInfoAggregation GetInfoAggregation();
         Page<ClubMemberSummary> GetClubAdministrators(ClubMembersFilter filter);
         Page<ClubMemberSummary> GetClubMembers(ClubMembersFilter filter);
-        ClubMemberSummary AddClubMember(CreateClubMemberDto member, string email);
-        int AddMembershipRequest(MembershipRequestCreateDto request, string email);
-        Page<MembershipRequestDto> GetClubMembershipRequests(MembershipRequestFilter filter, string email);
-        void HandleMembershipRequest(HandleMembershipRequestDto dto, string email);
+        ClubMemberSummary AddClubMember(CreateClubMemberDto member, string subjectId);
+        int AddMembershipRequest(MembershipRequestCreateDto request, string subjectId);
+        Page<MembershipRequestDto> GetClubMembershipRequests(MembershipRequestFilter filter, string subjectId);
+        void HandleMembershipRequest(HandleMembershipRequestDto dto, string subjectId);
+        bool CanRegisterClub(string subjectId);
+
+        #region Administration
+
+        Page<ClubAdministrationSummaryDto> GetClubsForAdministration(ClubFilter filter);
+        void ChangeClubStatus(ClubChangeStatusRequest request);
+
+        #endregion
     }
 }

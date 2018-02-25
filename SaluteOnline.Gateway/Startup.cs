@@ -57,36 +57,16 @@ namespace SaluteOnline.Gateway
                     var role = context.User.Claims.ToList().FirstOrDefault(t => t.Type.ToLower() == "role");
                     if (!string.IsNullOrEmpty(role?.Value))
                     {
-                        var transformedRole = TransformRoleClaim(role.Value);
-                        if (transformedRole == "corrupted")
+                        Enum.TryParse<Roles>(role.Value, out var roleValue);
+                        if (roleValue == Roles.None)
                             return;
                         var newIdentity = new ClaimsIdentity("Auth");
-                        newIdentity.AddClaim(new Claim("role", transformedRole));
+                        newIdentity.AddClaim(new Claim("role", "userAndHigher"));
                         context.User = new ClaimsPrincipal(newIdentity);
                         await func.Invoke();
                     }
                 }
             });
-        }
-
-        private static string TransformRoleClaim(string role)
-        {
-            Enum.TryParse<Roles>(role, out var roleValue);
-            switch (roleValue)
-            {
-                case Roles.SilentDon:
-                    return "sd";
-                case Roles.GlobalAdmin:
-                    return "sd_ga";
-                case Roles.ClubAdmin:
-                    return "sd_ga_ca";
-                case Roles.User:
-                    return "sd_ga_ca_user";
-                case Roles.Guest:
-                    return "all";
-                default:
-                    return "corrupted";
-            };
         }
     }
 }

@@ -26,8 +26,6 @@ namespace SaluteOnline.API.Domain
         public DateTimeOffset Registered { get; set; }
         public DateTimeOffset LastUpdate { get; set; }
 
-        public bool IsActive { get; set; }
-
         [ForeignKey(nameof(Creator))]
         public int CreatorId { get; set; }
         [JsonIgnore]

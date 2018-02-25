@@ -46,7 +46,6 @@ namespace SaluteOnline.API.Services.Implementation
                 var newClub = new Club
                 {
                     Guid = Guid.NewGuid(),
-                    IsActive = false,
                     Status = ClubStatus.PendingActivation,
                     Description = club.Description,
                     Title = club.Title,
@@ -99,8 +98,7 @@ namespace SaluteOnline.API.Services.Implementation
                 if (currentUser == null)
                     throw new SoException("Internal error happened. Please try a bit later", HttpStatusCode.Unauthorized);
 
-                searchCriteria = t => (!filter.IsActive.HasValue || t.IsActive == filter.IsActive.Value)
-                                      && (string.IsNullOrEmpty(filter.Country) || string.Equals(t.Country, filter.Country, StringComparison.CurrentCultureIgnoreCase))
+                searchCriteria = t => (string.IsNullOrEmpty(filter.Country) || string.Equals(t.Country, filter.Country, StringComparison.CurrentCultureIgnoreCase))
                                       && (string.IsNullOrEmpty(filter.City) || string.Equals(t.City, filter.City, StringComparison.CurrentCultureIgnoreCase))
                                       && (string.IsNullOrEmpty(filter.Title) || t.Title.ToLower().StartsWith(filter.Title.ToLower()))
                                       && (!filter.CreatorId.HasValue || t.CreatorId == filter.CreatorId.Value)
@@ -168,7 +166,7 @@ namespace SaluteOnline.API.Services.Implementation
                     allClubs.Select(t => t.Country)
                         .Distinct()
                         .Select(t => new KeyValuePair<string, IEnumerable<string>>(t,
-                            allClubs.Where(x => x.Country == t).Select(q => q.City)));
+                            allClubs.Where(x => x.Country == t).Select(q => q.City).Distinct()));
                 var byStatus =
                     allClubs.Select(t => t.Status).Distinct().Select(
                             t => new KeyValuePair<ClubStatus, int>(t, allClubs.Count(r => r.Status == t)));
@@ -497,6 +495,80 @@ namespace SaluteOnline.API.Services.Implementation
                     throw;
                 _logger.LogError(e.Message);
                 throw new SoException("Error while fetching club membership requests. Please try a bit later", HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public bool CanRegisterClub(string subjectId)
+        {
+            try
+            {
+                if (!Guid.TryParse(subjectId, out var userGuid))
+                    throw new SoException("Corrupted token", HttpStatusCode.Unauthorized);
+                var existingMember = _unitOfWork.Users.GetById(userGuid);
+                if (existingMember == null)
+                    throw new SoException("User not found", HttpStatusCode.Unauthorized);
+
+                var pendingClubs = _unitOfWork.Clubs.GetAsQueryable(t => t.Creator.Guid == userGuid && t.Status == ClubStatus.PendingActivation)
+                    .Include(t => t.Creator);
+                return !pendingClubs.Any();
+            }
+            catch (Exception e)
+            {
+                if (e is SoException)
+                    throw;
+                _logger.LogError(e.Message);
+                throw new SoException("Internal error", HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public Page<ClubAdministrationSummaryDto> GetClubsForAdministration(ClubFilter filter)
+        {
+            Func<Club, bool> searchCriteria;
+            try
+            {
+                searchCriteria = t => (string.IsNullOrEmpty(filter.Country) || string.Equals(t.Country, filter.Country, StringComparison.CurrentCultureIgnoreCase))
+                                      && (string.IsNullOrEmpty(filter.City) || string.Equals(t.City, filter.City, StringComparison.CurrentCultureIgnoreCase))
+                                      && (string.IsNullOrEmpty(filter.Title) || t.Title.ToLower().Contains(filter.Title.ToLower()))
+                                      && (!filter.CreatorId.HasValue || t.CreatorId == filter.CreatorId.Value)
+                                      && filter.Status == ClubStatus.All || (filter.Status == ClubStatus.ActiveAndPending ? t.Status == ClubStatus.Active || t.Status == ClubStatus.PendingActivation : t.Status == filter.Status);
+                var skip = filter.Page == 0 ? 0 : (filter.Page - 1) * (filter.PageSize ?? 25);
+                var take = filter.PageSize ?? 25;
+                var orderByField = string.IsNullOrEmpty(filter.OrderBy) ? nameof(Club.Registered) : filter.OrderBy;
+                var allClubs = _unitOfWork.Clubs.GetAsQueryable(t => searchCriteria(t)).Include(t => t.Creator);
+                var slice = (filter.Asc ?
+                    allClubs.OrderBy(t => typeof(Club).GetProperty(orderByField).GetValue(t)) :
+                    allClubs.OrderByDescending(t => typeof(Club).GetProperty(orderByField).GetValue(t)))
+                    .Skip(skip)
+                    .Take(take);
+                var allCount = allClubs.Select(t => t.Id).Count();
+                var page = new Page<ClubAdministrationSummaryDto>(filter.Page, filter.PageSize ?? 25, allCount, slice.Select(t => t.Adapt<ClubAdministrationSummaryDto>()));
+                return page;
+            }
+            catch (Exception e)
+            {
+                if (e is SoException)
+                    throw;
+                _logger.LogError(e.Message);
+                throw new SoException("Internal error", HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public void ChangeClubStatus(ClubChangeStatusRequest request)
+        {
+            try
+            {
+                var club = _unitOfWork.Clubs.GetById(id: request.ClubId);
+                if (club == null)
+                    throw new SoException("Club not found", HttpStatusCode.BadRequest);
+                club.Status = request.Status;
+                _unitOfWork.Save();
+            }
+            catch (Exception e)
+            {
+                if (e is SoException)
+                    throw;
+                _logger.LogError(e.Message);
+                throw new SoException("Internal error", HttpStatusCode.InternalServerError);
             }
         }
     }
