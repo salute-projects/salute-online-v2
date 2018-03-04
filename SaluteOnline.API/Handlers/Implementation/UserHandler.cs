@@ -37,9 +37,9 @@ namespace SaluteOnline.API.Handlers.Implementation
                     Nickname = data.Username,
                     Guid = userGuid,
                     LastActivity = DateTimeOffset.UtcNow,
-                    IsActive = true,
+                    Status = UserStatus.Active,
                     Registered = DateTimeOffset.UtcNow,
-                    Role = Role.User
+                    Role = Roles.User
                 };
                 _unitOfWork.Users.Insert(newUser);
                 _unitOfWork.Save();

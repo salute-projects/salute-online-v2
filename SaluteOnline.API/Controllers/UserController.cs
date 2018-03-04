@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,10 +15,12 @@ namespace SaluteOnline.API.Controllers
     public class UserController : BaseController
     {
         private readonly IAccountService _accountService;
+        private readonly IUsersService _usersService;
 
-        public UserController(IAccountService accountService)
+        public UserController(IAccountService accountService, IUsersService usersService)
         {
             _accountService = accountService;
+            _usersService = usersService;
         }
 
         [HttpGet]
@@ -97,6 +100,7 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPost("uploadAvatar")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
         public async Task<IActionResult> UploadAvatar(IFormFile avatar)
         {
             try
@@ -112,5 +116,38 @@ namespace SaluteOnline.API.Controllers
                 return ProcessExceptionResult(e);
             }
         }
+
+        #region Admin
+
+        [HttpGet("admin")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.GlobalAdmin))]
+        public IActionResult GetUsers([FromQuery] UserFilter request)
+        {
+            try
+            {
+                return Ok(_usersService.GetUsers(request));
+            }
+            catch (SoException e)
+            {
+                return ProcessExceptionResult(e);
+            }
+        }
+
+        [HttpPut("admin/setRole")]
+        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.GlobalAdmin))]
+        public IActionResult SetUserRole([FromBody] SetRoleRequest request)
+        {
+            try
+            {
+                _usersService.SetUserRole(request);
+                return Ok();
+            }
+            catch (SoException e)
+            {
+                return ProcessExceptionResult(e);
+            }
+        }
+
+        #endregion
     }
 }

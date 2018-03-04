@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SaluteOnline.API.DTO.Club;
 using SaluteOnline.API.Services.Interface;
@@ -216,6 +216,19 @@ namespace SaluteOnline.API.Controllers
                     return BadRequest("Authorization failed.");
 
                 return Ok(_service.CanRegisterClub(subjectId));
+            }
+            catch (SoException e)
+            {
+                return ProcessExceptionResult(e);
+            }
+        }
+
+        [HttpPost("changeAvatar/{id}")]
+        public async Task<IActionResult> UploadAvatar(IFormFile avatar, int id)
+        {
+            try
+            {
+                return Ok(await _service.ChangeAvatar(avatar, id));
             }
             catch (SoException e)
             {

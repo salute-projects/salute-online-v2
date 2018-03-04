@@ -21,9 +21,9 @@ namespace SaluteOnline.API.DTO.User
         public string Vk { get; set; }
         public string Instagram { get; set; }
         public string Skype { get; set; }
-        public bool IsActive { get; set; }
         public string Nickname { get; set; }
-        public Role Role { get; set; }
+        public Roles Role { get; set; }
+        public UserStatus Status { get; set; }
         public DateTimeOffset Registered { get; set; }
         public DateTimeOffset LastActivity { get; set; }
         public string Avatar { get; set; }

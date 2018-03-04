@@ -9,7 +9,7 @@ namespace SaluteOnline.IdentityServer
     {
         public static void Main(string[] args)
         {
-            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            var logger = NLog.LogManager.LoadConfiguration("nlog.config").GetCurrentClassLogger();
             try
             {
                 BuildWebHost(args).Run();

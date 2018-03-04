@@ -120,6 +120,7 @@ namespace SaluteOnline.IdentityServer
             var bus = RawRabbitFactory.CreateSingleton(GetRabbitConfiguration);
             var handler = services.BuildServiceProvider().GetService<IUserHandler>();
             await bus.SubscribeAsync<UserCreatedEvent>(msg => Task.FromResult(handler.HandleUserCreated(msg)));
+            await bus.SubscribeAsync<UserRoleChangeEvent>(msg => Task.FromResult(handler.HandleUserRoleChanged(msg)));
         }
     }
 }

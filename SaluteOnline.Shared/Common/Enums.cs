@@ -1,13 +1,5 @@
 ﻿namespace SaluteOnline.Shared.Common
 {
-    public enum Role
-    {
-        None = 0,
-        User = 1,
-        ClubAdmin = 2,
-        SuperAdmin = 3
-    }
-
     public enum ActivityType
     {
         Register = 0,
@@ -63,8 +55,7 @@
         PendingActivation = 2,
         Blocked = 3,
         Deleted = 4,
-        ActiveAndPending = 5,
-        All = 6
+        ActiveAndPending = 5
     }
 
     public enum MembershipRequestStatus
@@ -89,5 +80,13 @@
         System = 0,
         User = 1,
         Club = 2
+    }
+
+    public enum UserStatus
+    {
+        None = 0,
+        Active = 1,
+        Blocked = 2,
+        Deleted = 3
     }
 }

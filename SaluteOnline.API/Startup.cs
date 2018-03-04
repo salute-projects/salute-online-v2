@@ -131,6 +131,7 @@ namespace SaluteOnline.API
             services.AddScoped<IClubsService, ClubsService>();
             services.AddScoped<IUserHandler, UserHandler>();
             services.AddScoped<IBusService, BusService>();
+            services.AddScoped<IUsersService, UsersService>();
             services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
         }
 

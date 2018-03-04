@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using SaluteOnline.API.DTO.Club;
 using SaluteOnline.Shared.Common;
 
@@ -19,6 +20,7 @@ namespace SaluteOnline.API.Services.Interface
         Page<MembershipRequestDto> GetClubMembershipRequests(MembershipRequestFilter filter, string subjectId);
         void HandleMembershipRequest(HandleMembershipRequestDto dto, string subjectId);
         bool CanRegisterClub(string subjectId);
+        Task<string> ChangeAvatar(IFormFile avatar, int id);
 
         #region Administration
 

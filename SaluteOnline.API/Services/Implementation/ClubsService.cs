@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Mapster;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -201,7 +203,7 @@ namespace SaluteOnline.API.Services.Implementation
                 if (club == null)
                     throw new SoException("Error while getting club info. Please try a bit later", HttpStatusCode.BadRequest);
 
-                if (currentUser.Role == Role.User && club.Administrators.All(t => t.UserId != currentUser.Id))
+                if (currentUser.Role == Roles.User && club.Administrators.All(t => t.UserId != currentUser.Id))
                     throw new SoException("Operation not allowed", HttpStatusCode.BadRequest);
 
                 return club.Adapt<ClubDto>();
@@ -530,7 +532,7 @@ namespace SaluteOnline.API.Services.Implementation
                                       && (string.IsNullOrEmpty(filter.City) || string.Equals(t.City, filter.City, StringComparison.CurrentCultureIgnoreCase))
                                       && (string.IsNullOrEmpty(filter.Title) || t.Title.ToLower().Contains(filter.Title.ToLower()))
                                       && (!filter.CreatorId.HasValue || t.CreatorId == filter.CreatorId.Value)
-                                      && filter.Status == ClubStatus.All || (filter.Status == ClubStatus.ActiveAndPending ? t.Status == ClubStatus.Active || t.Status == ClubStatus.PendingActivation : t.Status == filter.Status);
+                                      && (filter.Status == ClubStatus.None || (filter.Status == ClubStatus.ActiveAndPending ? t.Status == ClubStatus.Active || t.Status == ClubStatus.PendingActivation : t.Status == filter.Status));
                 var skip = filter.Page == 0 ? 0 : (filter.Page - 1) * (filter.PageSize ?? 25);
                 var take = filter.PageSize ?? 25;
                 var orderByField = string.IsNullOrEmpty(filter.OrderBy) ? nameof(Club.Registered) : filter.OrderBy;
@@ -562,6 +564,35 @@ namespace SaluteOnline.API.Services.Implementation
                     throw new SoException("Club not found", HttpStatusCode.BadRequest);
                 club.Status = request.Status;
                 _unitOfWork.Save();
+            }
+            catch (Exception e)
+            {
+                if (e is SoException)
+                    throw;
+                _logger.LogError(e.Message);
+                throw new SoException("Internal error", HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public async Task<string> ChangeAvatar(IFormFile avatar, int id)
+        {
+            try
+            {
+                if (avatar == null || avatar.Length == 0 || id == default(int))
+                    throw new SoException("File wasn't uploaded", HttpStatusCode.BadRequest);
+
+                var club = _unitOfWork.Clubs.GetById(id: id);
+                if (club == null)
+                    throw new SoException("Club not found", HttpStatusCode.BadRequest);
+
+                using (var stream = new MemoryStream())
+                {
+                    await avatar.CopyToAsync(stream);
+                    club.Logo = Convert.ToBase64String(stream.ToArray());
+                    club.LastUpdate = DateTimeOffset.UtcNow;
+                    _unitOfWork.Save();
+                    return club.Logo;
+                }
             }
             catch (Exception e)
             {

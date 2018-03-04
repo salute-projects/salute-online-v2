@@ -60,8 +60,8 @@ namespace SaluteOnline.API.Domain
         [StringLength(50)]
         public string Skype { get; set; }
 
-        public bool IsActive { get; set; }
-        public Role Role { get; set; }
+        public UserStatus Status { get; set; }
+        public Roles Role { get; set; }
 
         public DateTimeOffset Registered { get; set; }
         public DateTimeOffset LastActivity { get; set; }
