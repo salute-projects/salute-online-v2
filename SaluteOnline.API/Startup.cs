@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using IdentityServer4.AccessTokenValidation;
 using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,7 +22,6 @@ using SaluteOnline.API.Domain.LinkEntities;
 using SaluteOnline.API.DTO.Club;
 using SaluteOnline.API.Handlers.Declaration;
 using SaluteOnline.API.Handlers.Implementation;
-using SaluteOnline.API.Security;
 using SaluteOnline.API.Services.Implementation;
 using SaluteOnline.API.Services.Interface;
 using SaluteOnline.Shared.Common;
@@ -41,19 +41,15 @@ namespace SaluteOnline.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = "Auth";
-                options.DefaultChallengeScheme = "Auth";
-            }).AddCustomAuth(options => {});
+            var authSettings = Configuration.GetSection("Auth");
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Auth", policy =>
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
                 {
-                    policy.RequireClaim("subjectId");
+                    options.Authority = authSettings["Authority"];
+                    options.ApiName = authSettings["ApiName"];
+                    options.RequireHttpsMetadata = false;
                 });
-            });
 
             var connectionString = Configuration.GetConnectionString("SoConnection");
             services.AddDbContext<SaluteOnlineDbContext>(options => options.UseSqlServer(connectionString));
@@ -74,8 +70,7 @@ namespace SaluteOnline.API
                     Version = "v1",
                     Title = "Salute Online API"
                 });
-            });
-            services.ConfigureSwaggerGen(t =>
+            }).ConfigureSwaggerGen(t =>
             {
                 t.AddSecurityDefinition("Bearer", new ApiKeyScheme
                 {
@@ -125,14 +120,14 @@ namespace SaluteOnline.API
             app.UseMvc();
         }
 
-        private void InitializeServices(IServiceCollection services)
+        private static void InitializeServices(IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IClubsService, ClubsService>();
             services.AddScoped<IUserHandler, UserHandler>();
             services.AddScoped<IBusService, BusService>();
             services.AddScoped<IUsersService, UsersService>();
-            services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
+            services.AddScoped<IStatisticService, StatisticService>();
         }
 
         private static void SetPolicies(IServiceCollection services)

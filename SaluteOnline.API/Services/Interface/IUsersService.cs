@@ -7,5 +7,6 @@ namespace SaluteOnline.API.Services.Interface
     {
         Page<UserDto> GetUsers(UserFilter request);
         void SetUserRole(SetRoleRequest request);
+        void SetUserStatus(SetStatusRequest request);
     }
 }

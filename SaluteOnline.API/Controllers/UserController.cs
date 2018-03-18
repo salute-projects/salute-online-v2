@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -15,21 +14,19 @@ namespace SaluteOnline.API.Controllers
     public class UserController : BaseController
     {
         private readonly IAccountService _accountService;
-        private readonly IUsersService _usersService;
 
-        public UserController(IAccountService accountService, IUsersService usersService)
+        public UserController(IAccountService accountService)
         {
             _accountService = accountService;
-            _usersService = usersService;
         }
 
         [HttpGet]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult GetUserInfo()
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
@@ -43,12 +40,12 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult UpdateUserInfo([FromBody]UserDto userDto)
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
@@ -62,12 +59,12 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult UpdateMainUserInfo([FromBody]UserMainInfoDto userDto)
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
@@ -81,12 +78,12 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPatch]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult UpdatePersonalUserInfo([FromBody]UserPersonalInfoDto userDto)
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
@@ -100,12 +97,12 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPost("uploadAvatar")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public async Task<IActionResult> UploadAvatar(IFormFile avatar)
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
@@ -116,38 +113,5 @@ namespace SaluteOnline.API.Controllers
                 return ProcessExceptionResult(e);
             }
         }
-
-        #region Admin
-
-        [HttpGet("admin")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.GlobalAdmin))]
-        public IActionResult GetUsers([FromQuery] UserFilter request)
-        {
-            try
-            {
-                return Ok(_usersService.GetUsers(request));
-            }
-            catch (SoException e)
-            {
-                return ProcessExceptionResult(e);
-            }
-        }
-
-        [HttpPut("admin/setRole")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.GlobalAdmin))]
-        public IActionResult SetUserRole([FromBody] SetRoleRequest request)
-        {
-            try
-            {
-                _usersService.SetUserRole(request);
-                return Ok();
-            }
-            catch (SoException e)
-            {
-                return ProcessExceptionResult(e);
-            }
-        }
-
-        #endregion
     }
 }

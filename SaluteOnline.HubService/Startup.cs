@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +14,6 @@ using RawRabbit.Instantiation;
 using SaluteOnline.HubService.DAL;
 using SaluteOnline.HubService.Handlers.Declaration;
 using SaluteOnline.HubService.Hubs;
-using SaluteOnline.HubService.Security;
 using SaluteOnline.Shared.Events;
 
 namespace SaluteOnline.HubService
@@ -29,19 +29,15 @@ namespace SaluteOnline.HubService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = "Auth";
-                options.DefaultChallengeScheme = "Auth";
-            }).AddCustomAuth(options => { });
+            var authSettings = Configuration.GetSection("Auth");
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Auth", policy =>
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
                 {
-                    policy.RequireClaim("subjectId");
+                    options.Authority = authSettings["Authority"];
+                    options.ApiName = authSettings["ApiName"];
+                    options.RequireHttpsMetadata = false;
                 });
-            });
 
             services.AddCors(
                options =>
@@ -54,7 +50,6 @@ namespace SaluteOnline.HubService
             services.AddMvc();
             services.AddRawRabbit(GetRabbitConfiguration);
             services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
             SubsribeToRabbit(services);
         }
 
@@ -64,6 +59,17 @@ namespace SaluteOnline.HubService
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.Use(async (context, next) =>
+            {
+                if (string.IsNullOrWhiteSpace(context.Request.Headers["Authorization"]) 
+                    && context.Request.QueryString.HasValue 
+                    && context.Request.Query.TryGetValue("Bearer", out var bearer) 
+                    && !string.IsNullOrEmpty(bearer))
+                {
+                    context.Request.Headers.Add("Authorization", $"Bearer {bearer}");
+                }
+                await next.Invoke();
+            });
             app.UseAuthentication();
             app.UseCors("CorsPolicy");
             app.UseSignalR(routes =>

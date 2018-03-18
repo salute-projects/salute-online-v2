@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using SaluteOnline.HubService.DAL;
 using SaluteOnline.HubService.Domain;
@@ -21,10 +22,10 @@ namespace SaluteOnline.HubService.Hubs
             _usersRepository = usersRepository;
         }
 
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public override Task OnConnectedAsync()
         {
-            var userId = Context.User.Claims.FirstOrDefault(t => t.Type == "subjectId")?.Value;
+            var userId = Context.User.Claims.FirstOrDefault(t => t.Type == "sub")?.Value;
             if (!Guid.TryParse(userId, out var userGuid))
                 throw new SoException("Malformed authorization token", HttpStatusCode.Unauthorized);
 
@@ -66,10 +67,10 @@ namespace SaluteOnline.HubService.Hubs
             return base.OnConnectedAsync();
         }
 
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            var userId = Context.User.Claims.FirstOrDefault(t => t.Type == "subjectId")?.Value;
+            var userId = Context.User.Claims.FirstOrDefault(t => t.Type == "sub")?.Value;
             if (!Guid.TryParse(userId, out var userGuid))
                 throw new SoException("Malformed authorization token", HttpStatusCode.Unauthorized);
 

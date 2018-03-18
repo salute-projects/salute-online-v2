@@ -132,6 +132,25 @@
       "RouteClaimsRequirement": {
         "role": "userAndHigher"
       }
+    },
+    {
+      "DownstreamPathTemplate": "/api/{anything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9008
+        }
+      ],
+      "UpstreamPathTemplate": "/api/configuration/{anything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "safeKey",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "role": "userAndHigher"
+      }
     }
   ],
   "GlobalConfiguration": {

@@ -57,7 +57,6 @@ namespace SaluteOnline.CommonDataService
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseMvc();
         }
     }

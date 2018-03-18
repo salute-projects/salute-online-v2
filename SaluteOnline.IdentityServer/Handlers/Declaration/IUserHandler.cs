@@ -5,7 +5,7 @@ namespace SaluteOnline.IdentityServer.Handlers.Declaration
 {
     public interface IUserHandler
     {
-        Task<bool> HandleUserCreated(UserCreatedEvent data);
-        Task<bool> HandleUserRoleChanged(UserRoleChangeEvent data);
+        ValueTask<bool> HandleUserCreated(UserCreatedEvent data);
+        ValueTask<bool> HandleUserRoleChanged(UserRoleChangeEvent data);
     }
 }

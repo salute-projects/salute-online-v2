@@ -20,14 +20,15 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public async Task<IActionResult> CreateClub([FromBody]CreateClubDto club)
         {
             try
             {
-                var id = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var id = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(id))
                     return BadRequest("Authorization failed.");
+
                 return Ok(await _service.CreateClub(club, id));
             }
             catch (SoException e)
@@ -37,12 +38,12 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPost("list")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult GetClubsList([FromBody] ClubFilter filter)
         {
             try
             {
-                var id = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var id = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(id))
                     return BadRequest("Authorization failed.");
 
@@ -55,12 +56,12 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpGet("myList")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult GetMyClubs()
         {
             try
             {
-                var id = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var id = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(id))
                     return BadRequest("Authorization failed.");
 
@@ -73,7 +74,7 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult GetClubInfoAggregation()
         {
             try
@@ -87,12 +88,12 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult GetClubInfo(int id)
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
@@ -105,7 +106,7 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPost("admins")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult GetClubAdministrators([FromBody] ClubMembersFilter filter)
         {
             try
@@ -119,7 +120,7 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPost("members")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult GetClubMembers([FromBody] ClubMembersFilter filter)
         {
             try
@@ -133,12 +134,12 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPost("addClubMember")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult AddClubMember([FromBody] CreateClubMemberDto dto)
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
@@ -151,12 +152,12 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPost("addMembershipRequest")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult AddMembershipRequest([FromBody] MembershipRequestCreateDto dto)
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
@@ -169,12 +170,12 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPost("getMembershipRequests")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult GetMembershipRequests([FromBody] MembershipRequestFilter filter)
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
@@ -187,12 +188,12 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpPost("handleMembershipRequest")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult HandleMembershipRequest([FromBody] HandleMembershipRequestDto dto)
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
@@ -206,12 +207,12 @@ namespace SaluteOnline.API.Controllers
         }
 
         [HttpGet("canRegisterClub")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult CanRegisterClub()
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
@@ -235,38 +236,5 @@ namespace SaluteOnline.API.Controllers
                 return ProcessExceptionResult(e);
             }
         }
-
-        #region Admin
-
-        [HttpGet("admin")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.GlobalAdmin))]
-        public IActionResult GetClubsForAdmin([FromQuery] ClubFilter filter)
-        {
-            try
-            {
-                return Ok(_service.GetClubsForAdministration(filter));
-            }
-            catch (SoException e)
-            {
-                return ProcessExceptionResult(e);
-            }
-        }
-
-        [HttpPut("admin/changeStatus")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.GlobalAdmin))]
-        public IActionResult ChangeClubStatus([FromBody] ClubChangeStatusRequest request)
-        {
-            try
-            {
-                _service.ChangeClubStatus(request);
-                return Ok("");
-            }
-            catch (SoException e)
-            {
-                return ProcessExceptionResult(e);
-            }
-        }
-
-        #endregion
     }
 }

@@ -90,5 +90,29 @@ namespace SaluteOnline.API.Services.Implementation
                 throw new SoException("Error while getting users list. Please try a bit later", HttpStatusCode.InternalServerError);
             }
         }
+
+        public void SetUserStatus(SetStatusRequest request)
+        {
+            try
+            {
+                if (request.Status == UserStatus.None)
+                    throw new SoException("Status not allowed", HttpStatusCode.BadRequest);
+
+                var existing = _unitOfWork.Users.GetById(id: request.UserId);
+                if (existing == null)
+                    throw new SoException("User not found", HttpStatusCode.BadRequest);
+
+                existing.Status = request.Status;
+                existing.LastActivity = DateTimeOffset.UtcNow;
+                _unitOfWork.Save();
+            }
+            catch (Exception ex)
+            {
+                if (ex is SoException)
+                    throw;
+                _logger.LogError(ex.Message);
+                throw new SoException("Error while getting users list. Please try a bit later", HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using IdentityServer4.AccessTokenValidation;
+using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +9,6 @@ using Newtonsoft.Json.Serialization;
 using SaluteOnline.ChatService.DAL;
 using SaluteOnline.ChatService.Domain;
 using SaluteOnline.ChatService.Domain.DTO;
-using SaluteOnline.ChatService.Security;
 using SaluteOnline.ChatService.Service.Abstraction;
 using SaluteOnline.Shared.Common;
 using Swashbuckle.AspNetCore.Swagger;
@@ -26,18 +26,15 @@ namespace SaluteOnline.ChatService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = "Auth";
-                options.DefaultChallengeScheme = "Auth";
-            }).AddCustomAuth(options => { });
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Auth", policy =>
+            var authSettings = Configuration.GetSection("Auth");
+
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
                 {
-                    policy.RequireClaim("subjectId");
+                    options.Authority = authSettings["Authority"];
+                    options.ApiName = authSettings["ApiName"];
+                    options.RequireHttpsMetadata = false;
                 });
-            });
 
             services.AddSingleton(Configuration);
 
@@ -55,8 +52,7 @@ namespace SaluteOnline.ChatService
                     Version = "v1",
                     Title = "Salute Online API"
                 });
-            });
-            services.ConfigureSwaggerGen(t =>
+            }).ConfigureSwaggerGen(t =>
             {
                 t.AddSecurityDefinition("Bearer", new ApiKeyScheme
                 {
@@ -69,6 +65,7 @@ namespace SaluteOnline.ChatService
 
             RegisterServices(services);
             RegisterMapsterProfiles();
+
             services.AddMvc().AddJsonOptions(jsonOptions =>
             {
                 jsonOptions.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
@@ -86,6 +83,7 @@ namespace SaluteOnline.ChatService
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseAuthentication();
             app.UseSwagger();
             app.UseSwaggerUI(t =>
             {
@@ -94,11 +92,10 @@ namespace SaluteOnline.ChatService
             app.UseMvc();
         }
 
-        private void RegisterServices(IServiceCollection services)
+        private static void RegisterServices(IServiceCollection services)
         {
             services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddSingleton<IChatService, Service.Implementation.ChatService>();
-            services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
         }
 
         private static void RegisterMapsterProfiles()

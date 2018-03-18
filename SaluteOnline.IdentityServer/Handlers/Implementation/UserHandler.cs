@@ -21,7 +21,7 @@ namespace SaluteOnline.IdentityServer.Handlers.Implementation
             _webApplicationClientSettings = webAppSettings.Value;
         }
 
-        public async Task<bool> HandleUserCreated(UserCreatedEvent data)
+        public async ValueTask<bool> HandleUserCreated(UserCreatedEvent data)
         {
             var user = await _userManager.FindByIdAsync(data.SubjectId);
             user.UserId = data.UserId;
@@ -29,7 +29,7 @@ namespace SaluteOnline.IdentityServer.Handlers.Implementation
             return true;
         }
 
-        public async Task<bool> HandleUserRoleChanged(UserRoleChangeEvent data)
+        public async ValueTask<bool> HandleUserRoleChanged(UserRoleChangeEvent data)
         {
             var user = await _userManager.FindByIdAsync(data.SubjectId);
             user.Role = data.Role;

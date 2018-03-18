@@ -21,12 +21,12 @@ namespace SaluteOnline.ChatService.Controllers
         }
 
         [HttpGet]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult GetMyChats()
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return Unauthorized();
 
@@ -39,7 +39,7 @@ namespace SaluteOnline.ChatService.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult PostPrivateMessage([FromBody]PostPrivateMessageDto dto)
         {
             try
@@ -54,12 +54,12 @@ namespace SaluteOnline.ChatService.Controllers
         }
 
         [HttpGet("latest/{take:int}")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult GetLatest(int take)
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return Unauthorized();
 
@@ -72,12 +72,12 @@ namespace SaluteOnline.ChatService.Controllers
         }
 
         [HttpGet("{chatGuid:guid}/{page:int}/{pageSize:int}")]
-        [Authorize(AuthenticationSchemes = "Auth", Policy = nameof(Policies.User))]
+        [Authorize(Policy = nameof(Policies.User))]
         public IActionResult GetChatMessages(Guid chatGuid, int page, int pageSize)
         {
             try
             {
-                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "subjectId")?.Value;
+                var subjectId = User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value;
                 if (string.IsNullOrEmpty(subjectId))
                     return BadRequest("Authorization failed.");
 
