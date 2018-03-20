@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaluteOnline.CommonDataServ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaluteOnline.Shared", "SaluteOnline.Shared\SaluteOnline.Shared.csproj", "{37451432-D408-4DE6-9395-5D9B312356C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaluteOnline.ConfigurationService", "..\SaluteOnline.ConfigurationService\SaluteOnline.ConfigurationService.csproj", "{6D8A479C-9348-4512-899E-EDA5950D81DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaluteOnline.ConfigurationService", "SaluteOnline.ConfigurationService\SaluteOnline.ConfigurationService.csproj", "{6D8A479C-9348-4512-899E-EDA5950D81DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
