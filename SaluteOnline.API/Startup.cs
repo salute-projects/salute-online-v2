@@ -22,6 +22,7 @@ using SaluteOnline.API.Domain.LinkEntities;
 using SaluteOnline.API.DTO.Club;
 using SaluteOnline.API.Handlers.Declaration;
 using SaluteOnline.API.Handlers.Implementation;
+using SaluteOnline.API.Infrastructure.Kafka;
 using SaluteOnline.API.Services.Implementation;
 using SaluteOnline.API.Services.Interface;
 using SaluteOnline.Shared.Common;
@@ -96,7 +97,7 @@ namespace SaluteOnline.API
                 jsonOptions.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 jsonOptions.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
-
+            services.Configure<KafkaSettings>(Configuration.GetSection("KafkaSettings"));
             services.AddRawRabbit(GetRabbitConfiguration);
             InitializeServices(services);
             SetPolicies(services);
@@ -128,6 +129,7 @@ namespace SaluteOnline.API
             services.AddScoped<IBusService, BusService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IStatisticService, StatisticService>();
+            services.AddScoped<IKafkaProducer, KafkaProducer>();
         }
 
         private static void SetPolicies(IServiceCollection services)

@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SaluteOnline.API.DTO.User;
+using SaluteOnline.API.Infrastructure.Kafka;
 using SaluteOnline.API.Services.Interface;
 using SaluteOnline.Shared.Common;
+using SaluteOnline.Shared.Events;
 using SaluteOnline.Shared.Exceptions;
 
 namespace SaluteOnline.API.Controllers
@@ -14,10 +16,23 @@ namespace SaluteOnline.API.Controllers
     public class UserController : BaseController
     {
         private readonly IAccountService _accountService;
+        private readonly IKafkaProducer _produce;
 
-        public UserController(IAccountService accountService)
+        public UserController(IAccountService accountService, IKafkaProducer producer)
         {
             _accountService = accountService;
+            _produce = producer;
+        }
+
+        [HttpGet("kafka")]
+        public async Task<IActionResult> TestKafka()
+        {
+            var result = await _produce.ProduceAsync(new UserCreated
+            {
+                UserId = 1,
+                SubjectId = "id"
+            });
+            return Ok(result);
         }
 
         [HttpGet]

@@ -18,6 +18,8 @@ using SaluteOnline.IdentityServer.DAL;
 using SaluteOnline.IdentityServer.Domain;
 using SaluteOnline.IdentityServer.Handlers.Declaration;
 using SaluteOnline.IdentityServer.Handlers.Implementation;
+using SaluteOnline.IdentityServer.Infrastructure.Kafka;
+using SaluteOnline.IdentityServer.Infrastructure.Kafka.Consumers;
 using SaluteOnline.IdentityServer.Service.Declaration;
 using SaluteOnline.IdentityServer.Service.Implementation;
 using SaluteOnline.Shared.Events;
@@ -61,6 +63,7 @@ namespace SaluteOnline.IdentityServer
             services.Configure<WebApplicationClientSettings>(Configuration.GetSection("WebApplicationClientSettings"));
             services.Configure<ResourceOwnerClientSettings>(Configuration.GetSection("ResourceOwnerClientSettings"));
             services.Configure<ApiClientSettings>(Configuration.GetSection("ApiClientSettings"));
+            services.Configure<KafkaSettings>(Configuration.GetSection("KafkaSettings"));
 
             services.AddCors(
                 options =>
@@ -80,6 +83,8 @@ namespace SaluteOnline.IdentityServer
             services.AddRawRabbit(GetRabbitConfiguration);
 
             SubscribeToRabbit(services);
+
+            RegisterConsumers(services);
 
             services.AddMvc();
         }
@@ -119,8 +124,14 @@ namespace SaluteOnline.IdentityServer
         {
             var bus = RawRabbitFactory.CreateSingleton(GetRabbitConfiguration);
             var handler = services.BuildServiceProvider().GetService<IUserHandler>();
-            await bus.SubscribeAsync<UserCreatedEvent>(msg => Task.FromResult(handler.HandleUserCreated(msg)));
+            await bus.SubscribeAsync<UserCreated>(msg => Task.FromResult(handler.HandleUserCreated(msg)));
             await bus.SubscribeAsync<UserRoleChangeEvent>(msg => Task.FromResult(handler.HandleUserRoleChanged(msg)));
+        }
+
+        private static void RegisterConsumers(IServiceCollection services)
+        {
+            services.AddSingleton<IUserCreatedConsumer, UserCreatedConsumer>();
+            services.BuildServiceProvider().GetService<IUserCreatedConsumer>();
         }
     }
 }

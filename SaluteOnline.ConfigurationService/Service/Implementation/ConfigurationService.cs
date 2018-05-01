@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using Mapster;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using SaluteOnline.ConfigurationService.DAL;
@@ -17,14 +18,16 @@ namespace SaluteOnline.ConfigurationService.Service.Implementation
     {
         private readonly IGenericRepository<DashboardConfiguration> _dashboardRepository;
         private readonly IGenericRepository<ClubDashboardConfiguration> _clubDashboardRepository;
+        private readonly IGenericRepository<DefaultDashboardConfiguration> _defaultDashboardConfigurationRepository;
         private readonly IMemoryCache _memoryCache;
         private readonly ILogger<ConfigurationService> _logger;
 
         public ConfigurationService(IGenericRepository<DashboardConfiguration> dashboardRepository, IGenericRepository<ClubDashboardConfiguration> clubDashboardRepository,
-            IMemoryCache memoryCache, ILogger<ConfigurationService> logger)
+            IMemoryCache memoryCache, ILogger<ConfigurationService> logger, IGenericRepository<DefaultDashboardConfiguration> defaultDashboardConfigurationRepository)
         {
             _memoryCache = memoryCache;
             _dashboardRepository = dashboardRepository;
+            _defaultDashboardConfigurationRepository = defaultDashboardConfigurationRepository;
             _clubDashboardRepository = clubDashboardRepository;
             _logger = logger;
         }
@@ -89,6 +92,16 @@ namespace SaluteOnline.ConfigurationService.Service.Implementation
 
                 switch (RolesHelper.ParseRole(role))
                 {
+                    case Roles.User:
+                        return
+                            _defaultDashboardConfigurationRepository.Get(t => t.ForRole == Roles.User)
+                                .SingleOrDefault()
+                                .Adapt<DashboardConfiguration>();
+                    case Roles.SilentDon:
+                        return
+                            _defaultDashboardConfigurationRepository.Get(t => t.ForRole == Roles.SilentDon)
+                                .SingleOrDefault()
+                                .Adapt<DashboardConfiguration>();
                     case Roles.None:
                         return new DashboardConfiguration();
                     // todo get personalized configurations for each role

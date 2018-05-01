@@ -401,12 +401,19 @@ namespace SaluteOnline.IdentityServer.Controllers
                     Status = ActivityStatus.Success,
                     Data = JsonConvert.SerializeObject(new { userId, code, returnUrl })
                 });
-                _busService.Publish(new UserRegisteredEvent
-                {
-                    SubjectId = user.Id,
-                    Email = user.Email,
-                    Username = user.UserName
-                });
+
+                
+
+                // todo
+
+                //_busService.Publish(new UserRegisteredEvent
+                //{
+                //    SubjectId = user.Id,
+                //    Email = user.Email,
+                //    Username = user.UserName
+                //});
+
+
                 if (_interactionService.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl))
                     return Redirect(returnUrl);
 

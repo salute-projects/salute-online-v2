@@ -21,7 +21,7 @@ namespace SaluteOnline.IdentityServer.Handlers.Implementation
             _webApplicationClientSettings = webAppSettings.Value;
         }
 
-        public async ValueTask<bool> HandleUserCreated(UserCreatedEvent data)
+        public async ValueTask<bool> HandleUserCreated(UserCreated data)
         {
             var user = await _userManager.FindByIdAsync(data.SubjectId);
             user.UserId = data.UserId;

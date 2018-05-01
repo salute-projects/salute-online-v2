@@ -43,7 +43,7 @@ namespace SaluteOnline.API.Handlers.Implementation
                 };
                 _unitOfWork.Users.Insert(newUser);
                 _unitOfWork.Save();
-                _busClient.PublishAsync(new UserCreatedEvent
+                _busClient.PublishAsync(new UserCreated
                 {
                     SubjectId = data.SubjectId,
                     UserId = newUser.Id

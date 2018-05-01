@@ -71,6 +71,7 @@ namespace SaluteOnline.ConfigurationService
 
             app.UseAuthentication();
             app.UseMvc();
+            SeedDefault.Seed(Configuration.GetValue<string>("MongoSettings:Path"), Configuration.GetValue<string>("MongoSettings:DB"));
         }
     }
 }
